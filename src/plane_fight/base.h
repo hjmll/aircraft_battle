@@ -9,10 +9,10 @@ struct Point {
 // 飞行物
 class FlyingObject {
 public:
-	// 根据当前坐标、速度、角度以及帧率移动到下一坐标
+	// 根据当前坐标、速度、角度移动到下一坐标
 	void move();
 
-	// 获取坐标
+	// 返回坐标
 	Point getPos();
 
 	FlyingObject();

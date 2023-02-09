@@ -22,17 +22,20 @@ public:
 	void addBullet(Point pos, double angle, double speed, Bullet::Belone belone, Bullet::Type type);
 
 	// 返回子弹集总数量
-	void getNum();
+	int getNum();
+
+	// 所有子弹移动
+	void move();
 
 	// 删除指定编号的子弹
-	void del(int idx);
+	void delBullet(int idx);
 
 	// 清除所有子弹
 	void clear() { num = 0; }
 
 private:
 	int num;
-	Bullet s[205];
+	Bullet s[500];
 };
 
 #endif
