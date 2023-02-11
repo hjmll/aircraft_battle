@@ -99,7 +99,7 @@ void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 */
 int Enemys::getNum()
 {
-
+	return num;
 }
 
 
@@ -112,7 +112,8 @@ int Enemys::getNum()
 */
 void Enemys::move()
 {
-
+	for (int i = 0; i < num; ++i) 
+		s[i].move();
 }
 
 /*
@@ -124,7 +125,8 @@ void Enemys::move()
 */
 void Enemys::attack()
 {
-	
+	for (int i = 0; i < num; ++i)
+		s[i].attack();
 }
 
 /*
@@ -137,7 +139,14 @@ void Enemys::attack()
 */
 void Enemys::delEnemy(int idx)
 {
-
+	if (idx < 0 && idx > num-1)return;
+	//如果删除的为末尾的敌人，直接num--
+	if (idx == num - 1) {
+		num--;
+		return;
+	}
+	s[idx] = s[num - 1];
+	num--;
 }
 
 /*
@@ -150,5 +159,19 @@ void Enemys::delEnemy(int idx)
 */
 void Enemy::attack()
 {
-
+	switch (type) {
+	case :
+		
+		break;
+	case :
+		break;
+	case :
+		break;
+	//散射
+	case :
+		for (int i = 0; i < 5; ++i) {
+			
+		}
+		break;
+	}
 }
