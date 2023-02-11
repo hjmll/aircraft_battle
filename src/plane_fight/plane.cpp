@@ -77,7 +77,7 @@ void Player::clearBuff()
 }
 
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：在敌机集合最后一位添加一个新的敌机，敌机数量+1
 * 参数：
 *	Point pos: 初始坐标
@@ -92,19 +92,19 @@ void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 }
 
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：返回敌机数量
 * 参数：void
 * 返回值：int
 */
 int Enemys::getNum()
 {
-
+	return num;
 }
 
 
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：所有敌机移动
 *	枚举所有敌机，依次调用各敌机的move()函数
 * 参数：void
@@ -112,11 +112,12 @@ int Enemys::getNum()
 */
 void Enemys::move()
 {
-
+	for (int i = 0; i < num; ++i) 
+		s[i].move();
 }
 
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：所有敌机攻击
 *	枚举所有敌机，依次调用各敌机的attack()函数
 * 参数：void
@@ -124,11 +125,12 @@ void Enemys::move()
 */
 void Enemys::attack()
 {
-	
+	for (int i = 0; i < num; ++i)
+		s[i].attack();
 }
 
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：删除指定编号的敌人
 *	将数组末尾的敌人复制到idx处，敌人总数-1
 * 参数：
@@ -137,11 +139,18 @@ void Enemys::attack()
 */
 void Enemys::delEnemy(int idx)
 {
-
+	if (idx < 0 && idx > num-1)return;
+	//如果删除的为末尾的敌人，直接num--
+	if (idx == num - 1) {
+		num--;
+		return;
+	}
+	s[idx] = s[num - 1];
+	num--;
 }
 
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：敌机攻击
 *	根据敌机类型，在敌机坐标（getPos()函数）附近生成子弹
 *	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹
@@ -150,5 +159,19 @@ void Enemys::delEnemy(int idx)
 */
 void Enemy::attack()
 {
-
+	switch (type) {
+	case :
+		
+		break;
+	case :
+		break;
+	case :
+		break;
+	//散射
+	case :
+		for (int i = 0; i < 5; ++i) {
+			
+		}
+		break;
+	}
 }
