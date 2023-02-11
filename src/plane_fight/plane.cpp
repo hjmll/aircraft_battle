@@ -8,7 +8,7 @@
 */
 int Plane::getHp()
 {
-	return 0;
+	return this->hp;
 }
 
 /*
@@ -20,7 +20,16 @@ int Plane::getHp()
 */
 void Plane::hurt(int damage)
 {
+	this->hp -= damage;
+}
 
+//参数分别为：坐标位置，角度，移动速度，生命值，默认CD，子弹类型，攻击速度(默认值为1.0)
+Plane::Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bullet::Type bulletType, double attackSpeed ) : FlyingObject(pos, angle, speed){
+	hp = hp;
+	attackSpeed = attackSpeed;
+	defualtCD = defualtCD;
+	attackCD = defualtCD / attackSpeed;
+	bulletType = bulletType;
 }
 
 /*

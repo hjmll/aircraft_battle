@@ -14,6 +14,8 @@ public:
 	// 飞机受到damage点伤害
 	void hurt(int damage);
 
+	Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bullet::Type bulletType, double attackSpeed = 1.0);
+
 protected:
 	int hp;					// 生命值
 	double attackSpeed;		// 攻速，默认为100%
