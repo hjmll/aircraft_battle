@@ -56,7 +56,7 @@ void Game::init()
 }
 
 /*
-* 负责人：贺金梅
+* 负责人：易骏清
 * 功能：尝试生成新敌机
 *	如果enemyCD不为零，则CD值-1
 *	如果enemyCD为零，则enemyCD = defualtCD，在随机x处生成敌机
@@ -91,7 +91,7 @@ void Game::checkCrash()
 }
 
 /*
-* 负责人：易骏清
+* 负责人：贺金梅
 * 功能：展示菜单页
 *	- 开始游戏：return GAME
 *	- 游戏规则：return RULE（扩展）
@@ -107,7 +107,7 @@ Game::Page Game::showMenu()
 }
 
 /*
-* 负责人：易骏清
+* 负责人：贺金梅
 * 功能：展示游戏页面，游戏核心流程
 *	- 移动、攻击、生成敌人、碰撞检测、胜利判断、死亡判断
 * 参数：void
@@ -138,7 +138,7 @@ Game::Page Game::showGame()
 }
 
 /*
-* 负责人：易骏清
+* 负责人：贺金梅
 * 功能：展示暂停页
 *	- 继续游戏：return GAME
 *	- 重新开始：先调用init()初始化游戏数据，而后return GAME
@@ -153,7 +153,7 @@ Game::Page Game::showPause()
 }
 
 /*
-* 负责人：易骏清
+* 负责人：贺金梅
 * 功能：展示游戏胜利页
 *	首先初始化游戏数据，调用init()
 *	记录最好成绩
@@ -169,7 +169,7 @@ Game::Page Game::showWin()
 }
 
 /*
-* 负责人：易骏清
+* 负责人：贺金梅
 * 功能：展示游戏失败页
 *	首先初始化游戏数据，调用init()
 *	- 再来一局：return GAME
