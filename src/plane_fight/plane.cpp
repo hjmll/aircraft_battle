@@ -1,4 +1,8 @@
 #include "plane.h"
+bool isUnbreakable = false;
+bool isChangeBullet = false;
+bool isMoveSpeedUp = false;//这个玩意好像没啥用，但写都写了...
+bool isAttackSpeedUp = false;//这个玩意好像没啥用，但写都写了...
 
 /*
 * 负责人：覃一诚
@@ -20,16 +24,13 @@ int Plane::getHp()
 */
 void Plane::hurt(int damage)
 {
-	this->hp -= damage;
+	if (isUnbreakable == false) { this->hp -= damage; }
 }
 
 //参数分别为：坐标位置，角度，移动速度，生命值，默认CD，子弹类型，攻击速度(默认值为1.0)
-Plane::Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bullet::Type bulletType, double attackSpeed ) : FlyingObject(pos, angle, speed){
-	hp = hp;
-	attackSpeed = attackSpeed;
-	defualtCD = defualtCD;
+Plane::Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bullet::Type bulletType, double attackSpeed ) 
+	: FlyingObject(pos, angle, speed),hp(hp),attackSpeed(attackSpeed),defualtCD(defualtCD),bulletType(bulletType){
 	attackCD = defualtCD / attackSpeed;
-	bulletType = bulletType;
 }
 
 /*
@@ -42,7 +43,17 @@ Plane::Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bulle
 */
 void Player::attack()
 {
-	
+	if (isChangeBullet==false) {
+		if (hp > 5) {
+
+		}
+		else if (hp > 2) {
+
+		}
+		else if (hp < 2) {
+
+		}
+	}
 }
 
 /*
@@ -58,7 +69,26 @@ void Player::attack()
 */
 void Player::addBuff(Buff buff, int time)
 {
-
+	buffTime[buff] = time;
+	switch (buff) {
+	case moveSpeedUp: {
+		isMoveSpeedUp = true;
+		speed = 5; //初始设置加速后的速度为5，如果不合适再调整
+		break;
+	}
+	case attackSpeedUp: {
+		isAttackSpeedUp = true;
+		attackSpeed = 1.2;//初始设置加速后的攻速为原来的120%，不合适再改
+		break;
+	}
+	case changeBullet: {
+		isChangeBullet = true; //处于换弹状态下，attack函数无法生效
+		break;
+	}
+	case unbreakable: {
+		isUnbreakable = true; //处于无敌状态下，damage函数无法生效
+	}
+	}
 }
 
 /*
@@ -72,17 +102,36 @@ void Player::addBuff(Buff buff, int time)
 */
 void Player::checkBuff()
 {
+	if (buffTime[moveSpeedUp] > 0)
+	{
+		buffTime[moveSpeedUp]--;
+		if (buffTime[moveSpeedUp == 0]) { isUnbreakable = false; } 
+	}
+	if (buffTime[attackSpeedUp] > 0) {
+		buffTime[attackSpeedUp]--;
+		if (buffTime[attackSpeedUp] == 0) { isAttackSpeedUp = false; }
+	}
+	if (buffTime[changeBullet] > 0) {
+		buffTime[changeBullet]--;
+		if (buffTime[changeBullet] == 0) { isChangeBullet = false; }
+	}
+	if (buffTime[unbreakable] > 0) {
+		buffTime[unbreakable]--;
+		if (buffTime[unbreakable] == 0) { isUnbreakable = false; }
+	}
 }
-
 /*
 * 负责人：
 * 功能：清空所有buff，即所有buff时长归零，注意修改回属性值
 * 参数：void
 * 返回值：void
 */
-void Player::clearBuff()
+void Player::clearBuff() 
 {
-
+	buffTime[moveSpeedUp] = 0;
+	buffTime[attackSpeedUp] = 0;
+	buffTime[changeBullet] = 0;
+	buffTime[unbreakable] = 0;
 }
 
 /*
