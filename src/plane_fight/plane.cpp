@@ -138,6 +138,13 @@ void Player::checkBuff()
 		}
 	}
 }
+
+Player::Player(Point pos, double angle, double speed, int hp, int attackSpeed, int defaultCD, Bullet::Type bulletType):Plane(pos, angle, speed, hp, defualtCD, bulletType) {
+	buffTime[moveSpeedUp] = 0;
+	buffTime[attackSpeedUp] = 0;
+	buffTime[changeBullet] = 0;
+	buffTime[unbreakable] = 0; // 初始化时所有buff的时间都设置为0
+}
 /*
 * 负责人：
 * 功能：清空所有buff，即所有buff时长归零，注意修改回属性值

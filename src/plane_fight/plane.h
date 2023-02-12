@@ -57,6 +57,9 @@ public:
 	// 清空所有buff
 	void clearBuff();
 
+	//玩家飞机类的构造函数
+	Player(Point pos, double angle, double speed, int hp, int attackSpeed, int defaultCD, Bullet::Type bulletType);
+
 private:
 	int buffTime[buffCount];		// 记录各buff剩余时间
 };
