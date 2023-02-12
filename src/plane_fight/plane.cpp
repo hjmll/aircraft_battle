@@ -4,6 +4,8 @@ bool isChangeBullet = false;
 bool isMoveSpeedUp = false;//这个玩意好像没啥用，但写都写了...
 bool isAttackSpeedUp = false;//这个玩意好像没啥用，但写都写了...
 
+extern Bullets bullets; //应当在game.cpp  init()函数中声明 Bullets bullets 此处直接引用
+
 /*
 * 负责人：覃一诚
 * 功能：返回飞机血量
@@ -24,7 +26,7 @@ int Plane::getHp()
 */
 void Plane::hurt(int damage)
 {
-	if (isUnbreakable == false) { this->hp -= damage; }
+	if (isUnbreakable == false) { this->hp -= damage; } //如果处于无敌状态，该函数不会生效
 }
 
 //参数分别为：坐标位置，角度，移动速度，生命值，默认CD，子弹类型，攻击速度(默认值为1.0)
@@ -43,15 +45,27 @@ Plane::Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bulle
 */
 void Player::attack()
 {
-	if (isChangeBullet==false) {
+	if (isChangeBullet==false&&attackCD==0) { //不处于换弹状态且attackCD为0时才可以发射子弹
 		if (hp > 5) {
-
+			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为-180度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
+			bullets.addBullet(Player::getPos(), -180.0, Player::speed+10, Bullet::PLAYER, Bullet::Default); 
+			attackCD = 50;//发射子弹后attackCD默认设置为50，不合适再改
 		}
 		else if (hp > 2) {
-
+			//当生命值大于2时，在飞机坐标位置生成三枚子弹，角度为分别为45°(左)，90°(中)，135°(右)(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射AAA型子弹
+			bullets.addBullet(Player::getPos(), 45.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
+			bullets.addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
+			bullets.addBullet(Player::getPos(), 135.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
+			attackCD = 50;//发射子弹后attackCD默认设置为50，不合适再改
 		}
 		else if (hp < 2) {
-
+			//当生命值小于2时，在飞机坐标位置生成五枚子弹，角度为分别为30,60,90,120,150(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射BBB型子弹
+			bullets.addBullet(Player::getPos(), 30.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
+			bullets.addBullet(Player::getPos(), 60.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
+			bullets.addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
+			bullets.addBullet(Player::getPos(), 120.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
+			bullets.addBullet(Player::getPos(), 150.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
+			attackCD = 50;//发射子弹后attackCD默认设置为50，不合适再改
 		}
 	}
 }
@@ -69,7 +83,7 @@ void Player::attack()
 */
 void Player::addBuff(Buff buff, int time)
 {
-	buffTime[buff] = time;
+	buffTime[buff] +=time; //我觉得buff时间应该可以叠加
 	switch (buff) {
 	case moveSpeedUp: {
 		isMoveSpeedUp = true;
@@ -87,6 +101,7 @@ void Player::addBuff(Buff buff, int time)
 	}
 	case unbreakable: {
 		isUnbreakable = true; //处于无敌状态下，damage函数无法生效
+		break;
 	}
 	}
 }
@@ -105,19 +120,22 @@ void Player::checkBuff()
 	if (buffTime[moveSpeedUp] > 0)
 	{
 		buffTime[moveSpeedUp]--;
-		if (buffTime[moveSpeedUp == 0]) { isUnbreakable = false; } 
+		if (buffTime[moveSpeedUp == 0]) { isMoveSpeedUp = false; speed = 3;//buff效果结束后恢复初始速度，默认初始速度为3
+		}
 	}
 	if (buffTime[attackSpeedUp] > 0) {
 		buffTime[attackSpeedUp]--;
-		if (buffTime[attackSpeedUp] == 0) { isAttackSpeedUp = false; }
-	}
-	if (buffTime[changeBullet] > 0) {
-		buffTime[changeBullet]--;
-		if (buffTime[changeBullet] == 0) { isChangeBullet = false; }
-	}
-	if (buffTime[unbreakable] > 0) {
-		buffTime[unbreakable]--;
-		if (buffTime[unbreakable] == 0) { isUnbreakable = false; }
+		if (buffTime[attackSpeedUp] == 0) {
+			isAttackSpeedUp = false; attackSpeed = 1.0; //buff效果结束后恢复初始攻速 
+		}
+		if (buffTime[changeBullet] > 0) {
+			buffTime[changeBullet]--;
+			if (buffTime[changeBullet] == 0) { isChangeBullet = false; }
+		}
+		if (buffTime[unbreakable] > 0) {
+			buffTime[unbreakable]--;
+			if (buffTime[unbreakable] == 0) { isUnbreakable = false; }
+		}
 	}
 }
 /*
@@ -131,7 +149,13 @@ void Player::clearBuff()
 	buffTime[moveSpeedUp] = 0;
 	buffTime[attackSpeedUp] = 0;
 	buffTime[changeBullet] = 0;
-	buffTime[unbreakable] = 0;
+	buffTime[unbreakable] = 0; //将所有buff的时间都清零
+	isAttackSpeedUp = false;
+	isChangeBullet = false;
+	isMoveSpeedUp = false;
+	isUnbreakable = false; //把所有buff状态清零
+	attackSpeed = 1.0; //速度恢复默认值1.0
+	speed = 3; //移动速度恢复到默认值3
 }
 
 /*
