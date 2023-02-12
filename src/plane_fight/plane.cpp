@@ -1,4 +1,5 @@
 #include "plane.h"
+extern Bullets bullets;
 
 /*
 * 负责人：覃一诚
@@ -78,6 +79,25 @@ void Player::clearBuff()
 
 /*
 * 负责人：傅全有
+* 功能：Enemy 构造方法
+* 参数：
+*	int hp : 敌机血量
+*	Point pos: 初始坐标
+*	double angle: 初始角度
+*	double speed: 初始速度
+*	Bullet::Type bulletType : 子弹类型
+*	int defualtCD : 默认攻击间隔
+*	double attackSpeed ：攻速
+* 返回值：void
+*/
+Enemy :: Enemy(int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD, double attackSpeed)
+	: Plane :: Plane(pos,angle,speed,hp,defualtCD,bulletType,attackSpeed)
+{
+
+}
+
+/*
+* 负责人：傅全有
 * 功能：在敌机集合最后一位添加一个新的敌机，敌机数量+1
 * 参数：
 *	Point pos: 初始坐标
@@ -88,7 +108,28 @@ void Player::clearBuff()
 */
 void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 {
-
+	switch (type) {
+	case Enemy::NORMAL_A:
+		Enemy e(100, pos, angle, speed, Bullet::Default);
+		s[num++] = e;
+		break;
+	case Enemy::NORMAL_B:
+		Enemy e(60, pos, angle, speed, Bullet::Default);
+		s[num++] = e;
+		break;
+	case Enemy::GREEN:
+		Enemy e(60, pos, angle, speed, Bullet::Default);
+		s[num++] = e;
+		break;
+	case Enemy::RED:
+		Enemy e(60, pos, angle, speed, Bullet::Default);
+		s[num++] = e;
+		break;
+	case Enemy::BOSS:
+		Enemy e(400, pos, angle, speed, Bullet::Default);
+		s[num++] = e;
+		break;
+	}
 }
 
 /*
@@ -149,6 +190,7 @@ void Enemys::delEnemy(int idx)
 	num--;
 }
 
+
 /*
 * 负责人：傅全有
 * 功能：敌机攻击
@@ -159,19 +201,21 @@ void Enemys::delEnemy(int idx)
 */
 void Enemy::attack()
 {
+	Point pos = { getPos().x,getPos().y + 5 };
 	switch (type) {
-	case :
-		
+	case NORMAL_A:
 		break;
-	case :
+	case NORMAL_B:
+		bullets.addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
 		break;
-	case :
+	case GREEN:
+		bullets.addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
 		break;
-	//散射
-	case :
-		for (int i = 0; i < 5; ++i) {
-			
-		}
+	case RED:
+		bullets.addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
+		break;
+	case BOSS:
+		bullets.addBullet(pos, angle, speed + 5, Bullet::ENEMY, Bullet::Default);
 		break;
 	}
 }
