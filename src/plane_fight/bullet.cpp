@@ -1,7 +1,7 @@
 #include "bullet.h"
 
 /*
-* 负责人：
+* 负责人：葛子豪
 * 功能：在子弹集合最后一位添加一枚新的子弹，子弹数量+1
 * 参数：
 *	Point pos: 初始坐标
@@ -17,7 +17,7 @@ void Bullets::addBullet(Point pos, double angle, double speed, Bullet::Belone be
 }
 
 /*
-* 负责人：
+* 负责人：葛子豪
 * 功能：返回子弹数量
 * 参数：void
 * 返回值：int
@@ -28,7 +28,7 @@ int Bullets::getNum()
 }
 
 /*
-* 负责人：
+* 负责人：葛子豪
 * 功能：所有子弹移动
 *	枚举所有子弹，依次调用各子弹的move()函数
 * 参数：void
@@ -39,7 +39,7 @@ void Bullets::move()
 }
 
 /*
-* 负责人：
+* 负责人：葛子豪
 * 功能：删除指定编号的子弹
 *	将数组末尾的子弹复制到idx处，子弹数-1
 * 参数：
