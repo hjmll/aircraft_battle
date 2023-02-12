@@ -47,8 +47,8 @@ void Player::attack()
 {
 	if (isChangeBullet==false&&attackCD==0) { //不处于换弹状态且attackCD为0时才可以发射子弹
 		if (hp > 5) {
-			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为-180度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
-			bullets.addBullet(Player::getPos(), -180.0, Player::speed+10, Bullet::PLAYER, Bullet::Default); 
+			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
+			bullets.addBullet(Player::getPos(), 90.0, Player::speed+10, Bullet::PLAYER, Bullet::Default); 
 			attackCD = 50;//发射子弹后attackCD默认设置为50，不合适再改
 		}
 		else if (hp > 2) {
