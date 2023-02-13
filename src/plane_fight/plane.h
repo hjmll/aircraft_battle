@@ -73,7 +73,7 @@ private:
 // 敌人飞机类
 class Enemy : public Plane {
 public:
-	enum Type {NORMAL_A ,NORMAL_B ,GREEN ,RED ,BOSS }; // 枚举子类，敌人类型：普通(近战)、普通(远程)、回血、扣血、BOSS...
+	enum Type {NORMAL_A ,NORMAL_B ,E_GREEN ,E_RED ,BOSS }; // 枚举子类，敌人类型：普通(近战)、普通(远程)、回血、扣血、BOSS...
 	// 攻击
 	void attack();
 	Enemy(){}

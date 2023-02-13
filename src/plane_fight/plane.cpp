@@ -117,11 +117,11 @@ void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 		Enemy e(60, pos, angle, speed, Bullet::Default);
 		s[num++] = e;
 		break;
-	case Enemy::GREEN:
+	case Enemy::E_GREEN:
 		Enemy e(60, pos, angle, speed, Bullet::Default);
 		s[num++] = e;
 		break;
-	case Enemy::RED:
+	case Enemy::E_RED:
 		Enemy e(60, pos, angle, speed, Bullet::Default);
 		s[num++] = e;
 		break;
@@ -208,10 +208,10 @@ void Enemy::attack()
 	case NORMAL_B:
 		bullets.addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
 		break;
-	case GREEN:
+	case E_GREEN:
 		bullets.addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
 		break;
-	case RED:
+	case E_RED:
 		bullets.addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
 		break;
 	case BOSS:
