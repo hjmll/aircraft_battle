@@ -24,7 +24,7 @@ void Bullets::addBullet(Point pos, double angle, double speed, Bullet::Belone be
 */
 int Bullets::getNum()
 {
-
+	return 0;
 }
 
 /*
@@ -36,6 +36,7 @@ int Bullets::getNum()
 */
 void Bullets::move()
 {
+
 }
 
 /*

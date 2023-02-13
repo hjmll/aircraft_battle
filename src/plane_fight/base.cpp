@@ -1,5 +1,5 @@
 #include "base.h"
-
+#include<cmath>
 /*
 * 负责人：易骏清
 * 功能：物体移动
@@ -10,7 +10,8 @@
 */
 void FlyingObject::move()
 {
-
+	 pos.x= pos.x + cos(angle) * speed;
+	 pos.y= pos.y + sin(angle) * speed;
 }
 
 /*
@@ -21,7 +22,7 @@ void FlyingObject::move()
 */
 Point FlyingObject::getPos()
 {
-	return { 0, 0 };
+	return { pos.x, pos.y };
 }
 
 // 无参构造函数

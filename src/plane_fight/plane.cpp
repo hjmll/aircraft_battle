@@ -99,7 +99,7 @@ void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 */
 int Enemys::getNum()
 {
-
+	return 0;
 }
 
 
