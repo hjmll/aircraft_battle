@@ -7,7 +7,7 @@ bool isAttackSpeedUp = false;//这个玩意好像没啥用，但写都写了...
 extern Bullets bullets; //应当在game.cpp  init()函数中声明 Bullets bullets 此处直接引用
 
 /*
-* 负责人：覃一诚
+* 负责人：
 * 功能：返回飞机血量
 * 参数：void
 * 返回值：int
@@ -18,7 +18,7 @@ int Plane::getHp()
 }
 
 /*
-* 负责人：覃一诚
+* 负责人：
 * 功能：飞机受伤，生命值减damage
 * 参数：
 	int damage：受到的伤害
@@ -36,7 +36,7 @@ Plane::Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bulle
 }
 
 /*
-* 负责人：覃一诚
+* 负责人：
 * 功能：玩家飞机攻击
 *	根据玩家飞机血量，在飞机坐标（getPos()函数）附近生成子弹
 *	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹
@@ -166,7 +166,7 @@ void Player::clearBuff()
 }
 
 /*
-* 负责人：傅全有
+* 负责人：
 * 功能：在敌机集合最后一位添加一个新的敌机，敌机数量+1
 * 参数：
 *	Point pos: 初始坐标
@@ -181,7 +181,7 @@ void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 }
 
 /*
-* 负责人：傅全有
+* 负责人：
 * 功能：返回敌机数量
 * 参数：void
 * 返回值：int
@@ -193,7 +193,7 @@ int Enemys::getNum()
 
 
 /*
-* 负责人：傅全有
+* 负责人：
 * 功能：所有敌机移动
 *	枚举所有敌机，依次调用各敌机的move()函数
 * 参数：void
@@ -205,7 +205,7 @@ void Enemys::move()
 }
 
 /*
-* 负责人：傅全有
+* 负责人：
 * 功能：所有敌机攻击
 *	枚举所有敌机，依次调用各敌机的attack()函数
 * 参数：void
@@ -217,7 +217,7 @@ void Enemys::attack()
 }
 
 /*
-* 负责人：傅全有
+* 负责人：
 * 功能：删除指定编号的敌人
 *	将数组末尾的敌人复制到idx处，敌人总数-1
 * 参数：
@@ -230,7 +230,7 @@ void Enemys::delEnemy(int idx)
 }
 
 /*
-* 负责人：傅全有
+* 负责人：
 * 功能：敌机攻击
 *	根据敌机类型，在敌机坐标（getPos()函数）附近生成子弹
 *	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹

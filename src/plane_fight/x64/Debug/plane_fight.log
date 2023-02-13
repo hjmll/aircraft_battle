@@ -1,0 +1,8 @@
+﻿  base.cpp
+  bullet.cpp
+E:\学习资料\C++\项目\plane_fight-master\src\plane_fight\bullet.cpp(31,23): error C2065: “NULL”: 未声明的标识符
+  game.cpp
+  plane.cpp
+  main.cpp
+  正在生成代码...
+E:\学习资料\C++\项目\plane_fight-master\src\plane_fight\plane.cpp(103): error C4716: “Enemys::getNum”: 必须返回一个值

@@ -2,13 +2,14 @@
 #define __BULLET_H
 
 #include "base.h"
-
+#include <vector>
+using namespace std;
 // 子弹
 class Bullet : public FlyingObject {
 public:
 	enum Belone { PLAYER, ENEMY };	// 枚举子类，子弹归属
 	enum Type { Default, AAA, BBB }; // 枚举子类，子弹类型
-
+	//Bullet(Belone belone, Type type);//构造函数
 private:
 	Belone belone;	// 子弹归属
 	Type type;		// 子弹类型
@@ -35,7 +36,7 @@ public:
 
 private:
 	int num;
-	Bullet s[500];
+	vector<Bullet> s;//子弹类型向量
 };
 
 #endif
