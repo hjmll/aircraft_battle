@@ -18,7 +18,7 @@ public:
 	FlyingObject();
 	FlyingObject(Point pos, double angle, double speed);
 
-private:
+protected:
 	Point pos;		// 坐标
 	double angle;	// 角度
 	double speed;	// 速度

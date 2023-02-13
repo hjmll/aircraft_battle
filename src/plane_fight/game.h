@@ -29,14 +29,19 @@ private:
 		PAUSE,	// 2. 暂停界面
 		WIN,	// 3. 胜利界面
 		LOSE,	// 4. 失败界面
-		// RULE,	// 5. 规则介绍界面，扩展，请自行补充函数
-		// DEVELOPER, // 6. 开发者介绍界面，扩展，请自行补充函数
+		RULE1,	// 5. 规则介绍界面，扩展，请自行补充函数
+		RULE2,  //6
+		DEVELOPER, // 7. 开发者介绍界面，扩展，请自行补充函数
 	};
 
 	int bestScore;		// 最好成绩
 	int fps;			// 游戏帧数
 	int score;			// 当前成绩
 	int enemyCD;		// 生成新敌机的剩余CD（单位fps）
+	int	R_CD;
+	int G_CD;
+	int bossCD;
+	int shoot_CD;
 	int defualtCD;		// 生成新敌机的默认CD
 	Player player;		// 玩家飞机
 	Enemys enemys;		// 敌机集合
@@ -59,6 +64,15 @@ private:
 
 	// 失败界面
 	Page showLose();
+
+	//规则一
+	Page showRule1();
+
+	//规则二
+	Page showRule2();
+
+	//开发者名单
+	Page showDeveloper();
 };
 
 #endif
