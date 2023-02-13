@@ -7,7 +7,7 @@ bool isAttackSpeedUp = false;//这个玩意好像没啥用，但写都写了...
 extern Bullets bullets; //应当在game.cpp  init()函数中声明 Bullets bullets 此处直接引用
 
 /*
-* 负责人：
+* 负责人：覃一诚
 * 功能：返回飞机血量
 * 参数：void
 * 返回值：int
@@ -18,7 +18,7 @@ int Plane::getHp()
 }
 
 /*
-* 负责人：
+* 负责人：覃一诚
 * 功能：飞机受伤，生命值减damage
 * 参数：
 	int damage：受到的伤害
@@ -36,7 +36,7 @@ Plane::Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bulle
 }
 
 /*
-* 负责人：
+* 负责人：覃一诚
 * 功能：玩家飞机攻击
 *	根据玩家飞机血量，在飞机坐标（getPos()函数）附近生成子弹
 *	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹
@@ -166,7 +166,26 @@ void Player::clearBuff()
 }
 
 /*
-* 负责人：
+* 负责人：傅全有
+* 功能：Enemy 构造方法
+* 参数：
+*	int hp : 敌机血量
+*	Point pos: 初始坐标
+*	double angle: 初始角度
+*	double speed: 初始速度
+*	Bullet::Type bulletType : 子弹类型
+*	int defualtCD : 默认攻击间隔
+*	double attackSpeed ：攻速
+* 返回值：void
+*/
+Enemy :: Enemy(int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD, double attackSpeed)
+	: Plane :: Plane(pos,angle,speed,hp,defualtCD,bulletType,attackSpeed)
+{
+
+}
+
+/*
+* 负责人：傅全有
 * 功能：在敌机集合最后一位添加一个新的敌机，敌机数量+1
 * 参数：
 *	Point pos: 初始坐标
@@ -177,23 +196,44 @@ void Player::clearBuff()
 */
 void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 {
-
+	switch (type) {
+	case Enemy::NORMAL_A:
+		Enemy e(100, pos, angle, speed, Bullet::Default);
+		s[num++] = e;
+		break;
+	case Enemy::NORMAL_B:
+		Enemy e(60, pos, angle, speed, Bullet::Default);
+		s[num++] = e;
+		break;
+	case Enemy::E_GREEN:
+		Enemy e(60, pos, angle, speed, Bullet::Default);
+		s[num++] = e;
+		break;
+	case Enemy::E_RED:
+		Enemy e(60, pos, angle, speed, Bullet::Default);
+		s[num++] = e;
+		break;
+	case Enemy::BOSS:
+		Enemy e(400, pos, angle, speed, Bullet::Default);
+		s[num++] = e;
+		break;
+	}
 }
 
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：返回敌机数量
 * 参数：void
 * 返回值：int
 */
 int Enemys::getNum()
 {
-	return 0;
+	return num;
 }
 
 
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：所有敌机移动
 *	枚举所有敌机，依次调用各敌机的move()函数
 * 参数：void
@@ -201,11 +241,12 @@ int Enemys::getNum()
 */
 void Enemys::move()
 {
-
+	for (int i = 0; i < num; ++i) 
+		s[i].move();
 }
 
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：所有敌机攻击
 *	枚举所有敌机，依次调用各敌机的attack()函数
 * 参数：void
@@ -213,11 +254,12 @@ void Enemys::move()
 */
 void Enemys::attack()
 {
-	
+	for (int i = 0; i < num; ++i)
+		s[i].attack();
 }
 
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：删除指定编号的敌人
 *	将数组末尾的敌人复制到idx处，敌人总数-1
 * 参数：
@@ -226,11 +268,19 @@ void Enemys::attack()
 */
 void Enemys::delEnemy(int idx)
 {
-
+	if (idx < 0 && idx > num-1)return;
+	//如果删除的为末尾的敌人，直接num--
+	if (idx == num - 1) {
+		num--;
+		return;
+	}
+	s[idx] = s[num - 1];
+	num--;
 }
 
+
 /*
-* 负责人：
+* 负责人：傅全有
 * 功能：敌机攻击
 *	根据敌机类型，在敌机坐标（getPos()函数）附近生成子弹
 *	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹
@@ -239,5 +289,21 @@ void Enemys::delEnemy(int idx)
 */
 void Enemy::attack()
 {
-
+	Point pos = { getPos().x,getPos().y + 5 };
+	switch (type) {
+	case NORMAL_A:
+		break;
+	case NORMAL_B:
+		bullets.addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
+		break;
+	case E_GREEN:
+		bullets.addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
+		break;
+	case E_RED:
+		bullets.addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
+		break;
+	case BOSS:
+		bullets.addBullet(pos, angle, speed + 5, Bullet::ENEMY, Bullet::Default);
+		break;
+	}
 }

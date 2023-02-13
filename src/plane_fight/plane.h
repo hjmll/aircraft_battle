@@ -13,7 +13,7 @@ public:
 
 	// 飞机受到damage点伤害
 	void hurt(int damage);
-
+	Plane() {}
 	Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bullet::Type bulletType, double attackSpeed = 1.0);
 
 protected:
@@ -65,14 +65,25 @@ private:
 };
 
 
+/*
+	Type:
+		NORMAL_A 近战 100血
+		NORMAL_B 远程 60血
+		GREEN 回血 60血
+		RED 扣血 60血
+		BOSS BOSS 400血
+	（基于飞机每发子弹20血）
+*/
+
 // 敌人飞机类
 class Enemy : public Plane 
 {
 public:
-	enum Type { NOMAL_A, NOMAL_B, E_GREEN, E_RED, BOSS ,}; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
+	enum Type { NORMAL_A, NOMRAL_B, E_GREEN, E_RED, BOSS}; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
 	// 攻击
 	void attack();
-
+	Enemy(){}
+	Enemy(int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD = 1, double attackSpeed = 1.0);
 private:
 	Type type;	// 敌人类型
 };
