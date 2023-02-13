@@ -20,7 +20,7 @@ private:
 class Bullets {
 public:
 	// 添加一枚子弹
-	void addBullet(Point pos, double angle, double speed, Bullet::Belone belone, Bullet::Type type);
+	static void addBullet(Point pos, double angle, double speed, Bullet::Belone belone, Bullet::Type type);
 
 	// 返回子弹集总数量
 	int getNum();

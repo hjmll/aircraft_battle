@@ -15,13 +15,15 @@ public:
 	// 返回坐标
 	Point getPos();
 
-	FlyingObject();
+	FlyingObject() {}
+
+	// 有参构造函数
 	FlyingObject(Point pos, double angle, double speed);
 
 protected:
-	Point pos;		// 坐标
+	Point pos;		// 坐标，取整得到实际坐标
 	double angle;	// 角度
-	double speed;	// 速度
+	double speed;	// 速度，单位：像素点/fps
 };
 
 #endif

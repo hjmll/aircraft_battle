@@ -13,14 +13,16 @@ public:
 
 	// 飞机受到damage点伤害
 	void hurt(int damage);
+
 	Plane() {}
+
 	Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bullet::Type bulletType, double attackSpeed = 1.0);
 
 protected:
-	int hp;					// 生命值
-	double attackSpeed;		// 攻速，默认为100%
-	int attackCD;			// 剩余攻击CD，attackCD = defualtCD/attackSpeed
-	int defualtCD;			// 默认CD
+	int hp;						// 生命值
+	double attackSpeedBouns;	// 攻速加成，默认为100%
+	int attackCD;				// 剩余攻击CD，attackCD = defualtCD/attackSpeed
+	int defualtAttackCD;		// 默认攻击CD
 	Bullet::Type bulletType;	// 发射的子弹类型
 };
 
@@ -38,9 +40,9 @@ public:
 	* 最后的buffCount代表buff总数，用于定义数组
 	*/
 	enum Buff {
-		moveSpeedUp,	// 移动速度增加20%
-		attackSpeedUp,	// 攻速提高30%
-		changeBullet,	// 换弹状态
+		moveSpeedUp,	// 移动速度增加xx%
+		attackSpeedUp,	// 攻速提高xx%
+		specialBullet,	// 特殊子弹，例如杀死某类敌人后会暂时获得某种特殊子弹
 		unbreakable,	// 无敌
 		buffCount		// buff类型总数
 	};
@@ -57,11 +59,13 @@ public:
 	// 清空所有buff
 	void clearBuff();
 
+	Player();
+
 	//玩家飞机类的构造函数
 	Player(Point pos, double angle, double speed, int hp, int attackSpeed, int defaultCD, Bullet::Type bulletType);
 
-private:
-	int buffTime[buffCount];		// 记录各buff剩余时间
+protected:
+	int buffTime[buffCount];	// 记录各buff剩余时间，单位：fps
 };
 
 
@@ -79,11 +83,13 @@ private:
 class Enemy : public Plane 
 {
 public:
-	enum Type { NORMAL_A, NOMRAL_B, E_GREEN, E_RED, BOSS}; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
+	enum Type { NORMAL_A, NORMAL_B, E_GREEN, E_RED, BOSS}; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
 	// 攻击
 	void attack();
-	Enemy(){}
-	Enemy(int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD = 1, double attackSpeed = 1.0);
+
+	Enemy() {}
+
+	Enemy(Type type, int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD = 1, double attackSpeed = 1.0);
 private:
 	Type type;	// 敌人类型
 };
@@ -109,7 +115,9 @@ public:
 	// 清除所有敌机
 	void clear() { num = 0; }
 
-private:
+	Enemys() {}
+
+protected:
 	int num;
 	Enemy s[205];
 };

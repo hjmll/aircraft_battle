@@ -1,8 +1,5 @@
-﻿  base.cpp
-  bullet.cpp
-E:\学习资料\C++\项目\plane_fight-master\src\plane_fight\bullet.cpp(31,23): error C2065: “NULL”: 未声明的标识符
-  game.cpp
-  plane.cpp
+﻿  plane.cpp
+D:\Project\plane_fight\src\plane_fight\plane.cpp(32,29): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
   main.cpp
   正在生成代码...
-E:\学习资料\C++\项目\plane_fight-master\src\plane_fight\plane.cpp(103): error C4716: “Enemys::getNum”: 必须返回一个值
+  plane_fight.vcxproj -> D:\Project\plane_fight\src\x64\Debug\plane_fight.exe
