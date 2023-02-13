@@ -13,6 +13,8 @@ public:
 
 	// 飞机受到damage点伤害
 	void hurt(int damage);
+	Plane() {}
+	Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bullet::Type bulletType, double attackSpeed = 1.0);
 
 protected:
 	int hp;					// 生命值
@@ -55,6 +57,9 @@ public:
 	// 清空所有buff
 	void clearBuff();
 
+	//玩家飞机类的构造函数
+	Player(Point pos, double angle, double speed, int hp, int attackSpeed, int defaultCD, Bullet::Type bulletType);
+
 private:
 	int buffTime[buffCount];		// 记录各buff剩余时间
 };
@@ -71,9 +76,10 @@ private:
 */
 
 // 敌人飞机类
-class Enemy : public Plane {
+class Enemy : public Plane 
+{
 public:
-	enum Type {NORMAL_A ,NORMAL_B ,E_GREEN ,E_RED ,BOSS }; // 枚举子类，敌人类型：普通(近战)、普通(远程)、回血、扣血、BOSS...
+	enum Type { NORMAL_A, NOMRAL_B, E_GREEN, E_RED, BOSS}; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
 	// 攻击
 	void attack();
 	Enemy(){}
