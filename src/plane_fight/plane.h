@@ -66,9 +66,10 @@ private:
 
 
 // 敌人飞机类
-class Enemy : public Plane {
+class Enemy : public Plane 
+{
 public:
-	enum Type { NOMAL, AAA, BBB, BOSS }; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
+	enum Type { NOMAL_A, NOMAL_B, E_GREEN, E_RED, BOSS ,}; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
 	// 攻击
 	void attack();
 
