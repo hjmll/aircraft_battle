@@ -337,7 +337,8 @@ Game::Page Game::showLose()
 				m.message = NULL;
 			}
 		}
-	return MENU;
+		return MENU;
+	}
 }
 
 
