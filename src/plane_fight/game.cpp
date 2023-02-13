@@ -115,7 +115,7 @@ void Game::addEnemy()
 		{
 			e_pos.x = rand() % Width;
 			e_pos.y = 0;
-			enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NOMAL_B);
+			enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_B);
 			shoot_CD = 600;
 			break;
 		}
@@ -123,7 +123,7 @@ void Game::addEnemy()
 		{
 			e_pos.x = rand() % Width;
 			e_pos.y = 0;
-			enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NOMAL_A);
+			enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_A);
 			enemyCD = 150;
 			break;
 		}
