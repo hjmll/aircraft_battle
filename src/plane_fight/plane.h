@@ -79,11 +79,11 @@ private:
 class Enemy : public Plane 
 {
 public:
-	enum Type { NORMAL_A, NOMRAL_B, E_GREEN, E_RED, BOSS}; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
+	enum Type { NORMAL_A, NORMAL_B, E_GREEN, E_RED, BOSS}; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
 	// 攻击
 	void attack();
 	Enemy(){}
-	Enemy(int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD = 1, double attackSpeed = 1.0);
+	Enemy(int hp, Point pos, double angle, double speed, Enemy::Type enemyType, Bullet::Type bulletType, int defualtCD = 1, double attackSpeed = 1.0);
 private:
 	Type type;	// 敌人类型
 };

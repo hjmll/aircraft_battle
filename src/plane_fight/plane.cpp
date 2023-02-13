@@ -178,10 +178,10 @@ void Player::clearBuff()
 *	double attackSpeed £∫π•ÀŸ
 * ∑µªÿ÷µ£∫void
 */
-Enemy :: Enemy(int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD, double attackSpeed)
+Enemy :: Enemy(int hp, Point pos, double angle, double speed, Enemy::Type enemyType,Bullet::Type bulletType, int defualtCD, double attackSpeed)
 	: Plane :: Plane(pos,angle,speed,hp,defualtCD,bulletType,attackSpeed)
 {
-
+	type = enemyType;
 }
 
 /*
@@ -196,28 +196,26 @@ Enemy :: Enemy(int hp, Point pos, double angle, double speed, Bullet::Type bulle
 */
 void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 {
+	int hp = 0;
 	switch (type) {
 	case Enemy::NORMAL_A:
-		Enemy e(100, pos, angle, speed, Bullet::Default);
-		s[num++] = e;
+		hp = 100;
 		break;
 	case Enemy::NORMAL_B:
-		Enemy e(60, pos, angle, speed, Bullet::Default);
-		s[num++] = e;
+		hp = 60;
 		break;
 	case Enemy::E_GREEN:
-		Enemy e(60, pos, angle, speed, Bullet::Default);
-		s[num++] = e;
+		hp = 60;
 		break;
 	case Enemy::E_RED:
-		Enemy e(60, pos, angle, speed, Bullet::Default);
-		s[num++] = e;
+		hp = 60;
 		break;
 	case Enemy::BOSS:
-		Enemy e(400, pos, angle, speed, Bullet::Default);
-		s[num++] = e;
+		hp = 400;
 		break;
 	}
+	Enemy e(hp, pos, angle, speed, type,Bullet::Default);
+	s[num++] = e;
 }
 
 /*

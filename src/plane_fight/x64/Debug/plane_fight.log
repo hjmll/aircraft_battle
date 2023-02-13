@@ -1,8 +1,9 @@
-﻿  base.cpp
-  bullet.cpp
-E:\学习资料\C++\项目\plane_fight-master\src\plane_fight\bullet.cpp(31,23): error C2065: “NULL”: 未声明的标识符
-  game.cpp
+﻿  game.cpp
+D:\WORK\plane_fight\src\plane_fight\game.cpp(9,1): error C2512: 'Player': no appropriate default constructor available
+D:\WORK\plane_fight\src\plane_fight\plane.h(28,7): message : see declaration of 'Player'
+D:\WORK\plane_fight\src\plane_fight\game.cpp(14,1): error C2512: 'Player': no appropriate default constructor available
+D:\WORK\plane_fight\src\plane_fight\plane.h(28,7): message : see declaration of 'Player'
   plane.cpp
+D:\WORK\plane_fight\src\plane_fight\plane.cpp(35,23): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
   main.cpp
-  正在生成代码...
-E:\学习资料\C++\项目\plane_fight-master\src\plane_fight\plane.cpp(103): error C4716: “Enemys::getNum”: 必须返回一个值
+  Generating Code...
