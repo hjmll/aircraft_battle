@@ -1,10 +1,9 @@
 #include <algorithm>
 #include "plane.h"
-
-// extern Bullets bullets; //应当在game.cpp  init()函数中声明 Bullets bullets 此处直接引用
+#include<graphics.h>
 
 /*
-* 负责人：覃一诚
+* 负责人：
 * 功能：返回飞机血量
 * 参数：void
 * 返回值：int
@@ -23,7 +22,7 @@ int Plane::getHp()
 */
 void Plane::hurt(int damage)
 {
-	this->hp -= damage;
+	this->hp -= damage; //在碰撞检测时需要注意，如果飞机处于无敌状态，传入的damage参数应该为0
 }
 
 //参数分别为：坐标位置，角度，移动速度，生命值，默认CD，子弹类型，攻击速度(默认值为1.0)
@@ -33,7 +32,7 @@ Plane::Plane(Point pos, double angle, double speed, int hp, int defualtAttackCD,
 }
 
 /*
-* 负责人：覃一诚
+* 负责人：
 * 功能：玩家飞机攻击
 *	根据玩家飞机血量，在飞机坐标（getPos()函数）附近生成子弹
 *	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹
@@ -42,7 +41,9 @@ Plane::Plane(Point pos, double angle, double speed, int hp, int defualtAttackCD,
 */
 void Player::attack()
 {
-	if (attackCD==0) { // attackCD为0时才可以发射子弹
+	ExMessage m;
+	m = getmessage(EX_KEY);
+	if (attackCD==0 && m.vkcode==VK_SPACE) { // attackCD为0且按下空格时才可以发射子弹
 		if (hp > 5) {
 			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
 			Bullets::addBullet(Player::getPos(), 90.0, Player::speed+10, Bullet::PLAYER, Bullet::Default); 
