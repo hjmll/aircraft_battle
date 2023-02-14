@@ -1,9 +1,5 @@
-﻿  game.cpp
-D:\WORK\plane_fight\src\plane_fight\game.cpp(9,1): error C2512: 'Player': no appropriate default constructor available
-D:\WORK\plane_fight\src\plane_fight\plane.h(28,7): message : see declaration of 'Player'
-D:\WORK\plane_fight\src\plane_fight\game.cpp(14,1): error C2512: 'Player': no appropriate default constructor available
-D:\WORK\plane_fight\src\plane_fight\plane.h(28,7): message : see declaration of 'Player'
-  plane.cpp
-D:\WORK\plane_fight\src\plane_fight\plane.cpp(35,23): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+﻿  plane.cpp
+D:\Project\plane_fight\src\plane_fight\plane.cpp(32,29): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
   main.cpp
-  Generating Code...
+  正在生成代码...
+  plane_fight.vcxproj -> D:\Project\plane_fight\src\x64\Debug\plane_fight.exe

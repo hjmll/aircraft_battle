@@ -25,14 +25,5 @@ Point FlyingObject::getPos()
 	return { pos.x, pos.y };
 }
 
-// 无参构造函数
-FlyingObject::FlyingObject()
-{
-
-}
-
 // 有参构造函数
-FlyingObject::FlyingObject(Point pos, double angle, double speed) :pos(pos), angle(angle), speed(speed)
-{
-
-}
+FlyingObject::FlyingObject(Point pos, double angle, double speed) :pos(pos), angle(angle), speed(speed) { }

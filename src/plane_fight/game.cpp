@@ -5,13 +5,33 @@
 #define Width 1024
 #define Length 768
 
+// 负责人：技术官
 Game::Game()
 {
-
+	bestScore = 0;
+	this->fps = 60;			// 默认 60 帧
+	score = 0;
+	enemyCD = fps / 2;		// 最高每秒 2 发
+	defualtCD = 5 * fps;	// 每 5 秒添加一个敌人
+	R_CD = 0;				// 不知道是啥
+	G_CD = 0;				// 不知道是啥
+	bossCD = 0;				// 不知道是啥
+	shoot_CD = 0;			// 感觉应该是指玩家飞机的发射CD，但不应该出现在这里，应该是在Player类中
 }
 
+
+// 负责人：技术官
 Game::Game(int fps)
 {
+	bestScore = 0;
+	this->fps = fps;
+	score = 0;
+	enemyCD = fps/2;	// 最高每秒 2 发
+	defualtCD = 5*fps;	// 每 5 秒添加一个敌人
+	R_CD = 0;			// 不知道是啥
+	G_CD = 0;			// 不知道是啥
+	bossCD = 0;			// 不知道是啥
+	shoot_CD = 0;		// 感觉应该是指玩家飞机的发射CD，但不应该出现在这里，应该是在Player类中
 
 }
 
@@ -83,51 +103,51 @@ void Game::init()
 */
 void Game::addEnemy()
 {
-	srand((unsigned)time(0));
-	Point e_pos;
-	Enemy t_enemy;
-	while (true)
-	{
-		enemyCD--;
-		bossCD--;
-		R_CD--;
-		G_CD--;
-		Sleep(10);//每十毫秒CD减一。
-		if (R_CD<=0)
-		{
-			e_pos.x = rand() % Width;
-			e_pos.y = 0;
-			enemys.addEnemy(e_pos, 90, 0.1, t_enemy.E_RED);
-			enemyCD = 150;
-			R_CD = 500;
-			break;
-		}
-		if (G_CD<=0)
-		{
-			e_pos.x = rand() % Width;
-			e_pos.y = 0;
-			enemys.addEnemy(e_pos, 90, 0.1, t_enemy.E_GREEN);
-			enemyCD = 150;
-			G_CD = 800;
-			break;
-		}
-		if (shoot_CD<=0)
-		{
-			e_pos.x = rand() % Width;
-			e_pos.y = 0;
-			enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_B);
-			shoot_CD = 600;
-			break;
-		}
-		if (enemyCD<=0)
-		{
-			e_pos.x = rand() % Width;
-			e_pos.y = 0;
-			enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_A);
-			enemyCD = 150;
-			break;
-		}
-	}
+	//srand((unsigned)time(0));
+	//Point e_pos;
+	//// Enemy t_enemy;
+	//while (true)
+	//{
+	//	enemyCD--;
+	//	bossCD--;
+	//	R_CD--;
+	//	G_CD--;
+	//	Sleep(10);//每十毫秒CD减一。
+	//	if (R_CD<=0)
+	//	{
+	//		e_pos.x = rand() % Width;
+	//		e_pos.y = 0;
+	//		enemys.addEnemy(e_pos, 90, 0.1, t_enemy.E_RED);
+	//		enemyCD = 150;
+	//		R_CD = 500;
+	//		break;
+	//	}
+	//	if (G_CD<=0)
+	//	{
+	//		e_pos.x = rand() % Width;
+	//		e_pos.y = 0;
+	//		enemys.addEnemy(e_pos, 90, 0.1, t_enemy.E_GREEN);
+	//		enemyCD = 150;
+	//		G_CD = 800;
+	//		break;
+	//	}
+	//	if (shoot_CD<=0)
+	//	{
+	//		e_pos.x = rand() % Width;
+	//		e_pos.y = 0;
+	//		enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_B);
+	//		shoot_CD = 600;
+	//		break;
+	//	}
+	//	if (enemyCD<=0)
+	//	{
+	//		e_pos.x = rand() % Width;
+	//		e_pos.y = 0;
+	//		enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_A);
+	//		enemyCD = 150;
+	//		break;
+	//	}
+	//}
 }
 
 /*
@@ -343,7 +363,7 @@ Game::Page Game::showLose()
 
 
 /*
-* 功能：展示规则1,2
+* 功能：展示规则1
 * 可以切换
 */
 Game::Page Game::showRule1()
@@ -372,6 +392,11 @@ Game::Page Game::showRule1()
 		}
 	}
 }
+
+/*
+* 功能：展示规则2
+* 可以切换
+*/
 Game::Page Game::showRule2()
 {
 	cleardevice();

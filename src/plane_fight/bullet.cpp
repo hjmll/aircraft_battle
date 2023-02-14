@@ -1,6 +1,7 @@
 #include "bullet.h"
 #include<algorithm>
 using namespace std;
+
 /*
 * 负责人：
 * 功能：在子弹集合最后一位添加一枚新的子弹，子弹数量+1
@@ -12,11 +13,9 @@ using namespace std;
 *	Type type：子弹类型
 * 返回值：void
 */
-
 void Bullets::addBullet(Point pos, double angle, double speed, Bullet::Belone belone, Bullet::Type type)
 {
-	Bullet b;//创建子弹对象
-	s.push_back(b);//向子弹向量中添加新建对象b
+	//s.push_back(Bullet()); //向子弹向量中添加新建对象b
 }
 
 /*
@@ -27,8 +26,7 @@ void Bullets::addBullet(Point pos, double angle, double speed, Bullet::Belone be
 */
 int Bullets::getNum()
 {
-	num = s.size();
-	return num;
+	return (int)s.size();
 }
 
 /*
