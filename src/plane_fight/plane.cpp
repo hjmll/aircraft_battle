@@ -30,6 +30,8 @@ void Plane::hurt(int damage)
 Plane::Plane(Point pos, double angle, double speed, int hp, int defualtAttackCD, Bullet::Type bulletType, double attackSpeedBouns ) 
 	: FlyingObject(pos, angle, speed),hp(hp),attackSpeedBouns(attackSpeedBouns),defualtAttackCD(defualtAttackCD),bulletType(bulletType) {
 	attackCD = defualtAttackCD / attackSpeedBouns;
+	pos.x = 256;
+	pos.y = 768;
 }
 
 /*
@@ -42,18 +44,19 @@ Plane::Plane(Point pos, double angle, double speed, int hp, int defualtAttackCD,
 */
 void Player::attack()
 {
+	attackCD--;
 	if (attackCD==0) { // attackCD为0时才可以发射子弹
 		if (hp > 5) {
 			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
 			Bullets::addBullet(Player::getPos(), 90.0, Player::speed+10, Bullet::PLAYER, Bullet::Default); 
-			attackCD = 50;//发射子弹后attackCD默认设置为50，不合适再改
+			attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
 		}
 		else if (hp > 2) {
 			//当生命值大于2时，在飞机坐标位置生成三枚子弹，角度为分别为45°(左)，90°(中)，135°(右)(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射AAA型子弹
 			Bullets::addBullet(Player::getPos(), 45.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
 			Bullets::addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
 			Bullets::addBullet(Player::getPos(), 135.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
-			attackCD = 50;//发射子弹后attackCD默认设置为50，不合适再改
+			attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
 		}
 		else if (hp < 2) {
 			//当生命值小于2时，在飞机坐标位置生成五枚子弹，角度为分别为30,60,90,120,150(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射BBB型子弹
@@ -62,7 +65,7 @@ void Player::attack()
 			Bullets::addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
 			Bullets::addBullet(Player::getPos(), 120.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
 			Bullets::addBullet(Player::getPos(), 150.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
-			attackCD = 50;//发射子弹后attackCD默认设置为50，不合适再改
+			attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
 		}
 	}
 }
@@ -197,18 +200,28 @@ void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 	int hp = 0;
 	switch (type) {
 	case Enemy::NORMAL_A:
+		putimage(pos.x, pos.y, &e_img[0], SRCAND);
+		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 		hp = 100;
 		break;
 	case Enemy::NORMAL_B:
+		putimage(pos.x, pos.y, &e_img[0], SRCAND);
+		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 		hp = 60;
 		break;
 	case Enemy::E_GREEN:
+		putimage(pos.x, pos.y, &e_img[0], SRCAND);
+		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 		hp = 60;
 		break;
 	case Enemy::E_RED:
+		putimage(pos.x, pos.y, &e_img[0], SRCAND);
+		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 		hp = 60;
 		break;
 	case Enemy::BOSS:
+		putimage(pos.x, pos.y, &e_img[0], SRCAND);
+		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 		hp = 400;
 		break;
 	}
@@ -236,8 +249,11 @@ int Enemys::getNum()
 */
 void Enemys::move()
 {
-	for (int i = 0; i < num; ++i) 
+	for (int i = 0; i < num; ++i)
+	{
 		s[i].move();
+		s[i].showenemy();
+	}
 }
 
 /*
@@ -289,18 +305,59 @@ void Enemy::attack()
 	case NORMAL_A:
 		break;
 	case NORMAL_B:
-		Bullets::addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
+		Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::Default);
 		break;
 	case E_GREEN:
-		Bullets::addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
+		Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::Default);
 		break;
 	case E_RED:
-		Bullets::addBullet(pos, angle, speed + 10, Bullet::ENEMY, Bullet::Default);
+		Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::Default);
 		break;
 	case BOSS:
-		Bullets::addBullet(pos, angle, speed + 5, Bullet::ENEMY, Bullet::Default);
+		Bullets::addBullet(pos, angle, speed + 0.5, Bullet::ENEMY, Bullet::Default);
 		break;
 	}
 }
 
 
+/*
+* 根据敌机类型展示敌机图片
+*/
+void Enemy::showenemy()
+{
+	switch (type)
+	{
+	case Enemy::NORMAL_A:
+		loadimage(&e_img[0], "../飞机资料/enemy/plane_enemy.jpg",E_Wideh,E_Height);
+		loadimage(&e_img[1], "../飞机资料/enemy/plane_enemy2.jpg", E_Wideh, E_Height);
+		putimage(pos.x, pos.y, &e_img[0], SRCAND);
+		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+		break;
+	case Enemy::NORMAL_B:
+		loadimage(&e_img[0], "../飞机资料/enemy/img_plane_enemy10.jpg", E_Wideh, E_Height);
+		loadimage(&e_img[1], "../飞机资料/enemy/img_plane_enemy11.jpg", E_Wideh, E_Height);
+		putimage(pos.x, pos.y, &e_img[0], SRCAND);
+		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+		break;
+	case Enemy::E_GREEN:
+		loadimage(&e_img[0], "../飞机资料/enemy/img_plane_enemy8.jpg", E_Wideh, E_Height);
+		loadimage(&e_img[1], "../飞机资料/enemy/img_plane_enemy9.jpg", E_Wideh, E_Height);
+		putimage(pos.x, pos.y, &e_img[0], SRCAND);
+		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+		break;
+	case Enemy::E_RED:
+		loadimage(&e_img[0], "../飞机资料/enemy/img_plane_enemy1.jpg", E_Wideh, E_Height);
+		loadimage(&e_img[1], "../飞机资料/enemy/img_plane_enemy2.jpg", E_Wideh, E_Height);
+		putimage(pos.x, pos.y, &e_img[0], SRCAND);
+		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+		break;
+	case Enemy::BOSS:
+		loadimage(&e_img[0], "../飞机资料/BOSS/boss1.jpg", E_Wideh, E_Height);
+		loadimage(&e_img[1], "../飞机资料/BOSS/boss2.jpg", E_Wideh, E_Height);
+		putimage(pos.x, pos.y, &e_img[0], SRCAND);
+		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+		break;
+	default:
+		break;
+	}
+}

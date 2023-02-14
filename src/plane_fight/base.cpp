@@ -10,8 +10,10 @@
 */
 void FlyingObject::move()
 {
-	 pos.x= pos.x + cos(angle) * speed;
-	 pos.y= pos.y + sin(angle) * speed;
+	 if (sin(angle) != 0)
+	 {
+		 pos.y += sin(angle) * speed;
+	 }
 }
 
 /*
@@ -26,4 +28,7 @@ Point FlyingObject::getPos()
 }
 
 // 有参构造函数
-FlyingObject::FlyingObject(Point pos, double angle, double speed) :pos(pos), angle(angle), speed(speed) { }
+FlyingObject::FlyingObject(Point pos, double angle, double speed) :pos(pos), angle(angle), speed(speed)
+{
+
+}

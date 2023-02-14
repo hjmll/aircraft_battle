@@ -6,6 +6,7 @@ struct Point {
 	double x, y;
 };
 
+
 // 飞行物
 class FlyingObject {
 public:
@@ -14,6 +15,8 @@ public:
 
 	// 返回坐标
 	Point getPos();
+
+	void reset(double angle, double speed);
 
 	FlyingObject() {}
 

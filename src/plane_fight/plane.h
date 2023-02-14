@@ -3,6 +3,9 @@
 
 #include "base.h"
 #include "bullet.h"
+#include<graphics.h>
+#define E_Wideh 100
+#define E_Height 60
 
 // 飞机基类
 class Plane : public FlyingObject {
@@ -10,6 +13,8 @@ public:
 
 	// 返回飞机血量
 	int getHp();
+
+
 
 	// 飞机受到damage点伤害
 	void hurt(int damage);
@@ -87,15 +92,21 @@ public:
 	// 攻击
 	void attack();
 
-	Enemy() {}
+	//展示图像
+	void showenemy();
+
+
+	Enemy() {};
 
 	Enemy(Type type, int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD = 1, double attackSpeed = 1.0);
-private:
+protected:
 	Type type;	// 敌人类型
+	IMAGE e_img[2];
 };
 
 // 敌机集合
-class Enemys {
+class Enemys :public Enemy 
+{
 public:
 	// 添加一架敌机
 	void addEnemy(Point pos, double angle, double speed, Enemy::Type type);
@@ -111,6 +122,9 @@ public:
 
 	// 删除指定编号的敌机
 	void delEnemy(int idx);
+
+	//展示图像
+	void showenemy();
 
 	// 清除所有敌机
 	void clear() { num = 0; }

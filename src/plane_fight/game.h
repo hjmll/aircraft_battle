@@ -18,6 +18,9 @@ public:
 	// 碰撞检查
 	void checkCrash();
 
+	//按键检测
+	void checkKeyDown(int &p_x,int &p_y);
+
 	Game();
 	Game(int fps);
 
@@ -42,11 +45,8 @@ private:
 	int bestScore;		// 最好成绩
 	int fps;			// 游戏帧数
 	int score;			// 当前成绩
-	int enemyCD;		// 生成新敌机的剩余CD（单位fps）
-	int	R_CD;
-	int G_CD;
-	int bossCD;
-	int shoot_CD;
+	int enemyCD;		// 生成新敌机的剩余CD（单位fps)
+	int bossCD;         //生成BOSS的剩余CD
 	int defualtCD;		// 生成新敌机的默认CD
 	Player player;		// 玩家飞机
 	Enemys enemys;		// 敌机集合

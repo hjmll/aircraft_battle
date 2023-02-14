@@ -12,11 +12,8 @@ Game::Game()
 	this->fps = 60;			// 默认 60 帧
 	score = 0;
 	enemyCD = fps / 2;		// 最高每秒 2 发
-	defualtCD = 5 * fps;	// 每 5 秒添加一个敌人
-	R_CD = 0;				// 不知道是啥
-	G_CD = 0;				// 不知道是啥
+	defualtCD = 5 * fps;	// 每 5 秒添加一个敌
 	bossCD = 0;				// 不知道是啥
-	shoot_CD = 0;			// 感觉应该是指玩家飞机的发射CD，但不应该出现在这里，应该是在Player类中
 }
 
 
@@ -28,10 +25,7 @@ Game::Game(int fps)
 	score = 0;
 	enemyCD = fps/2;	// 最高每秒 2 发
 	defualtCD = 5*fps;	// 每 5 秒添加一个敌人
-	R_CD = 0;			// 不知道是啥
-	G_CD = 0;			// 不知道是啥
 	bossCD = 0;			// 不知道是啥
-	shoot_CD = 0;		// 感觉应该是指玩家飞机的发射CD，但不应该出现在这里，应该是在Player类中
 
 }
 
@@ -86,11 +80,9 @@ void Game::run()
 */
 void Game::init()
 {
-	enemyCD = 30;//第一个普通敌人30毫秒后生成
+	enemyCD = 30;//第一个敌人30*16毫秒后生成
+	bossCD = 15000;
 
-	bossCD = 24000;//boss在四分钟后出现
-	R_CD = 500, G_CD = 800;//红色飞机5秒一个，绿色飞机8秒一个
-	shoot_CD = 600;//发射子弹的飞机6秒一个
 }
 
 /*
@@ -103,51 +95,84 @@ void Game::init()
 */
 void Game::addEnemy()
 {
-	//srand((unsigned)time(0));
-	//Point e_pos;
-	//// Enemy t_enemy;
-	//while (true)
-	//{
-	//	enemyCD--;
-	//	bossCD--;
-	//	R_CD--;
-	//	G_CD--;
-	//	Sleep(10);//每十毫秒CD减一。
-	//	if (R_CD<=0)
-	//	{
-	//		e_pos.x = rand() % Width;
-	//		e_pos.y = 0;
-	//		enemys.addEnemy(e_pos, 90, 0.1, t_enemy.E_RED);
-	//		enemyCD = 150;
-	//		R_CD = 500;
-	//		break;
-	//	}
-	//	if (G_CD<=0)
-	//	{
-	//		e_pos.x = rand() % Width;
-	//		e_pos.y = 0;
-	//		enemys.addEnemy(e_pos, 90, 0.1, t_enemy.E_GREEN);
-	//		enemyCD = 150;
-	//		G_CD = 800;
-	//		break;
-	//	}
-	//	if (shoot_CD<=0)
-	//	{
-	//		e_pos.x = rand() % Width;
-	//		e_pos.y = 0;
-	//		enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_B);
-	//		shoot_CD = 600;
-	//		break;
-	//	}
-	//	if (enemyCD<=0)
-	//	{
-	//		e_pos.x = rand() % Width;
-	//		e_pos.y = 0;
-	//		enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_A);
-	//		enemyCD = 150;
-	//		break;
-	//	}
-	//}
+	int type = 0;
+	srand((unsigned)time(0));
+	Point e_pos;
+	Enemy t_enemy;
+	type = rand() % 4;//随机生成
+	 if (bossCD == 0)
+	 {
+		 e_pos.x = rand() % (Width / 2 - E_Wideh*2);
+		 e_pos.y = -E_Height*2;
+		 enemys.addEnemy(e_pos, 90, 4, t_enemy.BOSS);
+		 enemyCD = 100;
+	 }
+	 else
+	 {
+		 enemyCD--;
+		 bossCD--;
+		 if (enemyCD == 0)
+		 {
+			 if (type == 0)//生成红色敌机
+			 {
+				 e_pos.x = rand() % (Width / 2 - E_Wideh);
+				 e_pos.y = -E_Height;
+				 enemys.addEnemy(e_pos, 90, 4, t_enemy.E_RED);
+				 enemyCD = 100;
+			 }
+			 else if (type == 1)//生成绿色敌机
+			 {
+				 e_pos.x = rand() % (Width / 2 - E_Wideh);
+				 e_pos.y = -E_Height;
+				 enemys.addEnemy(e_pos, 90, 4, t_enemy.E_GREEN);
+				 enemyCD = 100;
+			 }
+			 else if (type == 2)//生成普通敌机
+			 {
+				 e_pos.x = rand() % (Width / 2 - E_Wideh);
+				 e_pos.y = -E_Height;
+				 enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_A);
+				 enemyCD = 100;
+			 }
+			 else if (type == 3)//生成会射击的敌机
+			 {
+				 e_pos.x = rand() % (Width / 2 - E_Wideh);
+				 e_pos.y = -E_Height;
+				 enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_B);
+				 enemyCD = 100;
+			 }
+		 }
+	 }
+	 //if (R_CD <= 0)
+	 //{
+		// e_pos.x = rand() % Width;
+		// e_pos.y = 0;
+		// enemys.addEnemy(e_pos, 90, 0.1, t_enemy.E_RED);
+		// enemyCD = 150;
+		// R_CD = 500;
+	 //}
+	 //if (G_CD <= 0)
+	 //{
+		// e_pos.x = rand() % Width;
+		// e_pos.y = 0;
+		// enemys.addEnemy(e_pos, 90, 0.1, t_enemy.E_GREEN);
+		// enemyCD = 150;
+		// G_CD = 800;
+	 //}
+	 //if (shoot_CD <= 0)
+	 //{
+		// e_pos.x = rand() % Width;
+		// e_pos.y = 0;
+		// enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_B);
+		// shoot_CD = 600;
+	 //}
+	 //if (enemyCD <= 0)
+	 //{
+		// e_pos.x = rand() % Width;
+		// e_pos.y = 0;
+		// enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_A);
+		// enemyCD = 150;
+	 //}
 }
 
 /*
@@ -170,6 +195,43 @@ void Game::addEnemy()
 void Game::checkCrash()
 {
 
+}
+
+/*
+	负责人：傅全有
+	功能：按键检测及偏移量修改
+		1.按下 w/W -> y轴偏移减小3
+		2.按下 s/S -> y轴偏移增加3
+		3.按下 a/A -> x轴偏移减小2
+		4.按下 d/D -> x轴偏移增加2
+
+	参数：
+		int &p_x 原始x坐标
+		int &p_y 原始y坐标'
+	返回值:
+		void
+*/
+void Game::checkKeyDown(int& p_x, int& p_y)
+{
+	if (GetAsyncKeyState('W')) {
+		p_y -= 5;
+	}
+	if (GetAsyncKeyState('S')) {
+		p_y += 5;
+	}
+	if (GetAsyncKeyState('A')) {
+		p_x -= 5;
+	}
+	if (GetAsyncKeyState('D')) {
+		p_x += 5;
+	}
+	if (GetAsyncKeyState(VK_ESCAPE)) 
+	{
+		showPause();
+	}
+	if (GetAsyncKeyState(VK_SPACE)) {
+		player.attack();
+	}
 }
 
 /*
@@ -218,7 +280,7 @@ Game::Page Game::showMenu()
 }
 
 /*
-* 负责人：贺金梅
+* 负责人：易骏清
 * 功能：展示游戏页面，游戏核心流程
 *	- 移动、攻击、生成敌人、碰撞检测、胜利判断、死亡判断
 * 参数：void
@@ -227,24 +289,39 @@ Game::Page Game::showMenu()
 Game::Page Game::showGame()
 {
 	closegraph();
+	int bk_speed;//背景图的移到速度
+	bk_speed = 3;
 	initgraph(Width / 2, Length);
 	int bk_y = -Length;
+	int p_x, p_y;
 	IMAGE bk;
+	IMAGE p_img[2];
 	loadimage(&bk, "../飞机资料/bk/tbk.png",Width/2,Length*2);
+	loadimage(&p_img[0], "../飞机资料/player/At1.jpg");
+	loadimage(&p_img[1], "../飞机资料/player/At2.jpg");
+	//setbkmode(TRANSPARENT);
+	p_x = Width / 4 - p_img[1].getwidth() / 2;
+	p_y = Length - p_img[1].getheight();
 	while (true) {
-		//BeginBatchDraw();
+		BeginBatchDraw();
 
-		bk_y += 3;
+		bk_y += bk_speed;
 		if (bk_y == 0)
 		{
 			bk_y = -Length;
 		}
 		putimage(0, bk_y, &bk);
+		checkKeyDown(p_x, p_y);
+		putimage(p_x, p_y, &p_img[0],SRCAND);
+		putimage(p_x, p_y, &p_img[1],SRCPAINT);
 
-		Sleep(32);
+
+		addEnemy();
+		enemys.move();
+
+		Sleep(16);
 
 		// 玩家、敌人、子弹移动
-		//player.move();
 		//enemys.move();
 		//bullets.move();
 
@@ -259,7 +336,7 @@ Game::Page Game::showGame()
 		//checkCrash();
 
 		// 渲染页面：获取玩家、敌机、子弹坐标等信息，绘制页面
-		//EndBatchDraw();
+		EndBatchDraw();
 
 	}
 	return MENU;
@@ -277,16 +354,18 @@ Game::Page Game::showGame()
 */
 Game::Page Game::showPause()
 {
+	EndBatchDraw();//先停止批量绘图
 	cleardevice();
 	IMAGE image1;
 	//打印暂停页面
-	loadimage(&image1, "../原型图/game/暂停.png", 1024, 768);
+	loadimage(&image1, "../原型图/game/pause.png", Width/2, Length);
 	putimage(0, 0, &image1);
 	ExMessage m;
 	while (1) {
 		m = getmessage(EX_MOUSE);
 		if (m.message == WM_LBUTTONDOWN) {
 			if (m.x < 500 && m.x>370 && m.y < 350 && m.y>230) {//继续游戏
+				BeginBatchDraw();
 				return GAME;
 				m.message = NULL;
 			}
@@ -306,7 +385,7 @@ Game::Page Game::showPause()
 }
 
 /*
-* 负责人：贺金梅
+* 负责人：
 * 功能：展示游戏胜利页
 *	首先初始化游戏数据，调用init()
 *	记录最好成绩
@@ -357,7 +436,6 @@ Game::Page Game::showLose()
 				m.message = NULL;
 			}
 		}
-		return MENU;
 	}
 }
 
