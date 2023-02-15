@@ -10,10 +10,26 @@
 */
 void FlyingObject::move()
 {
-	 if (sin(angle) != 0)
+	 if (angle != 0)
 	 {
 		 pos.y += sin(angle) * speed;
 	 }
+	 if (angle != 90)
+	 {
+		 pos.x += cos(angle) * speed;
+	 }
+}
+
+void FlyingObject::playermove()
+{
+	if (angle != 0)
+	{
+		pos.y -= sin(angle) * speed;
+	}
+	if (angle != 90)
+	{
+		pos.x -= cos(angle) * speed;
+	}
 }
 
 /*

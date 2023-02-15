@@ -1,7 +1,20 @@
 #include "bullet.h"
 #include<algorithm>
-using namespace std;
 
+Bullet::Bullet()
+{
+
+}
+
+Bullet::Bullet(Point pos,double angle,double speed,Type type):FlyingObject(pos,angle,speed),type(type)
+{
+
+}
+
+Bullets::Bullets()
+{
+	num = 0;
+}
 /*
 * 负责人：
 * 功能：在子弹集合最后一位添加一枚新的子弹，子弹数量+1
@@ -13,9 +26,27 @@ using namespace std;
 *	Type type：子弹类型
 * 返回值：void
 */
-void Bullets::addBullet(Point pos, double angle, double speed, Bullet::Belone belone, Bullet::Type type)
+void Bullets::addBullet(Point pos, double angle, double speed, Bullet::Type type)
 {
-	//s.push_back(Bullet()); //向子弹向量中添加新建对象b
+	switch (type)
+	{
+	case Bullet::BASKERBALL:
+		loadimage(&b_img[0], "../飞机资料/playerbullet/basketball1.jpg", B_Width, B_Height);
+		loadimage(&b_img[1], "../飞机资料/playerbullet/basketball2.jpg", B_Width, B_Height);
+		s[num++] = Bullet(pos, angle, speed, type);
+		break;
+	case Bullet::BULLET1:
+		break;
+	case Bullet::BOOS:
+		break;
+	case Bullet::NONE:
+		break;
+	default:
+		break;
+	}
+
+	//s.push_back(bullet); //向子弹向量中添加新建对象b
+
 }
 
 /*
@@ -26,7 +57,8 @@ void Bullets::addBullet(Point pos, double angle, double speed, Bullet::Belone be
 */
 int Bullets::getNum()
 {
-	return (int)s.size();
+	//return (int)s.size();
+	return num;
 }
 
 /*
@@ -38,10 +70,18 @@ int Bullets::getNum()
 */
 void Bullets::move()
 {
-	vector<Bullet>::iterator b = s.begin();
-	while (b != s.end())
+	//vector<Bullet>::iterator b = s.begin();
+	//while (b != s.end())
+	//{
+	//	b->playermove();
+	//	b->showbullet();
+	//}
+
+
+	for (int i = 0; i < num; ++i)
 	{
-		b->move();
+		s[i].playermove();
+		s[i].showbullet();
 	}
 }
 
@@ -55,6 +95,52 @@ void Bullets::move()
 */
 void Bullets::delBullet(int idx)
 {
-	swap(s[idx], s[num - 1]);//将向量末尾处子弹和idx处交换
-	s.pop_back();//删除末尾子弹
+ //   swap(s[idx], s[num - 1]);//将向量末尾处子弹和idx处交换
+	//s.pop_back();//删除末尾子弹
+
+
+	for (int i = 0; i < num; i++)
+	{
+		if (s[i].getPos().x > Width / 2 || s[i].getPos().x<0 || s[i].getPos().y>Length || s[i].getPos().y < 0)
+		{
+
+		}
+	}
+}
+
+
+/*
+* 展示子弹图片
+*/
+void Bullet::showbullet()
+{
+	switch (type)
+	{
+	case BASKERBALL:
+		loadimage(&b_img[0], "../飞机资料/playerbullet/basketball1.jpg", B_Width, B_Height);
+		loadimage(&b_img[1], "../飞机资料/playerbullet/basketball2.jpg", B_Width, B_Height);
+		putimage(pos.x, pos.y, &b_img[0], SRCAND);
+		putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
+		break;
+	case BULLET1:
+		loadimage(&b_img[0], "../飞机资料/enemybullet/bullet1.jpg", B_Width, B_Height);
+		loadimage(&b_img[1], "../飞机资料/enemybullet/bullet2.jpg", B_Width, B_Height);
+		putimage(pos.x, pos.y, &b_img[0], SRCAND);
+		putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
+		break;
+	//case BULLET2:
+	//	loadimage(&b_img[0], "../飞机资料/enemy/plane_enemy.jpg", B_Width, B_Height);
+	//	loadimage(&b_img[1], "../飞机资料/enemy/plane_enemy2.jpg", B_Width, B_Height);
+	//	putimage(pos.x, pos.y, &b_img[0], SRCAND);
+	//	putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
+	//	break;
+	case BOOS:
+		loadimage(&b_img[0], "../飞机资料/enemybullet/boss_bullet1.jpg", B_Width, B_Height);
+		loadimage(&b_img[1], "../飞机资料/enemybullet/boss_bullet2.jpg", B_Width, B_Height);
+		putimage(pos.x, pos.y, &b_img[0], SRCAND);
+		putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
+		break;
+	default:
+		break;
+	}
 }

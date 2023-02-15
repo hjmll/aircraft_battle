@@ -18,6 +18,9 @@ public:
 	// 碰撞检查
 	void checkCrash();
 
+	//发射子弹
+	void playerattack();
+
 	//按键检测
 	void checkKeyDown(int &p_x,int &p_y);
 
@@ -47,7 +50,9 @@ private:
 	int score;			// 当前成绩
 	int enemyCD;		// 生成新敌机的剩余CD（单位fps)
 	int bossCD;         //生成BOSS的剩余CD
+	int attackCD;       //玩家发射子弹的cd
 	int defualtCD;		// 生成新敌机的默认CD
+	int p_hp;           //飞机血量
 	Player player;		// 玩家飞机
 	Enemys enemys;		// 敌机集合
 	Bullets bullets;	// 子弹集合

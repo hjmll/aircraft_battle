@@ -2,8 +2,6 @@
 #include "iostream"
 #include<graphics.h>
 #include<ctime>
-#define Width 1024
-#define Length 768
 
 // 负责人：技术官
 Game::Game()
@@ -82,9 +80,58 @@ void Game::init()
 {
 	enemyCD = 30;//第一个敌人30*16毫秒后生成
 	bossCD = 15000;
-
+	attackCD = 5;
+	p_hp = 10;
 }
 
+/*
+* 发射子弹
+* 
+* 
+*/
+void Game::playerattack()
+{
+	int b_num = 0;
+	if (attackCD <=0)
+	{
+		Point p_pos;
+		p_pos = player.getPos();
+		p_pos.x = p_pos.x + E_Wideh / 2 - B_Width / 2;
+		p_pos.y = p_pos.y - B_Width;
+		if (p_hp > 7) {
+			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
+			b_num = 1;
+			for (int i = 0; i < b_num; i++)
+			{
+				bullets.addBullet(p_pos, 90, p_speed + 10, Bullet::BASKERBALL);
+			}
+			attackCD = 5;
+			//attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
+		}
+		else if (p_hp > 4) {
+			//当生命值大于2时，在飞机坐标位置生成三枚子弹，角度为分别为45°(左)，90°(中)，135°(右)(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射AAA型子弹
+			//b_num = 3;
+			//for (int i = 0; i < b_num; i++)
+			//{
+			//	p = new Bullet;
+			//	p->addbullet(m_pos, 90, Player::speed + 10, Bullet::BASKERBALL);
+			//}
+			//addBullet(Player::getPos(), 45.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+			//addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+			//addBullet(Player::getPos(), 135.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+			attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
+		}
+		else if (p_hp < 2) {
+			//当生命值小于2时，在飞机坐标位置生成五枚子弹，角度为分别为30,60,90,120,150(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射BBB型子弹
+			//addBullet(Player::getPos(), 30.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+			//addBullet(Player::getPos(), 60.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+			//addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+			//addBullet(Player::getPos(), 120.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+			//addBullet(Player::getPos(), 150.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+			attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
+		}
+	}
+}
 /*
 * 负责人：易骏清
 * 功能：尝试生成新敌机
@@ -214,23 +261,23 @@ void Game::checkCrash()
 void Game::checkKeyDown(int& p_x, int& p_y)
 {
 	if (GetAsyncKeyState('W')) {
-		p_y -= 5;
+		p_y -= p_speed;
 	}
 	if (GetAsyncKeyState('S')) {
-		p_y += 5;
+		p_y += p_speed;
 	}
 	if (GetAsyncKeyState('A')) {
-		p_x -= 5;
+		p_x -= p_speed;
 	}
 	if (GetAsyncKeyState('D')) {
-		p_x += 5;
+		p_x += p_speed;
 	}
 	if (GetAsyncKeyState(VK_ESCAPE)) 
 	{
 		showPause();
 	}
 	if (GetAsyncKeyState(VK_SPACE)) {
-		player.attack();
+		playerattack();
 	}
 }
 
@@ -293,15 +340,16 @@ Game::Page Game::showGame()
 	bk_speed = 3;
 	initgraph(Width / 2, Length);
 	int bk_y = -Length;
-	int p_x, p_y;
 	IMAGE bk;
 	IMAGE p_img[2];
+	Point p_pos;
 	loadimage(&bk, "../飞机资料/bk/tbk.png",Width/2,Length*2);
-	loadimage(&p_img[0], "../飞机资料/player/At1.jpg");
-	loadimage(&p_img[1], "../飞机资料/player/At2.jpg");
+	loadimage(&p_img[0], "../飞机资料/player/At1.jpg", E_Wideh, E_Height);
+	loadimage(&p_img[1], "../飞机资料/player/At2.jpg", E_Wideh, E_Height);
 	//setbkmode(TRANSPARENT);
-	p_x = Width / 4 - p_img[1].getwidth() / 2;
-	p_y = Length - p_img[1].getheight();
+	p_pos.x = Width / 4 - E_Wideh/2;
+	p_pos.y = Length - E_Height;
+
 	while (true) {
 		BeginBatchDraw();
 
@@ -311,13 +359,18 @@ Game::Page Game::showGame()
 			bk_y = -Length;
 		}
 		putimage(0, bk_y, &bk);
-		checkKeyDown(p_x, p_y);
-		putimage(p_x, p_y, &p_img[0],SRCAND);
-		putimage(p_x, p_y, &p_img[1],SRCPAINT);
+		attackCD--;
+		checkKeyDown(p_pos.x, p_pos.y);
+		p_pos = player.playermove(p_pos.x, p_pos.y);
+		putimage(p_pos.x, p_pos.y, &p_img[0],SRCAND);
+		putimage(p_pos.x, p_pos.y, &p_img[1],SRCPAINT);
 
 
 		addEnemy();
 		enemys.move();
+
+
+		bullets.move();
 
 		Sleep(16);
 

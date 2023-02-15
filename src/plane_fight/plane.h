@@ -3,9 +3,7 @@
 
 #include "base.h"
 #include "bullet.h"
-#include<graphics.h>
-#define E_Wideh 100
-#define E_Height 60
+
 
 // 飞机基类
 class Plane : public FlyingObject {
@@ -64,6 +62,9 @@ public:
 	// 清空所有buff
 	void clearBuff();
 
+	Point playermove(int a,int b);
+
+
 	Player();
 
 	//玩家飞机类的构造函数
@@ -108,6 +109,7 @@ protected:
 class Enemys :public Enemy 
 {
 public:
+
 	// 添加一架敌机
 	void addEnemy(Point pos, double angle, double speed, Enemy::Type type);
 
@@ -129,7 +131,7 @@ public:
 	// 清除所有敌机
 	void clear() { num = 0; }
 
-	Enemys() {}
+	Enemys();
 
 protected:
 	int num;

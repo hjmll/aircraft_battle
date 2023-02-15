@@ -1,9 +1,22 @@
 #ifndef __BASE_H
 #define __BASE_H
 
+
+#include<graphics.h>
+#include<iostream>
+#include <algorithm>
+#include<ctime>
+#define Width 1024
+#define Length 768
+#define E_Wideh 100
+#define E_Height 60
+#define B_Width  20
+#define B_Height 20
+#define p_speed 8
+
 // 坐标结构体
 struct Point {
-	double x, y;
+	int x, y;
 };
 
 
@@ -12,6 +25,8 @@ class FlyingObject {
 public:
 	// 根据当前坐标、速度、角度移动到下一坐标
 	void move();
+
+	void playermove();
 
 	// 返回坐标
 	Point getPos();

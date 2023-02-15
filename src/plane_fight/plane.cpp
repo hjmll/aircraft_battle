@@ -1,4 +1,3 @@
-#include <algorithm>
 #include "plane.h"
 
 // extern Bullets bullets; //应当在game.cpp  init()函数中声明 Bullets bullets 此处直接引用
@@ -30,10 +29,20 @@ void Plane::hurt(int damage)
 Plane::Plane(Point pos, double angle, double speed, int hp, int defualtAttackCD, Bullet::Type bulletType, double attackSpeedBouns ) 
 	: FlyingObject(pos, angle, speed),hp(hp),attackSpeedBouns(attackSpeedBouns),defualtAttackCD(defualtAttackCD),bulletType(bulletType) {
 	attackCD = defualtAttackCD / attackSpeedBouns;
-	pos.x = 256;
-	pos.y = 768;
 }
 
+
+
+
+/*
+* 未来修改自身坐标
+*/
+Point Player::playermove(int a,int b)
+{
+	pos.x = a;
+	pos.y = b;
+	return pos;
+}
 /*
 * 负责人：覃一诚
 * 功能：玩家飞机攻击
@@ -44,32 +53,48 @@ Plane::Plane(Point pos, double angle, double speed, int hp, int defualtAttackCD,
 */
 void Player::attack()
 {
-	attackCD--;
-	if (attackCD==0) { // attackCD为0时才可以发射子弹
-		if (hp > 5) {
-			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
-			Bullets::addBullet(Player::getPos(), 90.0, Player::speed+10, Bullet::PLAYER, Bullet::Default); 
-			attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
-		}
-		else if (hp > 2) {
-			//当生命值大于2时，在飞机坐标位置生成三枚子弹，角度为分别为45°(左)，90°(中)，135°(右)(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射AAA型子弹
-			Bullets::addBullet(Player::getPos(), 45.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
-			Bullets::addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
-			Bullets::addBullet(Player::getPos(), 135.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
-			attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
-		}
-		else if (hp < 2) {
-			//当生命值小于2时，在飞机坐标位置生成五枚子弹，角度为分别为30,60,90,120,150(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射BBB型子弹
-			Bullets::addBullet(Player::getPos(), 30.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
-			Bullets::addBullet(Player::getPos(), 60.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
-			Bullets::addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
-			Bullets::addBullet(Player::getPos(), 120.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
-			Bullets::addBullet(Player::getPos(), 150.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
-			attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
-		}
-	}
+	//attackCD--;
+	//int b_num = 0;
+	//Point m_pos = { Player::getPos().x+E_Wideh/2-B_Width,Player::getPos().y - B_Height };
+	//if (attackCD==0) { // attackCD为0时才可以发射子弹
+		//if (hp > 5) {
+		//	//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
+		//	//b_num = 1;
+		//	//for (int i = 0; i < b_num; i++)
+		//	//{
+		//	//	p = new Bullet;
+		//	//	p->addbullet(m_pos, 90, Player::speed + 10, Bullet::BASKERBALL);
+		//	//}
+		//	//attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
+		//}
+		//else if (hp > 2) {
+		//	//当生命值大于2时，在飞机坐标位置生成三枚子弹，角度为分别为45°(左)，90°(中)，135°(右)(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射AAA型子弹
+		//	//b_num = 3;
+		//	//for (int i = 0; i < b_num; i++)
+		//	//{
+		//	//	p = new Bullet;
+		//	//	p->addbullet(m_pos, 90, Player::speed + 10, Bullet::BASKERBALL);
+		//	//}
+		//	//addBullet(Player::getPos(), 45.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+		//	//addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+		//	//addBullet(Player::getPos(), 135.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+		//	attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
+		//}
+		//else if (hp < 2) {
+		//	//当生命值小于2时，在飞机坐标位置生成五枚子弹，角度为分别为30,60,90,120,150(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射BBB型子弹
+		//	//addBullet(Player::getPos(), 30.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+		//	//addBullet(Player::getPos(), 60.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+		//	//addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+		//	//addBullet(Player::getPos(), 120.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+		//	//addBullet(Player::getPos(), 150.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
+		//	attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
+		//}
+	//}
 }
 
+/*
+* 返回飞机子弹的坐标
+*/
 /*
 * 负责人：
 * 功能：玩家飞机添加指定时长的指定buff
@@ -184,7 +209,10 @@ Enemy :: Enemy(Type enemyType, int hp, Point pos, double angle, double speed, Bu
 {
 	type = enemyType;
 }
-
+Enemys::Enemys()
+{
+	num = 0;
+}
 /*
 * 负责人：傅全有
 * 功能：在敌机集合最后一位添加一个新的敌机，敌机数量+1
@@ -202,30 +230,34 @@ void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 	case Enemy::NORMAL_A:
 		putimage(pos.x, pos.y, &e_img[0], SRCAND);
 		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		hp = 100;
 		break;
 	case Enemy::NORMAL_B:
 		putimage(pos.x, pos.y, &e_img[0], SRCAND);
 		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::BULLET1);
 		hp = 60;
 		break;
 	case Enemy::E_GREEN:
 		putimage(pos.x, pos.y, &e_img[0], SRCAND);
 		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		hp = 60;
 		break;
 	case Enemy::E_RED:
 		putimage(pos.x, pos.y, &e_img[0], SRCAND);
 		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		hp = 60;
 		break;
 	case Enemy::BOSS:
 		putimage(pos.x, pos.y, &e_img[0], SRCAND);
 		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::BOOS);
 		hp = 400;
 		break;
 	}
-	s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::Default);
 }
 
 /*
@@ -279,14 +311,21 @@ void Enemys::attack()
 */
 void Enemys::delEnemy(int idx)
 {
-	if (idx < 0 && idx > num-1)return;
-	//如果删除的为末尾的敌人，直接num--
-	if (idx == num - 1) {
-		num--;
-		return;
+	//if (idx < 0 && idx > num-1)return;
+	////如果删除的为末尾的敌人，直接num--
+	//if (idx == num - 1) {
+	//	num--;
+	//	return;
+	//}
+	//s[idx] = s[num - 1];
+	//num--;
+	for (int i = 0; i < num; i++)
+	{
+		if (pos.y > Length)
+		{
+
+		}
 	}
-	s[idx] = s[num - 1];
-	num--;
 }
 
 
@@ -300,21 +339,21 @@ void Enemys::delEnemy(int idx)
 */
 void Enemy::attack()
 {
-	Point pos = { getPos().x,getPos().y + 5 };
+	Point pos = { getPos().x,getPos().y +5 };
 	switch (type) {
 	case NORMAL_A:
 		break;
 	case NORMAL_B:
-		Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::Default);
+		//Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::BULLET1);
 		break;
 	case E_GREEN:
-		Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::Default);
+		/*Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::NONE);*/
 		break;
 	case E_RED:
-		Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::Default);
+	/*	Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::NONE);*/
 		break;
 	case BOSS:
-		Bullets::addBullet(pos, angle, speed + 0.5, Bullet::ENEMY, Bullet::Default);
+		//Bullets::addBullet(pos, angle, speed + 0.5, Bullet::ENEMY, Bullet::BOOS);
 		break;
 	}
 }
