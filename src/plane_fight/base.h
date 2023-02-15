@@ -4,6 +4,7 @@
 
 #include<graphics.h>
 #include<iostream>
+#include <fstream>
 #include <algorithm>
 #include<ctime>
 #define Width 1024

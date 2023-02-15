@@ -81,7 +81,8 @@ void Game::init()
 	enemyCD = 30;//第一个敌人30*16毫秒后生成
 	bossCD = 15000;
 	attackCD = 5;
-	p_hp = 10;
+	p_hp = 100;
+	score = 0;
 }
 
 /*
@@ -92,43 +93,43 @@ void Game::init()
 void Game::playerattack()
 {
 	int b_num = 0;
+	double angle = 0;
+	cout << "attack=" << attackCD << endl;
 	if (attackCD <=0)
 	{
-		Point p_pos;
-		p_pos = player.getPos();
-		p_pos.x = p_pos.x + E_Wideh / 2 - B_Width / 2;
-		p_pos.y = p_pos.y - B_Width;
-		if (p_hp > 7) {
+		Point p_pos[5];
+		if (p_hp > 70) 
+		{
 			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
 			b_num = 1;
 			for (int i = 0; i < b_num; i++)
 			{
-				bullets.addBullet(p_pos, 90, p_speed + 10, Bullet::BASKERBALL);
+				p_pos[i] = player.getPos();
+				p_pos[i].x = p_pos[i].x + E_Wideh / 2 - B_Width / 2;
+				p_pos[i].y = p_pos[i].y - B_Width;
+				bullets.addBullet(p_pos[i], 90, p_speed + 10, Bullet::BASKERBALL);
 			}
 			attackCD = 5;
-			//attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
 		}
-		else if (p_hp > 4) {
-			//当生命值大于2时，在飞机坐标位置生成三枚子弹，角度为分别为45°(左)，90°(中)，135°(右)(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射AAA型子弹
-			//b_num = 3;
-			//for (int i = 0; i < b_num; i++)
-			//{
-			//	p = new Bullet;
-			//	p->addbullet(m_pos, 90, Player::speed + 10, Bullet::BASKERBALL);
-			//}
-			//addBullet(Player::getPos(), 45.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-			//addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-			//addBullet(Player::getPos(), 135.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-			attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
+		else if (p_hp > 40)
+		{
+			b_num = 3;
+			angle = 45;
+			for (int i = 0; i < b_num; i++)
+			{
+				bullets.addBullet(p_pos[i], angle * (i + 1), p_speed + 10, Bullet::BASKERBALL);
+			}
+			attackCD = 10;
 		}
-		else if (p_hp < 2) {
-			//当生命值小于2时，在飞机坐标位置生成五枚子弹，角度为分别为30,60,90,120,150(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射BBB型子弹
-			//addBullet(Player::getPos(), 30.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-			//addBullet(Player::getPos(), 60.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-			//addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-			//addBullet(Player::getPos(), 120.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-			//addBullet(Player::getPos(), 150.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-			attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
+		else
+		{
+			b_num = 5;
+			angle = 30;
+			for (int i = 0; i < b_num; i++)
+			{
+				bullets.addBullet(p_pos[i], angle * (i + 1), p_speed + 10, Bullet::BASKERBALL);
+			}
+			attackCD = 10;
 		}
 	}
 }
@@ -162,64 +163,34 @@ void Game::addEnemy()
 		 {
 			 if (type == 0)//生成红色敌机
 			 {
-				 e_pos.x = rand() % (Width / 2 - E_Wideh);
+				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
 				 enemys.addEnemy(e_pos, 90, 4, t_enemy.E_RED);
 				 enemyCD = 100;
 			 }
 			 else if (type == 1)//生成绿色敌机
 			 {
-				 e_pos.x = rand() % (Width / 2 - E_Wideh);
+				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
 				 enemys.addEnemy(e_pos, 90, 4, t_enemy.E_GREEN);
 				 enemyCD = 100;
 			 }
 			 else if (type == 2)//生成普通敌机
 			 {
-				 e_pos.x = rand() % (Width / 2 - E_Wideh);
+				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
 				 enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_A);
 				 enemyCD = 100;
 			 }
 			 else if (type == 3)//生成会射击的敌机
 			 {
-				 e_pos.x = rand() % (Width / 2 - E_Wideh);
+				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
 				 enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_B);
 				 enemyCD = 100;
 			 }
 		 }
 	 }
-	 //if (R_CD <= 0)
-	 //{
-		// e_pos.x = rand() % Width;
-		// e_pos.y = 0;
-		// enemys.addEnemy(e_pos, 90, 0.1, t_enemy.E_RED);
-		// enemyCD = 150;
-		// R_CD = 500;
-	 //}
-	 //if (G_CD <= 0)
-	 //{
-		// e_pos.x = rand() % Width;
-		// e_pos.y = 0;
-		// enemys.addEnemy(e_pos, 90, 0.1, t_enemy.E_GREEN);
-		// enemyCD = 150;
-		// G_CD = 800;
-	 //}
-	 //if (shoot_CD <= 0)
-	 //{
-		// e_pos.x = rand() % Width;
-		// e_pos.y = 0;
-		// enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_B);
-		// shoot_CD = 600;
-	 //}
-	 //if (enemyCD <= 0)
-	 //{
-		// e_pos.x = rand() % Width;
-		// e_pos.y = 0;
-		// enemys.addEnemy(e_pos, 90, 0.15, t_enemy.NORMAL_A);
-		// enemyCD = 150;
-	 //}
 }
 
 /*
@@ -274,7 +245,10 @@ void Game::checkKeyDown(int& p_x, int& p_y)
 	}
 	if (GetAsyncKeyState(VK_ESCAPE)) 
 	{
-		showPause();
+		if (showPause() == MENU)
+		{
+			showMenu();
+		}
 	}
 	if (GetAsyncKeyState(VK_SPACE)) {
 		playerattack();
@@ -312,7 +286,7 @@ Game::Page Game::showMenu()
 				return RULE1;
 				m.message = NULL;
 			}
-			if (m.x < 670 && m.x>530 && m.y < 450 && m.y>310) {//开发人员介绍
+			if (m.x < 670 && m.x>550 && m.y < 450 && m.y>310) {//开发人员介绍
 				return DEVELOPER;
 				m.message = NULL;
 			}
@@ -323,6 +297,7 @@ Game::Page Game::showMenu()
 		}
 
 	}
+
 	return MENU;
 }
 
@@ -338,16 +313,16 @@ Game::Page Game::showGame()
 	closegraph();
 	int bk_speed;//背景图的移到速度
 	bk_speed = 3;
-	initgraph(Width / 2, Length);
+	initgraph(Width, Length);
 	int bk_y = -Length;
 	IMAGE bk;
 	IMAGE p_img[2];
 	Point p_pos;
-	loadimage(&bk, "../飞机资料/bk/tbk.png",Width/2,Length*2);
+	loadimage(&bk, "../飞机资料/bk/OUT.png",Width,Length*2);
 	loadimage(&p_img[0], "../飞机资料/player/At1.jpg", E_Wideh, E_Height);
 	loadimage(&p_img[1], "../飞机资料/player/At2.jpg", E_Wideh, E_Height);
 	//setbkmode(TRANSPARENT);
-	p_pos.x = Width / 4 - E_Wideh/2;
+	p_pos.x = Width / 2 - E_Wideh/2;
 	p_pos.y = Length - E_Height;
 
 	while (true) {
@@ -360,13 +335,17 @@ Game::Page Game::showGame()
 		}
 		putimage(0, bk_y, &bk);
 		attackCD--;
+		bossCD--;
 		checkKeyDown(p_pos.x, p_pos.y);
 		p_pos = player.playermove(p_pos.x, p_pos.y);
 		putimage(p_pos.x, p_pos.y, &p_img[0],SRCAND);
 		putimage(p_pos.x, p_pos.y, &p_img[1],SRCPAINT);
 
 
-		addEnemy();
+		if (bossCD >= 0)
+		{
+			addEnemy();
+		}
 		enemys.move();
 
 
@@ -411,25 +390,26 @@ Game::Page Game::showPause()
 	cleardevice();
 	IMAGE image1;
 	//打印暂停页面
-	loadimage(&image1, "../原型图/game/pause.png", Width/2, Length);
+	loadimage(&image1, "../原型图/game/暂停.png", Width, Length);
 	putimage(0, 0, &image1);
 	ExMessage m;
 	while (1) {
 		m = getmessage(EX_MOUSE);
 		if (m.message == WM_LBUTTONDOWN) {
-			if (m.x < 500 && m.x>370 && m.y < 350 && m.y>230) {//继续游戏
-				BeginBatchDraw();
-				return GAME;
-				m.message = NULL;
-			}
-			if (m.x < 770 && m.x>660 && m.y < 450 && m.y>340) {//返回菜单
-				return MENU;
-				m.message = NULL;
-			}
+			if (m.message == WM_LBUTTONDOWN) {
+				if (m.x < 500 && m.x>365 && m.y < 335 && m.y>183) {//继续游戏
+					return GAME;
+					m.message = NULL;
+				}
+				if (m.x < 765 && m.x>645 && m.y < 467 && m.y>330) {//返回菜单
+					return MENU;
+					m.message = NULL;
+				}
 
-			if (m.x < 550 && m.x>370 && m.y < 550 && m.y>440) {//退出游戏
-				exit(0);
-				m.message = NULL;
+				if (m.x < 500 && m.x>365 && m.y < 615 && m.y>467) {//退出游戏
+					exit(0);
+					m.message = NULL;
+				}
 			}
 		}
 
@@ -450,6 +430,78 @@ Game::Page Game::showPause()
 Game::Page Game::showWin()
 {
 	init();
+	cleardevice();
+	ofstream outfile;// 以写模式打开文件
+	outfile.open("scorlist.txt");//打开成绩记录文件
+	outfile << score << endl;//将当前成绩写入文件并保存
+	outfile.close();//关闭文件
+	ifstream infile("scorlist.txt", ios::in);//从成绩记录文件读取信息
+	int a;
+	while (infile >> a)//在文件中遍历查找最高分，当达到文件尾，则循环处理结束。
+	{
+		if (a > bestScore)
+			bestScore = a;
+	}
+	if (score == bestScore)//如果当前成绩是最高分，打印最高分界面
+	{
+		IMAGE bestwin;
+		loadimage(&bestwin, "../原型图/game/win1.png", 1024, 768);
+		putimage(0, 0, &bestwin);
+		ExMessage m;
+		while (1)
+		{
+			m = getmessage(EX_MOUSE);
+			if (m.message == WM_LBUTTONDOWN)
+			{
+				if (m.x < 270 && m.x>160 && m.y < 397 && m.y>343)//重新游戏
+				{
+					return GAME;
+					m.message = NULL;
+				}
+				if (m.x < 270 && m.x>160 && m.y < 487 && m.y>433)//返回菜单
+				{
+					return MENU;
+					m.message = NULL;
+				}
+				if (m.x < 270 && m.x>160 && m.y < 577 && m.y>523)//退出游戏
+				{
+					exit(0);
+					m.message = NULL;
+				}
+			}
+			return MENU;
+		}
+	}
+	else//如果当前成绩不是最高分，打印普通界面
+	{
+		IMAGE bestwin;
+		loadimage(&bestwin, "../原型图/game/win2.png", 1024, 768);
+		putimage(0, 0, &bestwin);
+		ExMessage m;
+		while (1)
+		{
+			m = getmessage(EX_MOUSE);
+			if (m.message == WM_LBUTTONDOWN)
+			{
+				if (m.x < 270 && m.x>160 && m.y < 397 && m.y>343)//重新游戏
+				{
+					return GAME;
+					m.message = NULL;
+				}
+				if (m.x < 270 && m.x>160 && m.y < 487 && m.y>433)//返回菜单
+				{
+					return MENU;
+					m.message = NULL;
+				}
+				if (m.x < 270 && m.x>160 && m.y < 577 && m.y>523)//退出游戏
+				{
+					exit(0);
+					m.message = NULL;
+				}
+			}
+			return MENU;
+		}
+	}
 	return MENU;
 }
 
@@ -489,6 +541,7 @@ Game::Page Game::showLose()
 				m.message = NULL;
 			}
 		}
+
 	}
 }
 
@@ -509,17 +562,15 @@ Game::Page Game::showRule1()
 		m = getmessage(EX_MOUSE);
 		if (m.message == WM_LBUTTONDOWN) {
 
-			if (m.x < 854 && m.x>780 && m.y < 488 && m.y>435) {//返回菜单
+			if (m.x < 860 && m.x>785 && m.y < 522 && m.y>453) {//返回菜单
 				return MENU;
 				m.message = NULL;
 			}
 
-			if (m.x < 972 && m.x>890 && m.y < 487 && m.y>435) {//下一页
+			if (m.x < 988 && m.x>896 && m.y < 522 && m.y>453) {//下一页
 				return RULE2;
 				m.message = NULL;
 			}
-
-
 		}
 	}
 }
@@ -539,11 +590,11 @@ Game::Page Game::showRule2()
 		m = getmessage(EX_MOUSE);
 		if (m.message == WM_LBUTTONDOWN) {
 
-			if (m.x < 775 && m.x>695 && m.y < 530 && m.y>481) {//返回菜单
+			if (m.x < 775 && m.x>698 && m.y < 580 && m.y>515) {//返回菜单
 				return MENU;
 				m.message = NULL;
 			}
-			if (m.x < 939 && m.x>852 && m.y < 527 && m.y>480) {//返回上一页
+			if (m.x < 940 && m.x>848 && m.y < 580 && m.y>515) {//返回上一页
 				return RULE1;
 				m.message = NULL;
 			}
@@ -556,5 +607,26 @@ Game::Page Game::showRule2()
 */
 Game::Page Game::showDeveloper()
 {
+	cleardevice();
+	char s[] = "返回主菜单";
+	IMAGE image5;
+	loadimage(&image5, "../原型图/菜单/developers.png", 1024, 768);
+	putimage(0, 0, &image5);
+	outtextxy(10, 35, s);
+	ExMessage m;
+	while (1) {
+		m = getmessage(EX_MOUSE);
+		if (m.message == WM_LBUTTONDOWN) {
+
+			if (m.x < 90 && m.x>10 && m.y < 50 && m.y>35) {//返回菜单
+				return MENU;
+				m.message = NULL;
+			}
+			if (m.x < 940 && m.x>848 && m.y < 580 && m.y>515) {//返回上一页
+				return RULE1;
+				m.message = NULL;
+			}
+		}
+	}
 	return MENU;
 }
