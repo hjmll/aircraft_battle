@@ -14,7 +14,7 @@ void FlyingObject::move()
 	 {
 		 pos.y += sin(angle) * speed;
 	 }
-	 if (angle != 90)
+	 if (angle != 90) // ª°∂»÷∆
 	 {
 		 pos.x += cos(angle) * speed;
 	 }

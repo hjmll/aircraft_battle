@@ -281,6 +281,16 @@ int Enemys::getNum()
 */
 void Enemys::move()
 {
+	for (int i = 0; i < num; i++)
+	{
+		while (i < num)
+		{
+			Point p = s[i].getPos();
+			if (p.y < 1074) break;
+			delEnemy(i);
+		}
+	}
+
 	for (int i = 0; i < num; ++i)
 	{
 		s[i].move();
@@ -311,21 +321,7 @@ void Enemys::attack()
 */
 void Enemys::delEnemy(int idx)
 {
-	//if (idx < 0 && idx > num-1)return;
-	////如果删除的为末尾的敌人，直接num--
-	//if (idx == num - 1) {
-	//	num--;
-	//	return;
-	//}
-	//s[idx] = s[num - 1];
-	//num--;
-	for (int i = 0; i < num; i++)
-	{
-		if (pos.y > Length)
-		{
-
-		}
-	}
+	swap(s[idx], s[--num]);
 }
 
 

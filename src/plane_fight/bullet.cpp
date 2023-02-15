@@ -77,6 +77,15 @@ void Bullets::move()
 	//	b->showbullet();
 	//}
 
+	for (int i = 0; i < num; i++)
+	{
+		while (i < num)
+		{
+			Point p = s[i].getPos();
+			if (p.x > -50 && p.x < 810 && p.y > -50 && p.y < 1074) break;
+			delBullet(i);
+		}
+	}
 
 	for (int i = 0; i < num; ++i)
 	{
@@ -95,17 +104,7 @@ void Bullets::move()
 */
 void Bullets::delBullet(int idx)
 {
- //   swap(s[idx], s[num - 1]);//将向量末尾处子弹和idx处交换
-	//s.pop_back();//删除末尾子弹
-
-
-	for (int i = 0; i < num; i++)
-	{
-		if (s[i].getPos().x > Width / 2 || s[i].getPos().x<0 || s[i].getPos().y>Length || s[i].getPos().y < 0)
-		{
-
-		}
-	}
+	swap(s[idx], s[--num]);//将向量末尾处子弹和idx处交换
 }
 
 

@@ -10,7 +10,7 @@ Game::Game()
 	this->fps = 60;			// 默认 60 帧
 	score = 0;
 	enemyCD = fps / 2;		// 最高每秒 2 发
-	defualtCD = 5 * fps;	// 每 5 秒添加一个敌
+	defualtCD = fps;	// 每 1 秒添加一个敌
 	bossCD = 0;				// 不知道是啥
 }
 
@@ -22,7 +22,7 @@ Game::Game(int fps)
 	this->fps = fps;
 	score = 0;
 	enemyCD = fps/2;	// 最高每秒 2 发
-	defualtCD = 5*fps;	// 每 5 秒添加一个敌人
+	defualtCD = fps;	// 每 1 秒添加一个敌人
 	bossCD = 0;			// 不知道是啥
 
 }
@@ -109,7 +109,7 @@ void Game::playerattack()
 				p_pos[i].y = p_pos[i].y - B_Width;
 				bullets.addBullet(p_pos[i], 90, p_speed + 10, Bullet::BASKERBALL);
 			}
-			attackCD = 5;
+   			attackCD = 5;
 		}
 		else if (p_hp > 40)
 		{
@@ -153,7 +153,7 @@ void Game::addEnemy()
 		 e_pos.x = rand() % (Width / 2 - E_Wideh*2);
 		 e_pos.y = -E_Height*2;
 		 enemys.addEnemy(e_pos, 90, 4, t_enemy.BOSS);
-		 enemyCD = 100;
+		 enemyCD = defualtCD;
 	 }
 	 else
 	 {
@@ -166,28 +166,28 @@ void Game::addEnemy()
 				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
 				 enemys.addEnemy(e_pos, 90, 4, t_enemy.E_RED);
-				 enemyCD = 100;
+				 enemyCD = defualtCD;
 			 }
 			 else if (type == 1)//生成绿色敌机
 			 {
 				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
 				 enemys.addEnemy(e_pos, 90, 4, t_enemy.E_GREEN);
-				 enemyCD = 100;
+				 enemyCD = defualtCD;
 			 }
 			 else if (type == 2)//生成普通敌机
 			 {
 				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
 				 enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_A);
-				 enemyCD = 100;
+				 enemyCD = defualtCD;
 			 }
 			 else if (type == 3)//生成会射击的敌机
 			 {
 				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
 				 enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_B);
-				 enemyCD = 100;
+				 enemyCD = defualtCD;
 			 }
 		 }
 	 }
