@@ -1,5 +1,6 @@
 #include "game.h"
 #include "iostream"
+#include <fstream>
 #include<graphics.h>
 #include<ctime>
 
