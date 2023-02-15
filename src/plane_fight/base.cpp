@@ -43,6 +43,10 @@ Point FlyingObject::getPos()
 	return { pos.x, pos.y };
 }
 
+void FlyingObject::reset(double angle, double speed)
+{
+}
+
 // 有参构造函数
 FlyingObject::FlyingObject(Point pos, double angle, double speed) :pos(pos), angle(angle), speed(speed)
 {

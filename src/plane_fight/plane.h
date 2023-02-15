@@ -62,6 +62,8 @@ public:
 	// 清空所有buff
 	void clearBuff();
 
+	int getBuffTime(Buff buff);
+
 	Point playermove(int a,int b);
 
 
@@ -96,7 +98,6 @@ public:
 	//展示图像
 	void showenemy();
 
-
 	Enemy() {};
 
 	Enemy(Type type, int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD = 1, double attackSpeed = 1.0);
@@ -127,6 +128,9 @@ public:
 
 	//展示图像
 	void showenemy();
+
+	// 返回指定编号敌机的引用
+	Enemy& getEnemy(int idx);
 
 	// 清除所有敌机
 	void clear() { num = 0; }

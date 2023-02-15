@@ -6,9 +6,27 @@ Bullet::Bullet()
 
 }
 
-Bullet::Bullet(Point pos,double angle,double speed,Type type):FlyingObject(pos,angle,speed),type(type)
+Bullet::Bullet(Point pos, double angle, double speed, Type type, Belone belone):FlyingObject(pos,angle,speed),type(type),belone(belone)
 {
-
+	switch (type)
+	{
+	case Bullet::BASKERBALL:
+		loadimage(&b_img[0], "../飞机资料/playerbullet/basketball1.jpg", B_Width, B_Height);
+		loadimage(&b_img[1], "../飞机资料/playerbullet/basketball2.jpg", B_Width, B_Height);
+		break;
+	case Bullet::BULLET1:
+		// 加载子弹1图片
+		break;
+	case Bullet::BOOS:
+		// 加载子弹2图片
+		break;
+	case Bullet::NONE:
+		// 加载子弹3图片
+		break;
+	default:
+		// 好像没什么用
+		break;
+	}
 }
 
 Bullets::Bullets()
@@ -26,27 +44,9 @@ Bullets::Bullets()
 *	Type type：子弹类型
 * 返回值：void
 */
-void Bullets::addBullet(Point pos, double angle, double speed, Bullet::Type type)
+void Bullets::addBullet(Point pos, double angle, double speed, Bullet::Type type, Bullet::Belone belone)
 {
-	switch (type)
-	{
-	case Bullet::BASKERBALL:
-		loadimage(&b_img[0], "../飞机资料/playerbullet/basketball1.jpg", B_Width, B_Height);
-		loadimage(&b_img[1], "../飞机资料/playerbullet/basketball2.jpg", B_Width, B_Height);
-		s[num++] = Bullet(pos, angle, speed, type);
-		break;
-	case Bullet::BULLET1:
-		break;
-	case Bullet::BOOS:
-		break;
-	case Bullet::NONE:
-		break;
-	default:
-		break;
-	}
-
-	//s.push_back(bullet); //向子弹向量中添加新建对象b
-
+	s[num++] = Bullet(pos, angle, speed, type, belone);
 }
 
 /*
@@ -57,7 +57,6 @@ void Bullets::addBullet(Point pos, double angle, double speed, Bullet::Type type
 */
 int Bullets::getNum()
 {
-	//return (int)s.size();
 	return num;
 }
 
@@ -70,16 +69,10 @@ int Bullets::getNum()
 */
 void Bullets::move()
 {
-	//vector<Bullet>::iterator b = s.begin();
-	//while (b != s.end())
-	//{
-	//	b->playermove();
-	//	b->showbullet();
-	//}
 
 	for (int i = 0; i < num; i++)
 	{
-		while (i < num)
+		while (i < num) // 删除超过屏幕范围的子弹
 		{
 			Point p = s[i].getPos();
 			if (p.x > -50 && p.x < 810 && p.y > -50 && p.y < 1074) break;
@@ -93,6 +86,12 @@ void Bullets::move()
 		s[i].showbullet();
 	}
 }
+
+Bullet& Bullets::getBullet(int idx)
+{
+	return s[idx];
+}
+
 
 /*
 * 负责人：
@@ -113,33 +112,16 @@ void Bullets::delBullet(int idx)
 */
 void Bullet::showbullet()
 {
-	switch (type)
-	{
-	case BASKERBALL:
-		loadimage(&b_img[0], "../飞机资料/playerbullet/basketball1.jpg", B_Width, B_Height);
-		loadimage(&b_img[1], "../飞机资料/playerbullet/basketball2.jpg", B_Width, B_Height);
-		putimage(pos.x, pos.y, &b_img[0], SRCAND);
-		putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
-		break;
-	case BULLET1:
-		loadimage(&b_img[0], "../飞机资料/enemybullet/bullet1.jpg", B_Width, B_Height);
-		loadimage(&b_img[1], "../飞机资料/enemybullet/bullet2.jpg", B_Width, B_Height);
-		putimage(pos.x, pos.y, &b_img[0], SRCAND);
-		putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
-		break;
-	//case BULLET2:
-	//	loadimage(&b_img[0], "../飞机资料/enemy/plane_enemy.jpg", B_Width, B_Height);
-	//	loadimage(&b_img[1], "../飞机资料/enemy/plane_enemy2.jpg", B_Width, B_Height);
-	//	putimage(pos.x, pos.y, &b_img[0], SRCAND);
-	//	putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
-	//	break;
-	case BOOS:
-		loadimage(&b_img[0], "../飞机资料/enemybullet/boss_bullet1.jpg", B_Width, B_Height);
-		loadimage(&b_img[1], "../飞机资料/enemybullet/boss_bullet2.jpg", B_Width, B_Height);
-		putimage(pos.x, pos.y, &b_img[0], SRCAND);
-		putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
-		break;
-	default:
-		break;
-	}
+	putimage(pos.x, pos.y, &b_img[0], SRCAND);
+	putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
+}
+
+Bullet::Type Bullet::getType()
+{
+	return type;
+}
+
+Bullet::Belone Bullet::getBelone()
+{
+	return belone;
 }

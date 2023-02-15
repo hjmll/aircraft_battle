@@ -16,7 +16,7 @@ public:
 	void addEnemy();
 
 	// Åö×²¼ì²é
-	void checkCrash();
+	int checkCrash();
 
 	//·¢Éä×Óµ¯
 	void playerattack();

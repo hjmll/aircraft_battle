@@ -107,7 +107,7 @@ void Game::playerattack()
 				p_pos[i] = player.getPos();
 				p_pos[i].x = p_pos[i].x + E_Wideh / 2 - B_Width / 2;
 				p_pos[i].y = p_pos[i].y - B_Width;
-				bullets.addBullet(p_pos[i], 90, p_speed + 10, Bullet::BASKERBALL);
+				bullets.addBullet(p_pos[i], 90, p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
    			attackCD = 5;
 		}
@@ -117,7 +117,7 @@ void Game::playerattack()
 			angle = 45;
 			for (int i = 0; i < b_num; i++)
 			{
-				bullets.addBullet(p_pos[i], angle * (i + 1), p_speed + 10, Bullet::BASKERBALL);
+				bullets.addBullet(p_pos[i], angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
 			attackCD = 10;
 		}
@@ -127,7 +127,7 @@ void Game::playerattack()
 			angle = 30;
 			for (int i = 0; i < b_num; i++)
 			{
-				bullets.addBullet(p_pos[i], angle * (i + 1), p_speed + 10, Bullet::BASKERBALL);
+				bullets.addBullet(p_pos[i], angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
 			attackCD = 10;
 		}
@@ -208,11 +208,64 @@ void Game::addEnemy()
 	2. 枚举所有敌机，判断是否与玩家相撞，之后的逻辑同上
 
 * 参数：void
-* 返回值：void
+* 返回值：0. 游戏继续 1. 胜利 2. 失败
 */
-void Game::checkCrash()
+int Game::checkCrash()
 {
+	// 子弹碰撞
+	for (int i = 0; i < bullets.getNum(); i++) {
+		Bullet b = bullets.getBullet(i);
+		if (b.getBelone() == Bullet::Belone::ENEMY) {
+			if (player.getBuffTime(Player::unbreakable) > 0) {
+				continue; // 无敌时间，不计算碰撞
+			}
+			if (max(fabs(b.getPos().x - player.getPos().x), fabs(b.getPos().y - player.getPos().y)) < 100) {
+				// 切雪比夫距离小于50视为碰撞
+				bullets.delBullet(i); // 删除子弹
+				player.hurt(1); // 掉血量为1，待调整
+				if (player.getHp() <= 0) {
+					return 2; // 失败
+				}
+				player.addBuff(Player::unbreakable, 120); // 获得120帧无敌时间
+			}
+		}
+		else {
+			for (int j = 0; j < enemys.getNum(); j++) {
+				Enemy e = enemys.getEnemy(j);
+				if (max(fabs(b.getPos().x - e.getPos().x), fabs(b.getPos().y - e.getPos().y)) < 100) {
+					bullets.delBullet(i); // 删除子弹
+					e.hurt(1); // 掉血量为1，待调整
+					if (e.getHp() <= 0) {
+						enemys.delEnemy(j); // 敌机被击落
+						// 此处添加玩家飞机buff
+					}
+				}
+			}
+		}
+	}
 
+	// 敌我碰撞
+	for (int i = 0; i < enemys.getNum(); i++) {
+		Enemy e = enemys.getEnemy(i);
+		if (player.getBuffTime(Player::unbreakable) > 0) {
+			continue; // 无敌时间，不计算碰撞
+		}
+		if (max(fabs(e.getPos().x - player.getPos().x), fabs(e.getPos().y - player.getPos().y)) < 80) {
+			// 切雪比夫距离小于50视为碰撞
+			player.hurt(1); // 掉血量为1，待调整
+			e.hurt(1); 
+			if (player.getHp() <= 0) {
+				return 2; // 失败
+			}
+			if (e.getHp() <= 0) {
+				enemys.delEnemy(i); // 敌机被击落
+				// 此处添加玩家飞机buff
+			}
+			player.addBuff(Player::unbreakable, 120); // 获得120帧无敌时间
+		}
+	}
+
+	return 0;
 }
 
 /*
@@ -350,6 +403,16 @@ Game::Page Game::showGame()
 
 
 		bullets.move();
+
+		// 碰撞检测
+		switch (checkCrash()) {
+		case 0:
+			break;
+		case 1:
+			return WIN;
+		case 2:
+			return LOSE;
+		}
 
 		Sleep(16);
 

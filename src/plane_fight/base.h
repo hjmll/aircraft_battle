@@ -32,6 +32,7 @@ public:
 	// 返回坐标
 	Point getPos();
 
+	// 重设坐标、角度
 	void reset(double angle, double speed);
 
 	FlyingObject() {}

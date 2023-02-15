@@ -184,6 +184,11 @@ void Player::clearBuff()
 	speed = 3; //移动速度恢复到默认值3
 }
 
+int Player::getBuffTime(Buff buff)
+{
+	return buffTime[buff];
+}
+
 // 负责人：
 Player::Player()
 {
@@ -208,7 +213,35 @@ Enemy :: Enemy(Type enemyType, int hp, Point pos, double angle, double speed, Bu
 	: type(type), Plane(pos,angle,speed,hp,defualtCD,bulletType,attackSpeed)
 {
 	type = enemyType;
+	switch (type) {
+	case Enemy::NORMAL_A:
+		loadimage(&e_img[0], "../飞机资料/enemy/plane_enemy.jpg", E_Wideh, E_Height);
+		loadimage(&e_img[1], "../飞机资料/enemy/plane_enemy2.jpg", E_Wideh, E_Height);
+		break;
+	case Enemy::NORMAL_B:
+		loadimage(&e_img[0], "../飞机资料/enemy/img_plane_enemy10.jpg", E_Wideh, E_Height);
+		loadimage(&e_img[1], "../飞机资料/enemy/img_plane_enemy11.jpg", E_Wideh, E_Height);
+		break;
+	case Enemy::E_GREEN:
+		loadimage(&e_img[0], "../飞机资料/enemy/img_plane_enemy8.jpg", E_Wideh, E_Height);
+		loadimage(&e_img[1], "../飞机资料/enemy/img_plane_enemy9.jpg", E_Wideh, E_Height);
+		break;
+	case Enemy::E_RED:
+		loadimage(&e_img[0], "../飞机资料/enemy/img_plane_enemy1.jpg", E_Wideh, E_Height);
+		loadimage(&e_img[1], "../飞机资料/enemy/img_plane_enemy2.jpg", E_Wideh, E_Height);
+		break;
+	case Enemy::BOSS:
+		loadimage(&e_img[0], "../飞机资料/BOSS/boss1.jpg", E_Wideh, E_Height);
+		loadimage(&e_img[1], "../飞机资料/BOSS/boss2.jpg", E_Wideh, E_Height);
+		break;
+	}
 }
+
+Enemy& Enemys::getEnemy(int idx)
+{
+	return s[idx];
+}
+
 Enemys::Enemys()
 {
 	num = 0;
@@ -228,32 +261,22 @@ void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 	int hp = 0;
 	switch (type) {
 	case Enemy::NORMAL_A:
-		putimage(pos.x, pos.y, &e_img[0], SRCAND);
-		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		hp = 100;
 		break;
 	case Enemy::NORMAL_B:
-		putimage(pos.x, pos.y, &e_img[0], SRCAND);
-		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::BULLET1);
 		hp = 60;
 		break;
 	case Enemy::E_GREEN:
-		putimage(pos.x, pos.y, &e_img[0], SRCAND);
-		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		hp = 60;
 		break;
 	case Enemy::E_RED:
-		putimage(pos.x, pos.y, &e_img[0], SRCAND);
-		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		hp = 60;
 		break;
 	case Enemy::BOSS:
-		putimage(pos.x, pos.y, &e_img[0], SRCAND);
-		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::BOOS);
 		hp = 400;
 		break;
@@ -286,7 +309,7 @@ void Enemys::move()
 		while (i < num)
 		{
 			Point p = s[i].getPos();
-			if (p.y < 1074) break;
+			if (p.y < 1074) break; // 删除超过屏幕范围的飞机
 			delEnemy(i);
 		}
 	}
@@ -360,39 +383,6 @@ void Enemy::attack()
 */
 void Enemy::showenemy()
 {
-	switch (type)
-	{
-	case Enemy::NORMAL_A:
-		loadimage(&e_img[0], "../飞机资料/enemy/plane_enemy.jpg",E_Wideh,E_Height);
-		loadimage(&e_img[1], "../飞机资料/enemy/plane_enemy2.jpg", E_Wideh, E_Height);
-		putimage(pos.x, pos.y, &e_img[0], SRCAND);
-		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
-		break;
-	case Enemy::NORMAL_B:
-		loadimage(&e_img[0], "../飞机资料/enemy/img_plane_enemy10.jpg", E_Wideh, E_Height);
-		loadimage(&e_img[1], "../飞机资料/enemy/img_plane_enemy11.jpg", E_Wideh, E_Height);
-		putimage(pos.x, pos.y, &e_img[0], SRCAND);
-		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
-		break;
-	case Enemy::E_GREEN:
-		loadimage(&e_img[0], "../飞机资料/enemy/img_plane_enemy8.jpg", E_Wideh, E_Height);
-		loadimage(&e_img[1], "../飞机资料/enemy/img_plane_enemy9.jpg", E_Wideh, E_Height);
-		putimage(pos.x, pos.y, &e_img[0], SRCAND);
-		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
-		break;
-	case Enemy::E_RED:
-		loadimage(&e_img[0], "../飞机资料/enemy/img_plane_enemy1.jpg", E_Wideh, E_Height);
-		loadimage(&e_img[1], "../飞机资料/enemy/img_plane_enemy2.jpg", E_Wideh, E_Height);
-		putimage(pos.x, pos.y, &e_img[0], SRCAND);
-		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
-		break;
-	case Enemy::BOSS:
-		loadimage(&e_img[0], "../飞机资料/BOSS/boss1.jpg", E_Wideh, E_Height);
-		loadimage(&e_img[1], "../飞机资料/BOSS/boss2.jpg", E_Wideh, E_Height);
-		putimage(pos.x, pos.y, &e_img[0], SRCAND);
-		putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
-		break;
-	default:
-		break;
-	}
+	putimage(pos.x, pos.y, &e_img[0], SRCAND);
+	putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
 }
