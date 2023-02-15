@@ -1,10 +1,9 @@
 #include <algorithm>
 #include "plane.h"
-
-// extern Bullets bullets; //应当在game.cpp  init()函数中声明 Bullets bullets 此处直接引用
+#include<graphics.h>
 
 /*
-* 负责人：覃一诚
+* 负责人：
 * 功能：返回飞机血量
 * 参数：void
 * 返回值：int
@@ -23,7 +22,7 @@ int Plane::getHp()
 */
 void Plane::hurt(int damage)
 {
-	this->hp -= damage;
+	this->hp -= damage; //在碰撞检测时需要注意，如果飞机处于无敌状态，传入的damage参数应该为0
 }
 
 //参数分别为：坐标位置，角度，移动速度，生命值，默认CD，子弹类型，攻击速度(默认值为1.0)
@@ -33,7 +32,7 @@ Plane::Plane(Point pos, double angle, double speed, int hp, int defualtAttackCD,
 }
 
 /*
-* 负责人：覃一诚
+* 负责人：
 * 功能：玩家飞机攻击
 *	根据玩家飞机血量，在飞机坐标（getPos()函数）附近生成子弹
 *	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹
@@ -42,26 +41,26 @@ Plane::Plane(Point pos, double angle, double speed, int hp, int defualtAttackCD,
 */
 void Player::attack()
 {
-	if (attackCD==0) { // attackCD为0时才可以发射子弹
+	if (attackCD==0 ) { // attackCD为0且按下空格时才可以发射子弹  此处只判断是否attackCD为0，按下空格将在game.cpp中调用该函数时判断
 		if (hp > 5) {
-			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
-			Bullets::addBullet(Player::getPos(), 90.0, Player::speed+10, Bullet::PLAYER, Bullet::Default); 
+			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(参数已计算成弧度)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
+			Bullets::addBullet(Player::getPos(), 4.71, Player::speed+10, Bullet::PLAYER, Bullet::Default);   // cos(4.71)=-0.00     sin(4.71)=-0.99 
 			attackCD = 50;//发射子弹后attackCD默认设置为50，不合适再改
 		}
 		else if (hp > 2) {
-			//当生命值大于2时，在飞机坐标位置生成三枚子弹，角度为分别为45°(左)，90°(中)，135°(右)(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射AAA型子弹
-			Bullets::addBullet(Player::getPos(), 45.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
-			Bullets::addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
-			Bullets::addBullet(Player::getPos(), 135.0, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);
+			//当生命值大于2时，在飞机坐标位置生成三枚子弹，角度为分别为45°(左)，90°(中)，135°(右)(参数已计算成弧度)，速度为玩家飞机速度+10，子弹归属为玩家，发射AAA型子弹
+			Bullets::addBullet(Player::getPos(), 3.93, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);  // cos(3.93)=-0.70     sin(3.93)=-0.70
+			Bullets::addBullet(Player::getPos(), 4.71, Player::speed + 10, Bullet::PLAYER, Bullet::AAA);  // cos(4.71)=-0.00     sin(4.71)=-0.99 
+			Bullets::addBullet(Player::getPos(), 5.49, Player::speed + 10, Bullet::PLAYER, Bullet::AAA); // cos(5.49)=0.70      sin(5.49)=-0.70
 			attackCD = 50;//发射子弹后attackCD默认设置为50，不合适再改
 		}
 		else if (hp < 2) {
-			//当生命值小于2时，在飞机坐标位置生成五枚子弹，角度为分别为30,60,90,120,150(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射BBB型子弹
-			Bullets::addBullet(Player::getPos(), 30.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
-			Bullets::addBullet(Player::getPos(), 60.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
-			Bullets::addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
-			Bullets::addBullet(Player::getPos(), 120.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
-			Bullets::addBullet(Player::getPos(), 150.0, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);
+			//当生命值小于2时，在飞机坐标位置生成五枚子弹，角度为分别为30,60,90,120,150(参数已计算成弧度)，速度为玩家飞机速度+10，子弹归属为玩家，发射BBB型子弹
+			Bullets::addBullet(Player::getPos(), 3.66, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);   // cos(3.66)=-0.87     sin(3.66)=-0.49
+			Bullets::addBullet(Player::getPos(), 4.19, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);   //cos(4.19)=-0.49    sin(4.19)=-0.87
+			Bullets::addBullet(Player::getPos(), 4.71, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);  // cos(4.71)=-0.00     sin(4.71)=-0.99 
+			Bullets::addBullet(Player::getPos(), 5.23, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);  //cos(5.23)=0.49    sin(5.23)=-0.87
+			Bullets::addBullet(Player::getPos(), 5.76, Player::speed + 10, Bullet::PLAYER, Bullet::BBB);  //cos(5.76)=0.87   sin(5.76)=-0.49
 			attackCD = 50;//发射子弹后attackCD默认设置为50，不合适再改
 		}
 	}
