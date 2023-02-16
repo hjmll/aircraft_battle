@@ -447,9 +447,6 @@ Game::Page Game::showGame()
 	loadimage(&p_img[0], "../飞机资料/player/At1.jpg", E_Wideh, E_Height);
 	loadimage(&p_img[1], "../飞机资料/player/At2.jpg", E_Wideh, E_Height);
 
-	//p_pos.x = Width / 2 - E_Wideh/2;
-	//p_pos.y = Length - E_Height;
-
 	setbkcolor(BLACK);
 	setbkmode(TRANSPARENT);
 
@@ -500,6 +497,8 @@ Game::Page Game::showGame()
 			EndBatchDraw();
 			return LOSE;
 		}
+
+		player.checkBuff(); // 玩家buff更新
 
 		Sleep(16);
 
