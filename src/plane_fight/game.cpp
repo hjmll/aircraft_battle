@@ -451,9 +451,12 @@ Game::Page Game::showGame()
 	loadimage(&bk, "../飞机资料/bk/OUT.png",Width,Length*2);
 	loadimage(&p_img[0], "../飞机资料/player/At1.jpg", E_Wideh, E_Height);
 	loadimage(&p_img[1], "../飞机资料/player/At2.jpg", E_Wideh, E_Height);
-	//setbkmode(TRANSPARENT);
+
 	p_pos.x = Width / 2 - E_Wideh/2;
 	p_pos.y = Length - E_Height;
+
+	setbkcolor(BLACK);
+	setbkmode(TRANSPARENT);
 
 	while (true) {
 		BeginBatchDraw();
@@ -516,6 +519,18 @@ Game::Page Game::showGame()
 		//checkCrash();
 
 		// 渲染页面：获取玩家、敌机、子弹坐标等信息，绘制页面
+		settextstyle(32, 0, _T("黑体"));
+		outtextxy(788, 0, _T("当前分数："));
+		char s[5];
+		sprintf_s(s, "%d", score);
+		outtextxy(950, 0, s);
+
+		outtextxy(0, 720, _T("当前生命："));
+		char t[5];
+		sprintf_s(t, "%d", player.getHp());
+		outtextxy(160, 720, t);
+
+
 		EndBatchDraw();
 
 	}
