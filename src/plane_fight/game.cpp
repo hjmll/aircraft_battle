@@ -34,7 +34,7 @@ Game::Game(int fps)
 void Game::run()
 {
 	initgraph(Width, Length);
-	Page nextPage = Game::LOSE; // 启动游戏时，默认进入菜单页  
+	Page nextPage = Game::MENU; // 启动游戏时，默认进入菜单页  
 	/*
 	* showXxxx()函数负责展示对应界面，其返回值为下一个页面的枚举值
 	* 例如，启动游戏时首先进入MENU页面，接下来玩家点击开始游戏
