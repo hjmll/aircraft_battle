@@ -351,15 +351,19 @@ void Game::checkKeyDown()
 	Point p = player.getPos();
 	if (GetAsyncKeyState('W')) {
 		p.y -= p_speed;
+		p.y = max(p.y, E_Height/2);
 	}
 	if (GetAsyncKeyState('S')) {
 		p.y += p_speed;
+		p.y = min(p.y, Length - (E_Height / 2));
 	}
 	if (GetAsyncKeyState('A')) {
 		p.x -= p_speed;
+		p.x = max(p.x, E_Wideh/2);
 	}
 	if (GetAsyncKeyState('D')) {
 		p.x += p_speed;
+		p.x = min(p.x, Width - (E_Wideh / 2));
 	}
 	player.setPos(p);
 	if (GetAsyncKeyState(VK_ESCAPE)) 
@@ -463,6 +467,10 @@ Game::Page Game::showGame()
 		enemyAttackCD--;
 		bossCD--;
 		checkKeyDown();
+
+		// Debug ”√
+		circle(player.getPos().x, player.getPos().y, 10);
+
 		putimage(player.getPos().x, player.getPos().y, &p_img[0], SRCAND);
 		putimage(player.getPos().x, player.getPos().y, &p_img[1],SRCPAINT);
 
