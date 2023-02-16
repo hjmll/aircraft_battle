@@ -518,12 +518,12 @@ Game::Page Game::showGame()
 	mciSendString("play ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
 	closegraph();
 	int bk_speed;//背景图的移到速度
-	bk_speed = 3;
+	bk_speed = 2;
 	initgraph(Width, Length);
-	int bk_y = -Length;
+	int bk_y = -2*Length;
 	IMAGE bk;
 	IMAGE p_img[2];
-	loadimage(&bk, "../飞机资料/bk/OUT.png",Width,Length*2);
+	loadimage(&bk, "../飞机资料/bk/OUT_2.png",Width,Length*4);
 	loadimage(&p_img[0], "../飞机资料/player/At1.jpg", E_Wideh, E_Height);
 	loadimage(&p_img[1], "../飞机资料/player/At2.jpg", E_Wideh, E_Height);
 
@@ -534,9 +534,9 @@ Game::Page Game::showGame()
 		BeginBatchDraw();
 
 		bk_y += bk_speed;
-		if (bk_y == 0)
+		if (bk_y >= 0)
 		{
-			bk_y = -Length;
+			bk_y = -2*Length;
 		}
 		putimage(0, bk_y, &bk);
 		attackCD--;
