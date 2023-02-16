@@ -34,7 +34,7 @@ Game::Game(int fps)
 void Game::run()
 {
 	initgraph(Width, Length);
-	Page nextPage = Game::MENU; // 启动游戏时，默认进入菜单页  
+	Page nextPage = Game::LOSE; // 启动游戏时，默认进入菜单页  
 	/*
 	* showXxxx()函数负责展示对应界面，其返回值为下一个页面的枚举值
 	* 例如，启动游戏时首先进入MENU页面，接下来玩家点击开始游戏
@@ -619,6 +619,14 @@ Game::Page Game::showWin()
 		ExMessage m;
 		while (1)
 		{
+			//显示当前分数
+			setbkmode(TRANSPARENT);
+			settextcolor(BLACK);
+			settextstyle(40, 0, _T("黑体"));
+			char s[5];
+			sprintf_s(s, "%d", score);
+			outtextxy(175, 205, s);
+
 			m = getmessage(EX_MOUSE);
 			if (m.message == WM_LBUTTONDOWN)
 			{
@@ -694,6 +702,15 @@ Game::Page Game::showLose()
 	//solidrectangle(160, 343, 270, 397);
 	ExMessage m;
 	while (1) {
+		//展示分数
+		setbkmode(TRANSPARENT);
+		settextcolor(BLACK);
+		settextstyle(40, 0, _T("黑体"));
+		char s[5];
+		sprintf_s(s, "%d", score);
+		outtextxy(157, 230, "当前分数：");
+		outtextxy(347, 232, s);
+
 		m = getmessage(EX_MOUSE);
 		if (m.message == WM_LBUTTONDOWN) {
 			if (m.x < 270 && m.x>160 && m.y < 397 && m.y>343) {//重新游戏
