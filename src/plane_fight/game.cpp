@@ -548,8 +548,7 @@ Game::Page Game::showGame()
 			return PAUSE;
 		}
 
-		// Debug ÓÃ
-		circle(player.getPos().x, player.getPos().y, 50);
+		// circle(player.getPos().x, player.getPos().y, 50); // Debug ÓÃ
 
 		if (player.getBuffTime(Player::unbreakable) > 0) {
 			if (player.getBuffTime(Player::unbreakable) % 8 < 4) {

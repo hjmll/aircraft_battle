@@ -353,8 +353,7 @@ void Enemys::delEnemy(int idx)
 */
 void Enemy::showenemy()
 {
-	// Debug
-	circle(pos.x, pos.y, 50);
+	// circle(pos.x, pos.y, 50); // Debug
 	if (type == Type::BOSS) {
 		putimage(pos.x - E_Wideh, pos.y - E_Height, 2*E_Wideh - 2, 2*E_Height - 2, &e_img[0], 0, 0, SRCAND);
 		putimage(pos.x - E_Wideh, pos.y - E_Height, 2*E_Wideh - 2, 2*E_Height - 2, &e_img[1], 0, 0, SRCPAINT);
