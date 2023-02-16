@@ -113,8 +113,8 @@ void Bullets::delBullet(int idx)
 */
 void Bullet::showbullet()
 {
-	putimage(pos.x, pos.y, &b_img[0], SRCAND);
-	putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
+	putimage(pos.x - B_Width/2, pos.y - B_Height/2, &b_img[0], SRCAND);
+	putimage(pos.x - B_Width/2, pos.y - B_Height/2, &b_img[1], SRCPAINT);
 }
 
 Bullet::Type Bullet::getType()
