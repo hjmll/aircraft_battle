@@ -100,6 +100,7 @@ void Game::playerAttack()
 	double angle = 0;
 	if (attackCD <=0)
 	{
+		mciSendString("play ../飞机资料/battlemusic/shoot_1.mp3 from 0", NULL, 0, NULL); // 重头开始播放音乐
 		Point p_pos[5];
 		if (player.getHp() > 70)
 		{
@@ -304,8 +305,7 @@ int Game::checkCrash()
 					bullets.delBullet(i); // 删除子弹
 					e.hurt(20); // 掉血量为20，待调整
 					if (e.getHp() <= 0) {
-						mciSendString("close ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
-						mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
+						mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3 from 0", NULL, 0, NULL);	// 击杀音效
 						enemys.delEnemy(j); // 敌机被击落
 						score += 10;	// 游戏分数增加10
 						// 此处添加玩家飞机buff
@@ -376,7 +376,6 @@ void Game::checkKeyDown(int& p_x, int& p_y)
 		}
 	}
 	if (GetAsyncKeyState(VK_SPACE)) {
-		mciSendString("close ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
 		playerAttack();
 	}
 }
@@ -436,11 +435,12 @@ Game::Page Game::showMenu()
 */
 Game::Page Game::showGame()
 {
+	// 打开音乐资源
 	mciSendString("open ../飞机资料/battlemusic/zhandou_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
 
-
+	// 重复播放背景音乐
 	mciSendString("play ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
 	closegraph();
 	int bk_speed;//背景图的移到速度
@@ -489,17 +489,22 @@ Game::Page Game::showGame()
 			enemyAttack();
 		}
 		bullets.move();
-		mciSendString("play ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
 
 		// 碰撞检测
 		switch (checkCrash()) {
 		case 0:
 			break;
 		case 1:
-			mciSendString("close ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
+			mciSendString("close all", NULL, 0, NULL); // 退出界面前关闭所有音乐资源
+			//mciSendString("close ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
+			//mciSendString("close ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
+			//mciSendString("close ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
 			return WIN;
 		case 2:
-			mciSendString("close ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
+			mciSendString("close all", NULL, 0, NULL);
+			//mciSendString("close ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
+			//mciSendString("close ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
+			//mciSendString("close ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
 			EndBatchDraw();
 			return LOSE;
 		}
