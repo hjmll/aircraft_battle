@@ -13,13 +13,13 @@ void FlyingObject::move()
 	if (angle == 90||angle==-90)
 	{
 		xita = angle * Pi / 180;
-		pos.y += sin(xita) * speed;
+		pos.y += (int)(sin(xita) * speed);
 	}
 	else
 	{
 		xita = angle * Pi / 180;
-		pos.y += sin(xita) * speed;
-		pos.x += cos(xita) * speed;
+		pos.y += (int)(sin(xita) * speed);
+		pos.x += (int) (cos(xita) * speed);
 
 	}
 }
