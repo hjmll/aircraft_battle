@@ -1,8 +1,11 @@
 #include "game.h"
 #include "iostream"
 #include <fstream>
-#include<graphics.h>
-#include<ctime>
+#include <graphics.h>
+#include <mmsystem.h>
+#include <ctime>
+
+#pragma comment(lib,"winmm.lib")
 
 // 负责人：技术官
 Game::Game()
@@ -287,6 +290,8 @@ int Game::checkCrash()
 					bullets.delBullet(i); // 删除子弹
 					enemys.getEnemy(j).hurt(20); // 掉血量为20，待调整
 					if (enemys.getEnemy(j).getHp() <= 0) {
+						mciSendString("close ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
+						mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
 						enemys.delEnemy(j); // 敌机被击落
 						// 此处添加玩家飞机buff
 					}
@@ -303,8 +308,9 @@ int Game::checkCrash()
 		}
 		if (max(fabs(enemys.getEnemy(i).getPos().x - player.getPos().x), fabs(enemys.getEnemy(i).getPos().y - player.getPos().y)) < 80) {
 			// 切雪比夫距离小于80视为碰撞
-			player.hurt(1); // 掉血量为1，待调整
+			player.hurt(20); // 掉血量为1，待调整
 			enemys.getEnemy(i).hurt(20);
+			cout << player.getHp() << endl;
 			if (player.getHp() <= 0) {
 				return 2; // 失败
 			}
@@ -354,6 +360,7 @@ void Game::checkKeyDown(int& p_x, int& p_y)
 		}
 	}
 	if (GetAsyncKeyState(VK_SPACE)) {
+		mciSendString("close ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
 		playerAttack();
 	}
 }
@@ -413,6 +420,12 @@ Game::Page Game::showMenu()
 */
 Game::Page Game::showGame()
 {
+	mciSendString("open ../飞机资料/battlemusic/zhandou_1.mp3", NULL, 0, NULL);
+	mciSendString("open ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
+	mciSendString("open ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
+
+
+	mciSendString("play ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
 	closegraph();
 	int bk_speed;//背景图的移到速度
 	bk_speed = 3;
@@ -458,14 +471,17 @@ Game::Page Game::showGame()
 		}
 
 		bullets.move();
+		mciSendString("play ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
 
 		// 碰撞检测
 		switch (checkCrash()) {
 		case 0:
 			break;
 		case 1:
+			mciSendString("close ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
 			return WIN;
 		case 2:
+			mciSendString("close ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
 			return LOSE;
 		}
 
@@ -489,7 +505,6 @@ Game::Page Game::showGame()
 		EndBatchDraw();
 
 	}
-	return MENU;
 }
 
 /*
