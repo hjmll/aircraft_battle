@@ -192,7 +192,7 @@ int Player::getBuffTime(Buff buff)
 // 负责人：
 Player::Player()
 {
-
+	hp = 100;
 }
 
 
@@ -237,6 +237,11 @@ Enemy :: Enemy(Type enemyType, int hp, Point pos, double angle, double speed, Bu
 	}
 }
 
+Enemy::Type Enemy::getType()
+{
+	return type;
+}
+
 Enemy& Enemys::getEnemy(int idx)
 {
 	return s[idx];
@@ -261,24 +266,25 @@ void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 	int hp = 0;
 	switch (type) {
 	case Enemy::NORMAL_A:
-		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		hp = 100;
+		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		break;
 	case Enemy::NORMAL_B:
-		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::BULLET1);
 		hp = 60;
+		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::BULLET1);
 		break;
 	case Enemy::E_GREEN:
-		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		hp = 60;
+		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		break;
 	case Enemy::E_RED:
-		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
 		hp = 60;
+		s[num] = Enemy(type, hp, pos, angle, speed, Bullet::NONE);
+		num++;
 		break;
 	case Enemy::BOSS:
+		int hp = 400;
 		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::BOOS);
-		hp = 400;
 		break;
 	}
 }
@@ -323,19 +329,6 @@ void Enemys::move()
 
 /*
 * 负责人：傅全有
-* 功能：所有敌机攻击
-*	枚举所有敌机，依次调用各敌机的attack()函数
-* 参数：void
-* 返回值：void
-*/
-void Enemys::attack()
-{
-	for (int i = 0; i < num; ++i)
-		s[i].attack();
-}
-
-/*
-* 负责人：傅全有
 * 功能：删除指定编号的敌人
 *	将数组末尾的敌人复制到idx处，敌人总数-1
 * 参数：
@@ -347,35 +340,6 @@ void Enemys::delEnemy(int idx)
 	swap(s[idx], s[--num]);
 }
 
-
-/*
-* 负责人：傅全有
-* 功能：敌机攻击
-*	根据敌机类型，在敌机坐标（getPos()函数）附近生成子弹
-*	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹
-* 参数：void
-* 返回值：void
-*/
-void Enemy::attack()
-{
-	Point pos = { getPos().x,getPos().y +5 };
-	switch (type) {
-	case NORMAL_A:
-		break;
-	case NORMAL_B:
-		//Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::BULLET1);
-		break;
-	case E_GREEN:
-		/*Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::NONE);*/
-		break;
-	case E_RED:
-	/*	Bullets::addBullet(pos, angle, speed + 1, Bullet::ENEMY, Bullet::NONE);*/
-		break;
-	case BOSS:
-		//Bullets::addBullet(pos, angle, speed + 0.5, Bullet::ENEMY, Bullet::BOOS);
-		break;
-	}
-}
 
 
 /*

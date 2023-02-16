@@ -82,7 +82,7 @@ void Game::init()
 	enemyCD = 30;//第一个敌人30*16毫秒后生成
 	bossCD = 15000;
 	attackCD = 5;
-	p_hp = 100;
+	enemyAttackCD = 30;
 	score = 0;
 }
 
@@ -91,15 +91,14 @@ void Game::init()
 * 
 * 
 */
-void Game::playerattack()
+void Game::playerAttack()
 {
 	int b_num = 0;
 	double angle = 0;
-	cout << "attack=" << attackCD << endl;
 	if (attackCD <=0)
 	{
 		Point p_pos[5];
-		if (p_hp > 70) 
+		if (player.getHp() > 70)
 		{
 			//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
 			b_num = 1;
@@ -112,7 +111,7 @@ void Game::playerattack()
 			}
    			attackCD = 5;
 		}
-		else if (p_hp > 40)
+		else if (player.getHp() > 40)
 		{
 			b_num = 3;
 			angle = 45;
@@ -134,6 +133,55 @@ void Game::playerattack()
 		}
 	}
 }
+
+
+/*
+* 负责人：傅全有
+* 功能：敌机攻击
+*	根据敌机类型，在敌机坐标（getPos()函数）附近生成子弹
+*	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹
+* 参数：void
+* 返回值：void
+*/
+void Game::enemyAttack()
+{
+	int b_num = 0;
+	double angle = 0;
+	for (int i = 0; i < enemys.getNum(); ++i) {
+		Point e_pos[5];
+		switch (enemys.getEnemy(i).getType())
+		{
+		case Enemys::NORMAL_A:
+		case Enemys::E_GREEN:
+		case Enemys::E_RED:
+			break;
+		case Enemys::NORMAL_B:
+			b_num = 1;
+			for (int j = 0; j < b_num; j++)
+			{
+				e_pos[j] = enemys.getEnemy(i).getPos();
+				e_pos[j].x = e_pos[j].x + E_Wideh / 2 - B_Width / 2;
+				e_pos[j].y = e_pos[j].y + E_Height;
+				bullets.addBullet(e_pos[j], 80, p_speed + 10, Bullet::BASKERBALL, Bullet::ENEMY);
+			}
+			enemyAttackCD = 30;
+			break;
+		case Enemys::BOSS:
+			b_num = 5;
+			angle = 360;
+			for (int j = 0; j < b_num; j++)
+			{
+				e_pos[j] = enemys.getEnemy(i).getPos();
+				e_pos[j].x = e_pos[j].x + E_Wideh / 2 - B_Width / 2;
+				e_pos[j].y = e_pos[j].y - B_Width;
+				bullets.addBullet(e_pos[j], angle / (i + 1), p_speed - 5, Bullet::BASKERBALL, Bullet::ENEMY);
+			} 
+			enemyAttackCD = 60;
+			break;
+		}
+	}
+}
+
 /*
 * 负责人：易骏清
 * 功能：尝试生成新敌机
@@ -189,6 +237,7 @@ void Game::addEnemy()
 				 e_pos.y = -E_Height;
 				 enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_B);
 				 enemyCD = defualtCD;
+				 enemyAttackCD = 30;
 			 }
 		 }
 	 }
@@ -215,15 +264,16 @@ int Game::checkCrash()
 {
 	// 子弹碰撞
 	for (int i = 0; i < bullets.getNum(); i++) {
-		Bullet b = bullets.getBullet(i);
-		if (b.getBelone() == Bullet::Belone::ENEMY) {
+		//Bullet b = bullets.getBullet(i);
+		if (bullets.getBullet(i).getBelone() == Bullet::Belone::ENEMY) {
 			if (player.getBuffTime(Player::unbreakable) > 0) {
 				continue; // 无敌时间，不计算碰撞
 			}
-			if (max(fabs(b.getPos().x - player.getPos().x), fabs(b.getPos().y - player.getPos().y)) < 100) {
-				// 切雪比夫距离小于50视为碰撞
+			if (max(fabs(bullets.getBullet(i).getPos().x - player.getPos().x), fabs(bullets.getBullet(i).getPos().y - player.getPos().y)) < 50) {
+				// 切雪比夫距离小于60视为碰撞
 				bullets.delBullet(i); // 删除子弹
-				player.hurt(1); // 掉血量为1，待调整
+				player.hurt(20); // 掉血量为20，待调整
+				cout << player.getHp() << endl;
 				if (player.getHp() <= 0) {
 					return 2; // 失败
 				}
@@ -232,11 +282,11 @@ int Game::checkCrash()
 		}
 		else {
 			for (int j = 0; j < enemys.getNum(); j++) {
-				Enemy e = enemys.getEnemy(j);
-				if (max(fabs(b.getPos().x - e.getPos().x), fabs(b.getPos().y - e.getPos().y)) < 100) {
+				//Enemy e = enemys.getEnemy(j);
+				if (max(fabs(bullets.getBullet(i).getPos().x - enemys.getEnemy(j).getPos().x), fabs(bullets.getBullet(i).getPos().y - enemys.getEnemy(j).getPos().y)) < 60 && bullets.getBullet(i).getBelone() == Bullet::Belone::PLAYER) {
 					bullets.delBullet(i); // 删除子弹
-					e.hurt(1); // 掉血量为1，待调整
-					if (e.getHp() <= 0) {
+					enemys.getEnemy(j).hurt(20); // 掉血量为20，待调整
+					if (enemys.getEnemy(j).getHp() <= 0) {
 						enemys.delEnemy(j); // 敌机被击落
 						// 此处添加玩家飞机buff
 					}
@@ -247,25 +297,24 @@ int Game::checkCrash()
 
 	// 敌我碰撞
 	for (int i = 0; i < enemys.getNum(); i++) {
-		Enemy e = enemys.getEnemy(i);
+		//Enemy e = enemys.getEnemy(i);
 		if (player.getBuffTime(Player::unbreakable) > 0) {
 			continue; // 无敌时间，不计算碰撞
 		}
-		if (max(fabs(e.getPos().x - player.getPos().x), fabs(e.getPos().y - player.getPos().y)) < 80) {
-			// 切雪比夫距离小于50视为碰撞
+		if (max(fabs(enemys.getEnemy(i).getPos().x - player.getPos().x), fabs(enemys.getEnemy(i).getPos().y - player.getPos().y)) < 80) {
+			// 切雪比夫距离小于80视为碰撞
 			player.hurt(1); // 掉血量为1，待调整
-			e.hurt(1); 
+			enemys.getEnemy(i).hurt(20);
 			if (player.getHp() <= 0) {
 				return 2; // 失败
 			}
-			if (e.getHp() <= 0) {
+			if (enemys.getEnemy(i).getHp() <= 0) {
 				enemys.delEnemy(i); // 敌机被击落
 				// 此处添加玩家飞机buff
 			}
 			player.addBuff(Player::unbreakable, 120); // 获得120帧无敌时间
 		}
 	}
-
 	return 0;
 }
 
@@ -305,7 +354,7 @@ void Game::checkKeyDown(int& p_x, int& p_y)
 		}
 	}
 	if (GetAsyncKeyState(VK_SPACE)) {
-		playerattack();
+		playerAttack();
 	}
 }
 
@@ -367,7 +416,7 @@ Game::Page Game::showGame()
 	closegraph();
 	int bk_speed;//背景图的移到速度
 	bk_speed = 3;
-	initgraph(Width, Length);
+	initgraph(Width, Length,SHOWCONSOLE);
 	int bk_y = -Length;
 	IMAGE bk;
 	IMAGE p_img[2];
@@ -389,6 +438,7 @@ Game::Page Game::showGame()
 		}
 		putimage(0, bk_y, &bk);
 		attackCD--;
+		enemyAttackCD--;
 		bossCD--;
 		checkKeyDown(p_pos.x, p_pos.y);
 		p_pos = player.playermove(p_pos.x, p_pos.y);
@@ -402,6 +452,10 @@ Game::Page Game::showGame()
 		}
 		enemys.move();
 
+		//敌人攻击
+		if (enemyAttackCD <= 0) {
+			enemyAttack();
+		}
 
 		bullets.move();
 

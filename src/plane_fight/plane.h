@@ -12,12 +12,10 @@ public:
 	// 返回飞机血量
 	int getHp();
 
-
-
 	// 飞机受到damage点伤害
 	void hurt(int damage);
 
-	Plane() {}
+	Plane() {};
 
 	Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bullet::Type bulletType, double attackSpeed = 1.0);
 
@@ -92,8 +90,6 @@ class Enemy : public Plane
 {
 public:
 	enum Type { NORMAL_A, NORMAL_B, E_GREEN, E_RED, BOSS}; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
-	// 攻击
-	void attack();
 
 	//展示图像
 	void showenemy();
@@ -101,6 +97,8 @@ public:
 	Enemy() {};
 
 	Enemy(Type type, int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD = 1, double attackSpeed = 1.0);
+
+	Type getType();
 protected:
 	Type type;	// 敌人类型
 	IMAGE e_img[2];
@@ -119,9 +117,6 @@ public:
 
 	// 所有敌机移动
 	void move();
-
-	// 所有敌机攻击
-	void attack();
 
 	// 删除指定编号的敌机
 	void delEnemy(int idx);

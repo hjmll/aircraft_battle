@@ -26,7 +26,7 @@ public:
 protected:
 	Belone belone;	// 子弹归属
 	Type type;		// 子弹类型
-    IMAGE b_img[2]; // 子弹图片
+    IMAGE b_img[4]; // 子弹图片
 
 };
 

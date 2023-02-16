@@ -1,2 +1,3 @@
-﻿  game.cpp
-  plane_fight.vcxproj -> D:\桌面\text1\plane_fight\src\x64\Debug\plane_fight.exe
+﻿  plane.cpp
+D:\WORK\plane_fight\src\plane_fight\plane.cpp(31,29): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  plane_fight.vcxproj -> D:\WORK\plane_fight\src\x64\Debug\plane_fight.exe

@@ -21,10 +21,6 @@ Bullet::Bullet(Point pos, double angle, double speed, Type type, Belone belone):
 		// 加载子弹2图片
 		break;
 	case Bullet::NONE:
-		// 加载子弹3图片
-		break;
-	default:
-		// 好像没什么用
 		break;
 	}
 }
@@ -103,7 +99,11 @@ Bullet& Bullets::getBullet(int idx)
 */
 void Bullets::delBullet(int idx)
 {
-	swap(s[idx], s[--num]);//将向量末尾处子弹和idx处交换
+	//swap(s[idx], s[--num]);//将向量末尾处子弹和idx处交换
+	if (idx < 0 || idx > num - 1 || num <= 0)
+		return;
+	s[idx] = s[num - 1];
+	num--;
 }
 
 
