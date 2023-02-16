@@ -19,8 +19,8 @@ Bullet::Bullet(Point pos, double angle, double speed, Type type, Belone belone):
 		loadimage(&b_img[1], "../飞机资料/enemybullet/bullet2.jpg", B_Width, B_Height);
 		break;
 	case Bullet::BOOS:
-		loadimage(&b_img[0], "../飞机资料/playerbullet/boss_bullet1.jpg", B_Width, B_Height);
-		loadimage(&b_img[1], "../飞机资料/playerbullet/boss_bullet2.jpg", B_Width, B_Height);
+		loadimage(&b_img[0], "../飞机资料/enemybullet/boss_bullet1.jpg", B_Width, B_Height);
+		loadimage(&b_img[1], "../飞机资料/enemybullet/boss_bullet2.jpg", B_Width, B_Height);
 		break;
 	case Bullet::NONE:
 		break;

@@ -159,7 +159,7 @@ void Game::enemyAttack()
 	int b_num = 0;
 	double angle = 0;
 	for (int i = 0; i < enemys.getNum(); ++i) {
-		Point e_pos[5];
+		Point p_pos[5];
 		switch (enemys.getEnemy(i).getType())
 		{
 		case Enemys::NORMAL_A:
@@ -170,23 +170,36 @@ void Game::enemyAttack()
 			b_num = 1;
 			for (int j = 0; j < b_num; j++)
 			{
-				e_pos[j] = enemys.getEnemy(i).getPos();
-				e_pos[j].x = e_pos[j].x;
-				e_pos[j].y = e_pos[j].y;
-				bullets.addBullet(e_pos[j], 90, p_speed + 10, Bullet::BULLET1, Bullet::ENEMY);
+				p_pos[j] = enemys.getEnemy(i).getPos();
+				p_pos[j].x = p_pos[j].x + E_Wideh / 2 - B_Width / 2;
+				p_pos[j].y = p_pos[j].y + E_Height;
+				bullets.addBullet(p_pos[j], 90, p_speed + 10, Bullet::BULLET1, Bullet::ENEMY);
 			}
 			enemyAttackCD = 30;
 			break;
 		case Enemys::BOSS:
 			b_num = 5;
-			angle = 360;
+			angle = 30;
+			p_pos[0] = enemys.getEnemy(i).getPos();
+			p_pos[0].y = p_pos[0].y + E_Height * 2;
+
+
+			p_pos[2].x = p_pos[0].x + E_Wideh;
+			p_pos[2].y = p_pos[0].y;
+
+
+			p_pos[3].x = p_pos[2].x - (E_Wideh / 2 - B_Width / 2);
+			p_pos[3].y = p_pos[2].y - B_Width;
+			p_pos[4].x = p_pos[2].x - (E_Wideh / 2 - B_Width / 2) * 2;
+			p_pos[4].y = p_pos[2].y - B_Width * 2;
+			p_pos[1].y = p_pos[3].y;
+			p_pos[1].x = p_pos[2].x + (E_Wideh / 2 - B_Width / 2);
+			p_pos[0].y = p_pos[4].y;
+			p_pos[0].x = p_pos[2].x + (E_Wideh / 2 - B_Width / 2) * 2;
 			for (int j = 0; j < b_num; j++)
 			{
-				e_pos[j] = enemys.getEnemy(i).getPos();
-				e_pos[j].x = e_pos[j].x;
-				e_pos[j].y = e_pos[j].y;
-				bullets.addBullet(e_pos[j], angle / (i + 1), p_speed - 5, Bullet::BASKERBALL, Bullet::ENEMY);
-			} 
+				bullets.addBullet(p_pos[j], angle * (j + 1), p_speed - 3, Bullet::BOOS, Bullet::ENEMY);
+			}
 			enemyAttackCD = 30;
 			break;
 		}
@@ -206,51 +219,52 @@ void Game::addEnemy()
 	int type = 0;
 	srand((unsigned)time(0));
 	Point e_pos;
+	Enemy t_enemy;
 	type = rand() % 4;//随机生成
-	 if (bossCD == 0)
-	 {
-		 e_pos.x = rand() % (Width / 2 - E_Wideh*2);
-		 e_pos.y = -E_Height*2;
-		 enemys.addEnemy(e_pos, 90, 4, Enemy::BOSS);
-		 enemyCD = defualtCD;
-	 }
-	 else
-	 {
-		 enemyCD--;
-		 bossCD--;
-		 if (enemyCD == 0)
-		 {
-			 if (type == 0)//生成红色敌机
-			 {
-				 e_pos.x = rand() % (Width  - E_Wideh);
-				 e_pos.y = -E_Height;
-				 enemys.addEnemy(e_pos, 90, 4, Enemy::E_RED);
-				 enemyCD = defualtCD;
-			 }
-			 else if (type == 1)//生成绿色敌机
-			 {
-				 e_pos.x = rand() % (Width  - E_Wideh);
-				 e_pos.y = -E_Height;
-				 enemys.addEnemy(e_pos, 90, 4, Enemy::E_GREEN);
-				 enemyCD = defualtCD;
-			 }
-			 else if (type == 2)//生成普通敌机
-			 {
-				 e_pos.x = rand() % (Width  - E_Wideh);
-				 e_pos.y = -E_Height;
-				 enemys.addEnemy(e_pos, 90, 4, Enemy::NORMAL_A);
-				 enemyCD = defualtCD;
-			 }
-			 else if (type == 3)//生成会射击的敌机
-			 {
-				 e_pos.x = rand() % (Width  - E_Wideh);
-				 e_pos.y = -E_Height;
-				 enemys.addEnemy(e_pos, 90, 4, Enemy::NORMAL_B);
-				 enemyCD = defualtCD;
-				 enemyAttackCD = 30;
-			 }
-		 }
-	 }
+	if (bossCD == 1)
+	{
+		e_pos.x = rand() % (Width - E_Wideh * 2);
+		e_pos.y = -E_Height * 2;
+		enemys.addEnemy(e_pos, 90, 4, t_enemy.BOSS);
+		enemyCD = defualtCD;
+	}
+	else
+	{
+		enemyCD--;
+		bossCD--;
+		if (enemyCD == 0)
+		{
+			if (type == 0)//生成红色敌机
+			{
+				e_pos.x = rand() % (Width - E_Wideh);
+				e_pos.y = -E_Height;
+				enemys.addEnemy(e_pos, 90, 4, t_enemy.E_RED);
+				enemyCD = defualtCD;
+			}
+			else if (type == 1)//生成绿色敌机
+			{
+				e_pos.x = rand() % (Width - E_Wideh);
+				e_pos.y = -E_Height;
+				enemys.addEnemy(e_pos, 90, 4, t_enemy.E_GREEN);
+				enemyCD = defualtCD;
+			}
+			else if (type == 2)//生成普通敌机
+			{
+				e_pos.x = rand() % (Width - E_Wideh);
+				e_pos.y = -E_Height;
+				enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_A);
+				enemyCD = defualtCD;
+			}
+			else if (type == 3)//生成会射击的敌机
+			{
+				e_pos.x = rand() % (Width - E_Wideh);
+				e_pos.y = -E_Height;
+				enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_B);
+				enemyCD = defualtCD;
+				enemyAttackCD = 30;
+			}
+		}
+	}
 }
 
 /*
