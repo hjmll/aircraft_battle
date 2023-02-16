@@ -353,8 +353,8 @@ void Enemys::delEnemy(int idx)
 */
 void Enemy::showenemy()
 {
-	putimage(pos.x, pos.y, &e_img[0], SRCAND);
-	putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+	putimage(pos.x - E_Wideh / 2, pos.y - E_Height / 2, E_Wideh - 2, E_Height - 2, &e_img[0], 0, 0, SRCAND);
+	putimage(pos.x - E_Wideh / 2, pos.y - E_Height / 2, E_Wideh - 2, E_Height - 2, &e_img[1], 0, 0, SRCPAINT);
 }
 
 
@@ -391,4 +391,5 @@ void Enemy::specialmove()
 	{
 		angle = 100;
 	}
+
 }

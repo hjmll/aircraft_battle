@@ -102,7 +102,7 @@ void Game::playerAttack()
 			for (int i = 0; i < b_num; i++)
 			{
 				p_pos[i] = player.getPos();
-				p_pos[i].x = p_pos[i].x + E_Wideh / 2;
+				p_pos[i].x = p_pos[i].x;
 				p_pos[i].y = p_pos[i].y;
 				bullets.addBullet(p_pos[i], -90, p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
@@ -112,11 +112,11 @@ void Game::playerAttack()
 		{
 			b_num = 3;
 			angle = 45;
-			p_pos[2] = player.getPos();
-			p_pos[1].x = p_pos[2].x + E_Wideh / 2;
-			p_pos[1].y = p_pos[2].y;
-			p_pos[0].x = p_pos[2].x + E_Wideh;
-			p_pos[0].y = p_pos[2].y;
+			p_pos[1] = player.getPos();
+			p_pos[2].x = p_pos[1].x - E_Wideh / 2;
+			p_pos[2].y = p_pos[1].y;
+			p_pos[0].x = p_pos[1].x + E_Wideh / 2;
+			p_pos[0].y = p_pos[1].y;
 			for (int i = 0; i < b_num; i++)
 			{
 				bullets.addBullet(p_pos[i], -angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
@@ -129,12 +129,12 @@ void Game::playerAttack()
 			angle = 30;
 			p_pos[4].x = player.getPos().x - (E_Wideh / 2 - B_Width / 2);
 			p_pos[4].y = player.getPos().y + B_Width * 2;
-			p_pos[3] = player.getPos();
-			p_pos[2].x = p_pos[3].x + (E_Wideh / 2 - B_Width / 2);
-			p_pos[2].y = p_pos[3].y - B_Width;
-			p_pos[1].x = p_pos[3].x + (E_Wideh / 2 - B_Width / 2) * 2;
+			p_pos[3].x = player.getPos().x - (E_Wideh / 2 - B_Width / 2) / 2;
+			p_pos[3].y = player.getPos().y;
+			p_pos[2] = player.getPos();
+			p_pos[1].x = p_pos[3].x + (E_Wideh / 2 - B_Width / 2) / 2;
 			p_pos[1].y = p_pos[3].y;
-			p_pos[0].x = p_pos[4].x + (E_Wideh / 2 - B_Width / 2) * 4;
+			p_pos[0].x = p_pos[4].x + (E_Wideh / 2 - B_Width / 2);
 			p_pos[0].y = p_pos[4].y;
 			for (int i = 0; i < b_num; i++)
 			{
@@ -522,10 +522,10 @@ Game::Page Game::showGame()
 		checkKeyDown();
 
 		// Debug ÓÃ
-		circle(player.getPos().x, player.getPos().y, 10);
+		circle(player.getPos().x, player.getPos().y, 50);
 
-		putimage(player.getPos().x, player.getPos().y, &p_img[0], SRCAND);
-		putimage(player.getPos().x, player.getPos().y, &p_img[1],SRCPAINT);
+		putimage(player.getPos().x - E_Wideh/2, player.getPos().y - E_Height/2, &p_img[0], SRCAND);
+		putimage(player.getPos().x - E_Wideh/2, player.getPos().y - E_Height/2, &p_img[1],SRCPAINT);
 
 
 		if (bossCD >= 0)
