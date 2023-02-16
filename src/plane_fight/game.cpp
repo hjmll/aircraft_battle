@@ -281,12 +281,12 @@ int Game::checkCrash()
 {
 	// 子弹碰撞
 	for (int i = 0; i < bullets.getNum(); i++) {
-		//Bullet b = bullets.getBullet(i);
-		if (bullets.getBullet(i).getBelone() == Bullet::Belone::ENEMY) {
+		Bullet& b = bullets.getBullet(i);
+		if (b.getBelone() == Bullet::Belone::ENEMY) {
 			if (player.getBuffTime(Player::unbreakable) > 0) {
 				continue; // 无敌时间，不计算碰撞
 			}
-			if (max(fabs(bullets.getBullet(i).getPos().x - player.getPos().x), fabs(bullets.getBullet(i).getPos().y - player.getPos().y)) < 50) {
+			if (max(fabs(b.getPos().x - player.getPos().x), fabs(b.getPos().y - player.getPos().y)) < 50) {
 				// 切雪比夫距离小于60视为碰撞
 				bullets.delBullet(i); // 删除子弹
 				player.hurt(20); // 掉血量为20，待调整
@@ -299,14 +299,15 @@ int Game::checkCrash()
 		}
 		else {
 			for (int j = 0; j < enemys.getNum(); j++) {
-				//Enemy e = enemys.getEnemy(j);
-				if (max(fabs(bullets.getBullet(i).getPos().x - enemys.getEnemy(j).getPos().x), fabs(bullets.getBullet(i).getPos().y - enemys.getEnemy(j).getPos().y)) < 60 && bullets.getBullet(i).getBelone() == Bullet::Belone::PLAYER) {
+				Enemy& e = enemys.getEnemy(j);
+				if (max(fabs(b.getPos().x - e.getPos().x), fabs(b.getPos().y - e.getPos().y)) < 60 && b.getBelone() == Bullet::Belone::PLAYER) {
 					bullets.delBullet(i); // 删除子弹
-					enemys.getEnemy(j).hurt(20); // 掉血量为20，待调整
-					if (enemys.getEnemy(j).getHp() <= 0) {
+					e.hurt(20); // 掉血量为20，待调整
+					if (e.getHp() <= 0) {
 						mciSendString("close ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
 						mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
 						enemys.delEnemy(j); // 敌机被击落
+						score += 10;	// 游戏分数增加10
 						// 此处添加玩家飞机buff
 					}
 				}
@@ -316,20 +317,21 @@ int Game::checkCrash()
 
 	// 敌我碰撞
 	for (int i = 0; i < enemys.getNum(); i++) {
-		//Enemy e = enemys.getEnemy(i);
+		Enemy& e = enemys.getEnemy(i);
 		if (player.getBuffTime(Player::unbreakable) > 0) {
 			continue; // 无敌时间，不计算碰撞
 		}
-		if (max(fabs(enemys.getEnemy(i).getPos().x - player.getPos().x), fabs(enemys.getEnemy(i).getPos().y - player.getPos().y)) < 80) {
+		if (max(fabs(e.getPos().x - player.getPos().x), fabs(e.getPos().y - player.getPos().y)) < 80) {
 			// 切雪比夫距离小于80视为碰撞
 			player.hurt(20); // 掉血量为1，待调整
-			enemys.getEnemy(i).hurt(20);
+			e.hurt(20);
 			cout << player.getHp() << endl;
 			if (player.getHp() <= 0) {
 				return 2; // 失败
 			}
-			if (enemys.getEnemy(i).getHp() <= 0) {
+			if (e.getHp() <= 0) {
 				enemys.delEnemy(i); // 敌机被击落
+				score += 10;	// 游戏分数增加10
 				// 此处添加玩家飞机buff
 			}
 			player.addBuff(Player::unbreakable, 120); // 获得120帧无敌时间
