@@ -3,7 +3,7 @@
 // extern Bullets bullets; //应当在game.cpp  init()函数中声明 Bullets bullets 此处直接引用
 
 /*
-* 负责人：覃一诚
+* 负责人：
 * 功能：返回飞机血量
 * 参数：void
 * 返回值：int
@@ -44,7 +44,7 @@ Point Player::playermove(int a,int b)
 	return pos;
 }
 /*
-* 负责人：覃一诚
+* 负责人：
 * 功能：玩家飞机攻击
 *	根据玩家飞机血量，在飞机坐标（getPos()函数）附近生成子弹
 *	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹

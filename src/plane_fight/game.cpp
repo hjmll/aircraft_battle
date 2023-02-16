@@ -619,6 +619,14 @@ Game::Page Game::showWin()
 		ExMessage m;
 		while (1)
 		{
+			//显示当前分数
+			setbkmode(TRANSPARENT);
+			settextcolor(BLACK);
+			settextstyle(40, 0, _T("黑体"));
+			char s[5];
+			sprintf_s(s, "%d", score);
+			outtextxy(175, 205, s);
+
 			m = getmessage(EX_MOUSE);
 			if (m.message == WM_LBUTTONDOWN)
 			{
@@ -694,6 +702,15 @@ Game::Page Game::showLose()
 	//solidrectangle(160, 343, 270, 397);
 	ExMessage m;
 	while (1) {
+		//展示分数
+		setbkmode(TRANSPARENT);
+		settextcolor(BLACK);
+		settextstyle(40, 0, _T("黑体"));
+		char s[5];
+		sprintf_s(s, "%d", score);
+		outtextxy(157, 230, "当前分数：");
+		outtextxy(347, 232, s);
+
 		m = getmessage(EX_MOUSE);
 		if (m.message == WM_LBUTTONDOWN) {
 			if (m.x < 270 && m.x>160 && m.y < 397 && m.y>343) {//重新游戏
