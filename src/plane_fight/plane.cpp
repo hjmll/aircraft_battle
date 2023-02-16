@@ -317,7 +317,7 @@ void Enemys::move()
 		while (i < num)
 		{
 			Point p = s[i].getPos();
-			if (p.y < 1074) break; // É¾³ý³¬¹ýÆÁÄ»·¶Î§µÄ·É»ú
+			if (p.y - E_Height < Width) break; // É¾³ý³¬¹ýÆÁÄ»·¶Î§µÄ·É»ú
 			delEnemy(i);
 		}
 	}

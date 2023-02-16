@@ -479,12 +479,16 @@ Game::Page Game::showGame()
 		{
 			addEnemy();
 		}
+
+		// 敌人移动
 		enemys.move();
 
 		//敌人攻击
 		if (enemyAttackCD <= 0) {
 			enemyAttack();
 		}
+
+		// 子弹移动
 		bullets.move();
 
 		// 碰撞检测
@@ -510,9 +514,6 @@ Game::Page Game::showGame()
 
 		Sleep(16);
 
-		// 玩家、敌人、子弹移动
-		//enemys.move();
-		//bullets.move();
 
 		//// 玩家、敌人攻击
 		//player.attack();
