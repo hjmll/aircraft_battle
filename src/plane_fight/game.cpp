@@ -102,8 +102,8 @@ void Game::playerAttack()
 			for (int i = 0; i < b_num; i++)
 			{
 				p_pos[i] = player.getPos();
-				p_pos[i].x = p_pos[i].x + E_Wideh / 2 - B_Width / 2;
-				p_pos[i].y = p_pos[i].y - B_Width;
+				p_pos[i].x = p_pos[i].x + E_Wideh / 2;
+				p_pos[i].y = p_pos[i].y;
 				bullets.addBullet(p_pos[i], -90, p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
    			attackCD = 5;
@@ -113,9 +113,9 @@ void Game::playerAttack()
 			b_num = 3;
 			angle = 45;
 			p_pos[2] = player.getPos();
-			p_pos[1].x = p_pos[2].x + E_Wideh / 2 - B_Width / 2;
-			p_pos[1].y = p_pos[2].y - B_Width;
-			p_pos[0].x = p_pos[2].x + (E_Wideh / 2 - B_Width / 2) * 2;
+			p_pos[1].x = p_pos[2].x + E_Wideh / 2;
+			p_pos[1].y = p_pos[2].y;
+			p_pos[0].x = p_pos[2].x + E_Wideh;
 			p_pos[0].y = p_pos[2].y;
 			for (int i = 0; i < b_num; i++)
 			{
@@ -171,8 +171,8 @@ void Game::enemyAttack()
 			for (int j = 0; j < b_num; j++)
 			{
 				e_pos[j] = enemys.getEnemy(i).getPos();
-				e_pos[j].x = e_pos[j].x + E_Wideh / 2 - B_Width / 2;
-				e_pos[j].y = e_pos[j].y + E_Height;
+				e_pos[j].x = e_pos[j].x;
+				e_pos[j].y = e_pos[j].y;
 				bullets.addBullet(e_pos[j], 90, p_speed + 10, Bullet::BULLET1, Bullet::ENEMY);
 			}
 			enemyAttackCD = 30;
@@ -183,8 +183,8 @@ void Game::enemyAttack()
 			for (int j = 0; j < b_num; j++)
 			{
 				e_pos[j] = enemys.getEnemy(i).getPos();
-				e_pos[j].x = e_pos[j].x + E_Wideh / 2 - B_Width / 2;
-				e_pos[j].y = e_pos[j].y - B_Width;
+				e_pos[j].x = e_pos[j].x;
+				e_pos[j].y = e_pos[j].y;
 				bullets.addBullet(e_pos[j], angle / (i + 1), p_speed - 5, Bullet::BASKERBALL, Bullet::ENEMY);
 			} 
 			enemyAttackCD = 30;
@@ -272,6 +272,7 @@ void Game::addEnemy()
 */
 int Game::checkCrash()
 {
+	int extraDMG = 0;
 	// 子弹碰撞
 	for (int i = 0; i < bullets.getNum(); i++) {
 		Bullet& b = bullets.getBullet(i);
@@ -295,12 +296,51 @@ int Game::checkCrash()
 				Enemy& e = enemys.getEnemy(j);
 				if (max(fabs(b.getPos().x - e.getPos().x), fabs(b.getPos().y - e.getPos().y)) < 60 && b.getBelone() == Bullet::Belone::PLAYER) {
 					bullets.delBullet(i); // 删除子弹
-					e.hurt(20); // 掉血量为20，待调整
+					e.hurt(20 + extraDMG); // 掉血量为20，待调整
+
+					//两种特殊敌机
+					switch (e.getType()) {
+					case Enemys::E_GREEN://恢复血量
+						if (player.getHp() + 10 <= 100)
+							player.setHp(player.getHp() + 10);
+						else
+							player.setHp(100);
+						break;
+					case Enemys::E_RED://扣除血量
+						player.hurt(10);
+						if (player.getHp() <= 0) {
+							return 2; // 失败
+						}
+						break;
+					}
+
 					if (e.getHp() <= 0) {
 						mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3 from 0", NULL, 0, NULL);	// 击杀音效
 						enemys.delEnemy(j); // 敌机被击落
 						score += 10;	// 游戏分数增加10
 						// 此处添加玩家飞机buff
+						Player::Buff buff = Player::buffCount;
+						switch (e.getType()) {
+						case Enemys::NORMAL_A:
+							buff = Player::moveSpeedUp;
+							player.addBuff(buff, 180);
+							break;
+						case Enemys::NORMAL_B:
+							//额外伤害
+							buff = Player::specialBullet;
+							break;
+						case Enemys::E_GREEN:
+							buff = Player::attackSpeedUp;
+							break;
+						case Enemys::E_RED:
+							buff = Player::unbreakable;
+							break;
+						}
+						if (buff != Player::buffCount) {
+							player.addBuff(buff, 180);
+							cout << buff << endl;
+
+						}
 					}
 				}
 			}
@@ -315,9 +355,8 @@ int Game::checkCrash()
 		}
 		if (max(fabs(e.getPos().x - player.getPos().x), fabs(e.getPos().y - player.getPos().y)) < 80) {
 			// 切雪比夫距离小于80视为碰撞
-			player.hurt(20); // 掉血量为1，待调整
+			player.hurt(20); // 掉血量为20，待调整
 			e.hurt(20);
-			cout << player.getHp() << endl;
 			if (player.getHp() <= 0) {
 				return 2; // 失败
 			}
@@ -439,7 +478,7 @@ Game::Page Game::showGame()
 	closegraph();
 	int bk_speed;//背景图的移到速度
 	bk_speed = 3;
-	initgraph(Width, Length,SHOWCONSOLE);
+	initgraph(Width, Length);
 	int bk_y = -Length;
 	IMAGE bk;
 	IMAGE p_img[2];
@@ -500,7 +539,7 @@ Game::Page Game::showGame()
 
 		player.checkBuff(); // 玩家buff更新
 
-		Sleep(16);
+		
 
 		// 玩家、敌人、子弹移动
 		//enemys.move();
@@ -525,9 +564,12 @@ Game::Page Game::showGame()
 
 		outtextxy(0, 720, _T("当前生命："));
 		char t[5];
+		cout << player.getHp() << endl;
 		sprintf_s(t, "%d", player.getHp());
 		outtextxy(160, 720, t);
+		outtextxy(200, 720, _T(" /100"));
 
+		Sleep(16);
 
 		EndBatchDraw();
 
