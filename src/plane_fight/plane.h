@@ -15,6 +15,9 @@ public:
 	// 飞机受到damage点伤害
 	void hurt(int damage);
 
+	// 恢复Num血量
+	void setHp(int num);
+
 	Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bullet::Type bulletType, double attackSpeed = 1.0);
 
 protected:

@@ -25,6 +25,11 @@ void Plane::hurt(int damage)
 	this->hp -= damage;
 }
 
+void Plane::setHp(int num)
+{
+	this->hp = num;
+}
+
 //参数分别为：坐标位置，角度，移动速度，生命值，默认CD，子弹类型，攻击速度(默认值为1.0)
 Plane::Plane(Point pos, double angle, double speed, int hp, int defualtAttackCD, Bullet::Type bulletType, double attackSpeedBouns ) 
 	: FlyingObject(pos, angle, speed),hp(hp),attackSpeedBouns(attackSpeedBouns),defualtAttackCD(defualtAttackCD),bulletType(bulletType) {
@@ -108,24 +113,19 @@ void Player::attack()
 */
 void Player::addBuff(Buff buff, int time)
 {
-	buffTime[buff] += time; //我觉得buff时间应该可以叠加
-	switch (buff) {
-	case moveSpeedUp: {
-		speed = 5; //初始设置加速后的速度为5，如果不合适再调整
-		break;
+	if (buffTime[buff] == 0) {
+		buffTime[buff] = time;
+		switch (buff) {
+		case moveSpeedUp:
+			speed = 5; //初始设置加速后的速度为5，如果不合适再调整
+			break;
+		case attackSpeedUp: 
+			attackSpeedBouns = 1.2; //初始设置加速后的攻速加成为原来的120%，不合适再改
+			break;
+		}
 	}
-	case attackSpeedUp: {
-		attackSpeedBouns = 1.2; //初始设置加速后的攻速加成为原来的120%，不合适再改
-		break;
-	}
-	case specialBullet: {
-		//处于换弹状态下，attack函数无法生效
-		break;
-	}
-	case unbreakable: {
-		//处于无敌状态下，damage函数无法生效
-		break;
-	}
+	else {
+		buffTime[buff] += time;
 	}
 }
 
@@ -317,7 +317,7 @@ void Enemys::move()
 		while (i < num)
 		{
 			Point p = s[i].getPos();
-			if (p.y < 1074) break; // 删除超过屏幕范围的飞机
+			if (p.y - E_Height < Width) break; // 删除超过屏幕范围的飞机
 			delEnemy(i);
 		}
 		if (s[i].getType() == BOSS || s[i].getType() == NORMAL_B)

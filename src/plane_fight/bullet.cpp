@@ -73,7 +73,10 @@ void Bullets::move()
 		while (i < num) // É¾³ý³¬¹ýÆÁÄ»·¶Î§µÄ×Óµ¯
 		{
 			Point p = s[i].getPos();
-			if (p.x > -50 && p.x < 810 && p.y > -50 && p.y < 1074) break;
+			if (p.x + B_Width > 0 && p.x - B_Width < Width
+				&& p.y + B_Height > 0 && p.y - B_Height < Length) {
+				break;
+			}
 			delBullet(i);
 		}
 		s[i].move();
@@ -110,8 +113,8 @@ void Bullets::delBullet(int idx)
 */
 void Bullet::showbullet()
 {
-	putimage(pos.x, pos.y, &b_img[0], SRCAND);
-	putimage(pos.x, pos.y, &b_img[1], SRCPAINT);
+	putimage(pos.x - B_Width/2, pos.y - B_Height/2, &b_img[0], SRCAND);
+	putimage(pos.x - B_Width/2, pos.y - B_Height/2, &b_img[1], SRCPAINT);
 }
 
 Bullet::Type Bullet::getType()
