@@ -15,8 +15,6 @@ public:
 	// 飞机受到damage点伤害
 	void hurt(int damage);
 
-	Plane() {};
-
 	Plane(Point pos, double angle, double speed, int hp, int defualtCD, Bullet::Type bulletType, double attackSpeed = 1.0);
 
 protected:
@@ -62,13 +60,13 @@ public:
 
 	int getBuffTime(Buff buff);
 
-	Point playermove(int a,int b);
-
+	void reset();
 
 	Player();
 
 	//玩家飞机类的构造函数
 	Player(Point pos, double angle, double speed, int hp, int attackSpeed, int defaultCD, Bullet::Type bulletType);
+
 
 protected:
 	int buffTime[buffCount];	// 记录各buff剩余时间，单位：fps
@@ -94,9 +92,7 @@ public:
 	//展示图像
 	void showenemy();
 
-	Enemy() {};
-
-	Enemy(Type type, int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD = 1, double attackSpeed = 1.0);
+	Enemy(Type type = Enemy::NORMAL_A, int hp = 5, Point pos = {0, 0}, double angle = 0, double speed = 1.0, Bullet::Type bulletType = Bullet::BULLET1, int defualtCD = 1, double attackSpeed = 1.0);
 
 	Type getType();
 protected:

@@ -28,21 +28,21 @@ void Plane::hurt(int damage)
 //参数分别为：坐标位置，角度，移动速度，生命值，默认CD，子弹类型，攻击速度(默认值为1.0)
 Plane::Plane(Point pos, double angle, double speed, int hp, int defualtAttackCD, Bullet::Type bulletType, double attackSpeedBouns ) 
 	: FlyingObject(pos, angle, speed),hp(hp),attackSpeedBouns(attackSpeedBouns),defualtAttackCD(defualtAttackCD),bulletType(bulletType) {
-	attackCD = defualtAttackCD / attackSpeedBouns;
+	attackCD = (int)(defualtAttackCD / attackSpeedBouns);
 }
 
 
 
 
-/*
-* 未来修改自身坐标
-*/
-Point Player::playermove(int a,int b)
+// 重置飞机状态
+void Player::reset()
 {
-	pos.x = a;
-	pos.y = b;
-	return pos;
+	hp = 100;
+	setPos({ Width / 2 - E_Wideh / 2, Length - E_Height });
+	memset(buffTime, 0, sizeof(buffTime));
 }
+
+
 /*
 * 负责人：
 * 功能：玩家飞机攻击
@@ -161,11 +161,11 @@ void Player::checkBuff()
 	}
 }
 
-Player::Player(Point pos, double angle, double speed, int hp, int attackSpeed, int defaultCD, Bullet::Type bulletType):Plane(pos, angle, speed, hp, defualtAttackCD, bulletType) {
-	buffTime[moveSpeedUp] = 0;
-	buffTime[attackSpeedUp] = 0;
-	buffTime[specialBullet] = 0;
-	buffTime[unbreakable] = 0; // 初始化时所有buff的时间都设置为0
+Player::Player(Point pos, double angle, double speed, int hp, int attackSpeed, int defaultAttackCD, Bullet::Type bulletType)
+	:Plane(pos, angle, speed, hp, defaultAttackCD, bulletType) {
+
+	// 初始化时所有buff的时间都设置为0
+	memset(buffTime, 0, sizeof(buffTime));
 }
 
 /*
@@ -189,10 +189,10 @@ int Player::getBuffTime(Buff buff)
 	return buffTime[buff];
 }
 
-// 负责人：
-Player::Player()
+// 负责人：pnata
+Player::Player() :Plane({ Width / 2 - E_Wideh / 2, Length - E_Height }, 0, 0, 100, 50, Bullet::BASKERBALL)
 {
-	hp = 100;
+	memset(buffTime, 0, sizeof(buffTime));
 }
 
 
@@ -209,7 +209,7 @@ Player::Player()
 *	double attackSpeed ：攻速
 * 返回值：void
 */
-Enemy :: Enemy(Type enemyType, int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD, double attackSpeed)
+Enemy::Enemy (Type enemyType, int hp, Point pos, double angle, double speed, Bullet::Type bulletType, int defualtCD, double attackSpeed)
 	: type(type), Plane(pos,angle,speed,hp,defualtCD,bulletType,attackSpeed)
 {
 	type = enemyType;
@@ -251,6 +251,8 @@ Enemys::Enemys()
 {
 	num = 0;
 }
+
+
 /*
 * 负责人：傅全有
 * 功能：在敌机集合最后一位添加一个新的敌机，敌机数量+1
