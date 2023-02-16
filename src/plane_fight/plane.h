@@ -101,6 +101,7 @@ public:
 
 	Type getType();
 protected:
+	int moveCD;	// BOSS 移动CD
 	Type type;	// 敌人类型
 	IMAGE e_img[2];
 };

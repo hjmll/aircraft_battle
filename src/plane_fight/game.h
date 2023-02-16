@@ -24,7 +24,7 @@ public:
 	void playerAttack();
 
 	//按键检测
-	void checkKeyDown();
+	int checkKeyDown();
 
 	Game(int fps = 60);
 
@@ -44,6 +44,7 @@ private:
 	int bestScore;		// 最好成绩
 	int fps;			// 游戏帧数
 	int score;			// 当前成绩
+	int preTime;		// 上一帧时间
 	int enemyCD;		// 生成新敌机的剩余CD（单位fps)
 	int bossCD;         //生成BOSS的剩余CD
 	int attackCD;       //玩家发射子弹的cd

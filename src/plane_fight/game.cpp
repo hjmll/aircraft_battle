@@ -1,6 +1,7 @@
 #include "game.h"
 #include "iostream"
 #include <fstream>
+#include <time.h>
 #include <graphics.h>
 #include <mmsystem.h>
 #include <ctime>
@@ -14,17 +15,18 @@ Game::Game(int fps)
 	bestScore = 0;
 	this->fps = fps;
 	score = 0;
+	preTime = clock();
 	enemyCD = fps/2;	// 最高每秒 2 发
 	defualtCD = fps;	// 每 1 秒添加一个敌人
 	bossCD = 0;
-	attackCD = 0;
+	attackCD = 25;
 	enemyAttackCD = 0;
 }
 
 void Game::run()
 {
 	initgraph(Width, Length);
-	Page nextPage = Game::MENU; // 启动游戏时，默认进入菜单页  
+	Page nextPage = Game::MENU; // 启动游戏时，默认进入菜单页
 	/*
 	* showXxxx()函数负责展示对应界面，其返回值为下一个页面的枚举值
 	* 例如，启动游戏时首先进入MENU页面，接下来玩家点击开始游戏
@@ -34,6 +36,7 @@ void Game::run()
 	*/
 	while (true) {
 		switch (nextPage){
+
 		case MENU:
 			nextPage = showMenu();
 			break;
@@ -73,8 +76,8 @@ void Game::run()
 void Game::init()
 {
 	enemyCD = 30;//第一个敌人30fps后生成
-	bossCD = 15000;
-	attackCD = 5;
+	bossCD = 150*fps;
+	attackCD = 20;
 	enemyAttackCD = 30;
 	score = 0;
 	player.reset(); // 重置飞机状态
@@ -106,7 +109,7 @@ void Game::playerAttack()
 				p_pos[i].y = p_pos[i].y;
 				bullets.addBullet(p_pos[i], -90, p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
-   			attackCD = 5;
+   			attackCD = 10;
 		}
 		else if (player.getHp() > 40)
 		{
@@ -121,7 +124,7 @@ void Game::playerAttack()
 			{
 				bullets.addBullet(p_pos[i], -angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
-			attackCD = 10;
+			attackCD = 20;
 		}
 		else
 		{
@@ -140,7 +143,7 @@ void Game::playerAttack()
 			{
 				bullets.addBullet(p_pos[i], -angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
-			attackCD = 10;
+			attackCD = 25;
 		}
 	}
 }
@@ -171,13 +174,13 @@ void Game::enemyAttack()
 			for (int j = 0; j < b_num; j++)
 			{
 				p_pos[j] = enemys.getEnemy(i).getPos();
-				p_pos[j].x = p_pos[j].x + E_Wideh / 2 - B_Width / 2;
-				p_pos[j].y = p_pos[j].y + E_Height;
+				p_pos[j].y = p_pos[j].y + E_Height / 2;
 				bullets.addBullet(p_pos[j], 90, p_speed + 10, Bullet::BULLET1, Bullet::ENEMY);
 			}
 			enemyAttackCD = 30;
 			break;
 		case Enemys::BOSS:
+			int dx = rand() % (2 * E_Wideh);
 			b_num = 5;
 			angle = 30;
 			p_pos[0] = enemys.getEnemy(i).getPos();
@@ -198,6 +201,7 @@ void Game::enemyAttack()
 			p_pos[0].x = p_pos[2].x + (E_Wideh / 2 - B_Width / 2) * 2;
 			for (int j = 0; j < b_num; j++)
 			{
+				p_pos[j].x -= dx;
 				bullets.addBullet(p_pos[j], angle * (j + 1), p_speed - 3, Bullet::BOOS, Bullet::ENEMY);
 			}
 			enemyAttackCD = 30;
@@ -223,10 +227,14 @@ void Game::addEnemy()
 	type = rand() % 4;//随机生成
 	if (bossCD == 1)
 	{
+		mciSendString("close ../飞机资料/battlemusic/zhandou_1.mp3", NULL, 0, NULL);
+		mciSendString("play ../飞机资料/battlemusic/boss_coming.mp3 repeat", NULL, 0, NULL);
+		enemys.clear();
+		bullets.clear();
 		e_pos.x = rand() % (Width - E_Wideh * 2);
 		e_pos.y = -E_Height * 2;
 		enemys.addEnemy(e_pos, 90, 4, t_enemy.BOSS);
-		enemyCD = defualtCD;
+		bossCD--;
 	}
 	else
 	{
@@ -297,18 +305,20 @@ int Game::checkCrash()
 			if (max(fabs(b.getPos().x - player.getPos().x), fabs(b.getPos().y - player.getPos().y)) < 50) {
 				// 切雪比夫距离小于60视为碰撞
 				bullets.delBullet(i); // 删除子弹
+				mciSendString("play ../飞机资料/battlemusic/kill1_1.mp3 from 0", NULL, 0, NULL);
 				player.hurt(20); // 掉血量为20，待调整
 				cout << player.getHp() << endl;
 				if (player.getHp() <= 0) {
 					return 2; // 失败
 				}
-				player.addBuff(Player::unbreakable, 120); // 获得120帧无敌时间
+				player.addBuff(Player::unbreakable, 80); // 获得120帧无敌时间
 			}
 		}
 		else {
 			for (int j = 0; j < enemys.getNum(); j++) {
 				Enemy& e = enemys.getEnemy(j);
-				if (max(fabs(b.getPos().x - e.getPos().x), fabs(b.getPos().y - e.getPos().y)) < 60 && b.getBelone() == Bullet::Belone::PLAYER) {
+				int d = (e.getType() == Enemy::BOSS) ? (E_Wideh+B_Width) : (E_Wideh + B_Width)/2;
+				if (max(fabs(b.getPos().x - e.getPos().x), fabs(b.getPos().y - e.getPos().y)) < d && b.getBelone() == Bullet::Belone::PLAYER) {
 					bullets.delBullet(i); // 删除子弹
 					e.hurt(20 + extraDMG); // 掉血量为20，待调整
 
@@ -321,7 +331,8 @@ int Game::checkCrash()
 							player.setHp(100);
 						break;
 					case Enemys::E_RED://扣除血量
-						player.hurt(10);
+						mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3 from 0", NULL, 0, NULL);
+						player.hurt(5);
 						if (player.getHp() <= 0) {
 							return 2; // 失败
 						}
@@ -329,31 +340,27 @@ int Game::checkCrash()
 					}
 
 					if (e.getHp() <= 0) {
-						mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3 from 0", NULL, 0, NULL);	// 击杀音效
+						mciSendString("play ../飞机资料/battlemusic/kill4_1.mp3 from 0", NULL, 0, NULL);	// 击杀音效
 						enemys.delEnemy(j); // 敌机被击落
 						score += 10;	// 游戏分数增加10
 						// 此处添加玩家飞机buff
-						Player::Buff buff = Player::buffCount;
 						switch (e.getType()) {
+						case Enemys::BOSS:
+							return 1;
+							break;
 						case Enemys::NORMAL_A:
-							buff = Player::moveSpeedUp;
-							player.addBuff(buff, 180);
+							player.addBuff(Player::moveSpeedUp, 180);
 							break;
 						case Enemys::NORMAL_B:
 							//额外伤害
-							buff = Player::specialBullet;
+							player.addBuff(Player::specialBullet, 150);
 							break;
 						case Enemys::E_GREEN:
-							buff = Player::attackSpeedUp;
+							player.addBuff(Player::attackSpeedUp, 150);
 							break;
 						case Enemys::E_RED:
-							buff = Player::unbreakable;
+							player.addBuff(Player::unbreakable, 80);
 							break;
-						}
-						if (buff != Player::buffCount) {
-							player.addBuff(buff, 180);
-							cout << buff << endl;
-
 						}
 					}
 				}
@@ -367,10 +374,19 @@ int Game::checkCrash()
 		if (player.getBuffTime(Player::unbreakable) > 0) {
 			continue; // 无敌时间，不计算碰撞
 		}
-		if (max(fabs(e.getPos().x - player.getPos().x), fabs(e.getPos().y - player.getPos().y)) < 80) {
+		int d = (e.getType() == Enemy::BOSS) ? (E_Wideh + B_Width) : (E_Wideh + B_Width) / 2;
+		if (max(fabs(e.getPos().x - player.getPos().x), fabs(e.getPos().y - player.getPos().y)) < d) {
 			// 切雪比夫距离小于80视为碰撞
-			player.hurt(20); // 掉血量为20，待调整
-			e.hurt(20);
+			if (e.getType() == Enemy::BOSS) {
+				mciSendString("play ../飞机资料/battlemusic/kill3_1.mp3 from 0", NULL, 0, NULL);
+				player.hurt(100); // 掉血量为20，待调整
+				e.hurt(20);
+			}
+			else {
+				mciSendString("play ../飞机资料/battlemusic/kill3_1.mp3 from 0", NULL, 0, NULL);
+				player.hurt(20);
+				e.hurt(100);
+			}
 			if (player.getHp() <= 0) {
 				return 2; // 失败
 			}
@@ -378,8 +394,11 @@ int Game::checkCrash()
 				enemys.delEnemy(i); // 敌机被击落
 				score += 10;	// 游戏分数增加10
 				// 此处添加玩家飞机buff
+				if (e.getType() == Enemys::BOSS) {
+					return 1;
+				}
 			}
-			player.addBuff(Player::unbreakable, 120); // 获得120帧无敌时间
+			player.addBuff(Player::unbreakable, 80); // 获得120帧无敌时间
 		}
 	}
 	return 0;
@@ -397,9 +416,10 @@ int Game::checkCrash()
 		int &p_x 原始x坐标
 		int &p_y 原始y坐标'
 	返回值:
-		void
+		0. 继续游戏
+		1. 暂停
 */
-void Game::checkKeyDown()
+int Game::checkKeyDown()
 {
 	Point p = player.getPos();
 	if (GetAsyncKeyState('W')) {
@@ -421,14 +441,12 @@ void Game::checkKeyDown()
 	player.setPos(p);
 	if (GetAsyncKeyState(VK_ESCAPE)) 
 	{
-		if (showPause() == MENU)
-		{
-			showMenu();
-		}
+		return 1;
 	}
 	if (GetAsyncKeyState(VK_SPACE)) {
 		playerAttack();
 	}
+	return 0;
 }
 
 /*
@@ -487,9 +505,14 @@ Game::Page Game::showMenu()
 Game::Page Game::showGame()
 {
 	// 打开音乐资源
+	mciSendString("open ../飞机资料/battlemusic/boss_coming.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/zhandou_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
+	mciSendString("open ../飞机资料/battlemusic/kill1_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
+	mciSendString("open ../飞机资料/battlemusic/kill3_1.mp3", NULL, 0, NULL);
+	mciSendString("open ../飞机资料/battlemusic/kill4_1.mp3", NULL, 0, NULL);
+	mciSendString("open ../飞机资料/battlemusic/win_1.mp3", NULL, 0, NULL);
 
 	// 重复播放背景音乐
 	mciSendString("play ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
@@ -519,16 +542,28 @@ Game::Page Game::showGame()
 		attackCD--;
 		enemyAttackCD--;
 		bossCD--;
-		checkKeyDown();
+		if (checkKeyDown() == 1) {
+			mciSendString("close all", NULL, 0, NULL);
+			//mciSendString("stop ../飞机资料/battlemusic/zhandou_1.mp3", NULL, 0, NULL);
+			return PAUSE;
+		}
 
 		// Debug 用
 		circle(player.getPos().x, player.getPos().y, 50);
 
-		putimage(player.getPos().x - E_Wideh/2, player.getPos().y - E_Height/2, &p_img[0], SRCAND);
-		putimage(player.getPos().x - E_Wideh/2, player.getPos().y - E_Height/2, &p_img[1],SRCPAINT);
+		if (player.getBuffTime(Player::unbreakable) > 0) {
+			if (player.getBuffTime(Player::unbreakable) % 8 < 4) {
+				putimage(player.getPos().x - E_Wideh/2, player.getPos().y - E_Height/2, &p_img[0], SRCAND);
+				putimage(player.getPos().x - E_Wideh/2, player.getPos().y - E_Height/2, &p_img[1],SRCPAINT);
+			}
+		}
+		else {
+			putimage(player.getPos().x - E_Wideh / 2, player.getPos().y - E_Height / 2, &p_img[0], SRCAND);
+			putimage(player.getPos().x - E_Wideh / 2, player.getPos().y - E_Height / 2, &p_img[1], SRCPAINT);
+		}
 
 
-		if (bossCD >= 0)
+		if (bossCD > 0)
 		{
 			addEnemy();
 		}
@@ -550,15 +585,9 @@ Game::Page Game::showGame()
 			break;
 		case 1:
 			mciSendString("close all", NULL, 0, NULL); // 退出界面前关闭所有音乐资源
-			//mciSendString("close ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
-			//mciSendString("close ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
-			//mciSendString("close ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
 			return WIN;
 		case 2:
 			mciSendString("close all", NULL, 0, NULL);
-			//mciSendString("close ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
-			//mciSendString("close ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
-			//mciSendString("close ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
 			EndBatchDraw();
 			return LOSE;
 		}
@@ -592,7 +621,9 @@ Game::Page Game::showGame()
 		outtextxy(160, 720, t);
 		outtextxy(200, 720, _T(" /100"));
 
-		Sleep(16);
+		// 动态休眠
+		Sleep(max(0, CLOCKS_PER_SEC/fps - (clock() - preTime)));
+		preTime = clock();
 
 		EndBatchDraw();
 
@@ -624,20 +655,16 @@ Game::Page Game::showPause()
 			if (m.message == WM_LBUTTONDOWN) {
 				if (m.x < 500 && m.x>365 && m.y < 335 && m.y>183) {//继续游戏
 					return GAME;
-					m.message = NULL;
 				}
 				if (m.x < 765 && m.x>645 && m.y < 467 && m.y>330) {//返回菜单
 					return MENU;
-					m.message = NULL;
 				}
 
 				if (m.x < 500 && m.x>365 && m.y < 615 && m.y>467) {//退出游戏
 					exit(0);
-					m.message = NULL;
 				}
 			}
 		}
-
 	}
 	return MENU;
 }
@@ -654,7 +681,9 @@ Game::Page Game::showPause()
 */
 Game::Page Game::showWin()
 {
-	init();
+	score += 400;
+	mciSendString("play ../飞机资料/battlemusic/win_1.mp3", NULL, 0, NULL);
+	EndBatchDraw();
 	cleardevice();
 	ofstream outfile;// 以写模式打开文件
 	outfile.open("scorlist.txt");//打开成绩记录文件
@@ -684,25 +713,26 @@ Game::Page Game::showWin()
 			outtextxy(175, 205, s);
 
 			m = getmessage(EX_MOUSE);
+			//fillrectangle(30,400,140,470);
+			//fillrectangle(30,520,140,590);
+			//fillrectangle(30,640, 140,720);
 			if (m.message == WM_LBUTTONDOWN)
 			{
-				if (m.x < 270 && m.x>160 && m.y < 397 && m.y>343)//重新游戏
+				if (m.x < 140 && m.x>30 && m.y < 470 && m.y>400)//重新游戏
 				{
+					init();
 					return GAME;
-					m.message = NULL;
 				}
-				if (m.x < 270 && m.x>160 && m.y < 487 && m.y>433)//返回菜单
+				if (m.x < 140 && m.x>30 && m.y < 590 && m.y>520)//返回菜单
 				{
+					init();
 					return MENU;
-					m.message = NULL;
 				}
-				if (m.x < 270 && m.x>160 && m.y < 650 && m.y>575)//退出游戏
+				if (m.x < 140 && m.x>30 && m.y < 720 && m.y>640)//退出游戏
 				{
 					exit(0);
-					m.message = NULL;
 				}
 			}
-			return MENU;
 		}
 	}
 	else//如果当前成绩不是最高分，打印普通界面
@@ -716,23 +746,21 @@ Game::Page Game::showWin()
 			m = getmessage(EX_MOUSE);
 			if (m.message == WM_LBUTTONDOWN)
 			{
-				if (m.x < 270 && m.x>160 && m.y < 397 && m.y>343)//重新游戏
+				if (m.x < 140 && m.x>30 && m.y < 470 && m.y>400)//重新游戏
 				{
+					init();
 					return GAME;
-					m.message = NULL;
 				}
-				if (m.x < 270 && m.x>160 && m.y < 487 && m.y>433)//返回菜单
+				if (m.x < 140 && m.x>30 && m.y < 590 && m.y>520)//返回菜单
 				{
+					init();
 					return MENU;
-					m.message = NULL;
 				}
-				if (m.x < 270 && m.x>160 && m.y < 577 && m.y>523)//退出游戏
+				if (m.x < 140 && m.x>30 && m.y < 720 && m.y>640)//退出游戏
 				{
 					exit(0);
-					m.message = NULL;
 				}
 			}
-			return MENU;
 		}
 	}
 	return MENU;
@@ -749,7 +777,6 @@ Game::Page Game::showWin()
 */
 Game::Page Game::showLose()
 {
-	init();
 	cleardevice();
 	IMAGE image6;
 	//打印失败页面
@@ -770,17 +797,16 @@ Game::Page Game::showLose()
 		m = getmessage(EX_MOUSE);
 		if (m.message == WM_LBUTTONDOWN) {
 			if (m.x < 270 && m.x>160 && m.y < 397 && m.y>343) {//重新游戏
+				init();
 				return GAME;
-				m.message = NULL;
 			}
 			if (m.x < 270 && m.x>160 && m.y < 487 && m.y>433) {//返回菜单
+				init();
 				return MENU;
-				m.message = NULL;
 			}
 
 			if (m.x < 270 && m.x>160 && m.y < 577 && m.y>523) {//退出游戏
 				exit(0);
-				m.message = NULL;
 			}
 		}
 

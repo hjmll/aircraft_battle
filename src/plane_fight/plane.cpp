@@ -285,7 +285,7 @@ void Enemys::addEnemy(Point pos, double angle, double speed, Enemy::Type type)
 		num++;
 		break;
 	case Enemy::BOSS:
-		int hp = 400;
+		int hp = 1000;
 		s[num++] = Enemy(type, hp, pos, angle, speed, Bullet::BOOS);
 		break;
 	}
@@ -353,8 +353,16 @@ void Enemys::delEnemy(int idx)
 */
 void Enemy::showenemy()
 {
-	putimage(pos.x - E_Wideh / 2, pos.y - E_Height / 2, E_Wideh - 2, E_Height - 2, &e_img[0], 0, 0, SRCAND);
-	putimage(pos.x - E_Wideh / 2, pos.y - E_Height / 2, E_Wideh - 2, E_Height - 2, &e_img[1], 0, 0, SRCPAINT);
+	// Debug
+	circle(pos.x, pos.y, 50);
+	if (type == Type::BOSS) {
+		putimage(pos.x - E_Wideh, pos.y - E_Height, 2*E_Wideh - 2, 2*E_Height - 2, &e_img[0], 0, 0, SRCAND);
+		putimage(pos.x - E_Wideh, pos.y - E_Height, 2*E_Wideh - 2, 2*E_Height - 2, &e_img[1], 0, 0, SRCPAINT);
+	}
+	else {
+		putimage(pos.x - E_Wideh / 2, pos.y - E_Height / 2, E_Wideh - 2, E_Height - 2, &e_img[0], 0, 0, SRCAND);
+		putimage(pos.x - E_Wideh / 2, pos.y - E_Height / 2, E_Wideh - 2, E_Height - 2, &e_img[1], 0, 0, SRCPAINT);
+	}
 }
 
 
@@ -389,7 +397,7 @@ void Enemy::specialmove()
 	}
 	if (pos.x > Width - E_Wideh)
 	{
-		angle = 100;
+		angle = 180;
 	}
 
 }
