@@ -51,8 +51,9 @@ Point FlyingObject::getPos()
 	return { pos.x, pos.y };
 }
 
-void FlyingObject::reset(double angle, double speed)
+void FlyingObject::setPos(Point point)
 {
+	pos = point;
 }
 
 // 有参构造函数

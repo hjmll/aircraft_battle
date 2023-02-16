@@ -7,17 +7,6 @@
 
 #pragma comment(lib,"winmm.lib")
 
-// 负责人：技术官
-Game::Game()
-{
-	bestScore = 0;
-	this->fps = 60;			// 默认 60 帧
-	score = 0;
-	enemyCD = fps / 2;		// 最高每秒 2 发
-	defualtCD = fps;	// 每 1 秒添加一个敌
-	bossCD = 0;				// 不知道是啥
-}
-
 
 // 负责人：技术官
 Game::Game(int fps)
@@ -27,8 +16,9 @@ Game::Game(int fps)
 	score = 0;
 	enemyCD = fps/2;	// 最高每秒 2 发
 	defualtCD = fps;	// 每 1 秒添加一个敌人
-	bossCD = 0;			// 不知道是啥
-
+	bossCD = 0;
+	attackCD = 0;
+	enemyAttackCD = 0;
 }
 
 void Game::run()
@@ -82,11 +72,14 @@ void Game::run()
 */
 void Game::init()
 {
-	enemyCD = 30;//第一个敌人30*16毫秒后生成
+	enemyCD = 30;//第一个敌人30fps后生成
 	bossCD = 15000;
 	attackCD = 5;
 	enemyAttackCD = 30;
 	score = 0;
+	player.reset(); // 重置飞机状态
+	bullets.clear(); // 清空子弹
+	enemys.clear(); // 清空敌机
 }
 
 /*
@@ -213,13 +206,12 @@ void Game::addEnemy()
 	int type = 0;
 	srand((unsigned)time(0));
 	Point e_pos;
-	Enemy t_enemy;
 	type = rand() % 4;//随机生成
 	 if (bossCD == 0)
 	 {
 		 e_pos.x = rand() % (Width / 2 - E_Wideh*2);
 		 e_pos.y = -E_Height*2;
-		 enemys.addEnemy(e_pos, 90, 4, t_enemy.BOSS);
+		 enemys.addEnemy(e_pos, 90, 4, Enemy::BOSS);
 		 enemyCD = defualtCD;
 	 }
 	 else
@@ -232,28 +224,28 @@ void Game::addEnemy()
 			 {
 				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
-				 enemys.addEnemy(e_pos, 90, 4, t_enemy.E_RED);
+				 enemys.addEnemy(e_pos, 90, 4, Enemy::E_RED);
 				 enemyCD = defualtCD;
 			 }
 			 else if (type == 1)//生成绿色敌机
 			 {
 				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
-				 enemys.addEnemy(e_pos, 90, 4, t_enemy.E_GREEN);
+				 enemys.addEnemy(e_pos, 90, 4, Enemy::E_GREEN);
 				 enemyCD = defualtCD;
 			 }
 			 else if (type == 2)//生成普通敌机
 			 {
 				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
-				 enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_A);
+				 enemys.addEnemy(e_pos, 90, 4, Enemy::NORMAL_A);
 				 enemyCD = defualtCD;
 			 }
 			 else if (type == 3)//生成会射击的敌机
 			 {
 				 e_pos.x = rand() % (Width  - E_Wideh);
 				 e_pos.y = -E_Height;
-				 enemys.addEnemy(e_pos, 90, 4, t_enemy.NORMAL_B);
+				 enemys.addEnemy(e_pos, 90, 4, Enemy::NORMAL_B);
 				 enemyCD = defualtCD;
 				 enemyAttackCD = 30;
 			 }
@@ -354,20 +346,22 @@ int Game::checkCrash()
 	返回值:
 		void
 */
-void Game::checkKeyDown(int& p_x, int& p_y)
+void Game::checkKeyDown()
 {
+	Point p = player.getPos();
 	if (GetAsyncKeyState('W')) {
-		p_y -= p_speed;
+		p.y -= p_speed;
 	}
 	if (GetAsyncKeyState('S')) {
-		p_y += p_speed;
+		p.y += p_speed;
 	}
 	if (GetAsyncKeyState('A')) {
-		p_x -= p_speed;
+		p.x -= p_speed;
 	}
 	if (GetAsyncKeyState('D')) {
-		p_x += p_speed;
+		p.x += p_speed;
 	}
+	player.setPos(p);
 	if (GetAsyncKeyState(VK_ESCAPE)) 
 	{
 		if (showPause() == MENU)
@@ -449,13 +443,12 @@ Game::Page Game::showGame()
 	int bk_y = -Length;
 	IMAGE bk;
 	IMAGE p_img[2];
-	Point p_pos;
 	loadimage(&bk, "../飞机资料/bk/OUT.png",Width,Length*2);
 	loadimage(&p_img[0], "../飞机资料/player/At1.jpg", E_Wideh, E_Height);
 	loadimage(&p_img[1], "../飞机资料/player/At2.jpg", E_Wideh, E_Height);
 
-	p_pos.x = Width / 2 - E_Wideh/2;
-	p_pos.y = Length - E_Height;
+	//p_pos.x = Width / 2 - E_Wideh/2;
+	//p_pos.y = Length - E_Height;
 
 	setbkcolor(BLACK);
 	setbkmode(TRANSPARENT);
@@ -472,10 +465,9 @@ Game::Page Game::showGame()
 		attackCD--;
 		enemyAttackCD--;
 		bossCD--;
-		checkKeyDown(p_pos.x, p_pos.y);
-		p_pos = player.playermove(p_pos.x, p_pos.y);
-		putimage(p_pos.x, p_pos.y, &p_img[0],SRCAND);
-		putimage(p_pos.x, p_pos.y, &p_img[1],SRCPAINT);
+		checkKeyDown();
+		putimage(player.getPos().x, player.getPos().y, &p_img[0], SRCAND);
+		putimage(player.getPos().x, player.getPos().y, &p_img[1],SRCPAINT);
 
 
 		if (bossCD >= 0)

@@ -34,12 +34,10 @@ public:
 	Point getPos();
 
 	// 重设坐标、角度
-	void reset(double angle, double speed);
-
-	FlyingObject() {}
+	void setPos(Point point);
 
 	// 有参构造函数
-	FlyingObject(Point pos, double angle, double speed);
+	FlyingObject(Point pos = {0, 0}, double angle = 0, double speed = 0);
 
 protected:
 	Point pos;		// 坐标，取整得到实际坐标

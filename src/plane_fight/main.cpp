@@ -4,7 +4,8 @@
 using namespace std;
 
 int main() {
-	Game game(60);	// 初始化游戏，帧率为60Hz
-	game.run();		// 运行游戏
+	Game* game = new Game;	// 初始化游戏，帧率为60Hz
+	game->run();		// 运行游戏
+	delete game;
 }
 

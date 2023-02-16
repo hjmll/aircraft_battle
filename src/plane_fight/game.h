@@ -24,10 +24,9 @@ public:
 	void playerAttack();
 
 	//按键检测
-	void checkKeyDown(int &p_x,int &p_y);
+	void checkKeyDown();
 
-	Game();
-	Game(int fps);
+	Game(int fps = 60);
 
 private:
 	// 页面编号
@@ -38,11 +37,6 @@ private:
 		WIN,	// 3. 胜利界面
 		LOSE,	// 4. 失败界面
 		RULE1,	// 5. 规则介绍界面，扩展，请自行补充函数
-		/*
-		* 技术官：
-		* 这里是指规则有两页是吧，我觉得这可以在一个界面内完成，通过循环切换规则页
-		* 但是即然写都写了，就这样吧（屎山代码的诞生）
-		*/
 		RULE2,  // 6 
 		DEVELOPER, // 7. 开发者介绍界面，扩展，请自行补充函数
 	};
