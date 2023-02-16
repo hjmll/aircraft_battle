@@ -10,27 +10,35 @@
 */
 void FlyingObject::move()
 {
-	 if (angle != 0)
-	 {
-		 pos.y += sin(angle) * speed;
-	 }
-	 if (angle != 90) // 弧度制
-	 {
-		 pos.x += cos(angle) * speed;
-	 }
+	if (angle == 90||angle==-90)
+	{
+		xita = angle * Pi / 180;
+		pos.y += sin(xita) * speed;
+	}
+	else
+	{
+		xita = angle * Pi / 180;
+		pos.y += sin(xita) * speed;
+		pos.x += cos(xita) * speed;
+
+	}
 }
 
-void FlyingObject::playermove()
-{
-	if (angle != 0)
-	{
-		pos.y -= sin(angle) * speed;
-	}
-	if (angle != 90)
-	{
-		pos.x -= cos(angle) * speed;
-	}
-}
+//void FlyingObject::playermove()
+//{
+//	if (angle == 90)
+//	{
+//		xita = angle * Pi / 180;
+//		pos.y -= sin(xita) * speed;
+//	}
+//	else
+//	{
+//		xita = angle * Pi / 180;
+//		pos.y -= sin(xita) * speed;
+//		pos.x -= cos(xita) * speed;
+//
+//	}
+//}
 
 /*
 * 负责人：易骏清

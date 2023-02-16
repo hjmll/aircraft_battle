@@ -110,7 +110,7 @@ void Game::playerAttack()
 				p_pos[i] = player.getPos();
 				p_pos[i].x = p_pos[i].x + E_Wideh / 2 - B_Width / 2;
 				p_pos[i].y = p_pos[i].y - B_Width;
-				bullets.addBullet(p_pos[i], 90, p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
+				bullets.addBullet(p_pos[i], -90, p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
    			attackCD = 5;
 		}
@@ -118,9 +118,14 @@ void Game::playerAttack()
 		{
 			b_num = 3;
 			angle = 45;
+			p_pos[2] = player.getPos();
+			p_pos[1].x = p_pos[2].x + E_Wideh / 2 - B_Width / 2;
+			p_pos[1].y = p_pos[2].y - B_Width;
+			p_pos[0].x = p_pos[2].x + (E_Wideh / 2 - B_Width / 2) * 2;
+			p_pos[0].y = p_pos[2].y;
 			for (int i = 0; i < b_num; i++)
 			{
-				bullets.addBullet(p_pos[i], angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
+				bullets.addBullet(p_pos[i], -angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
 			attackCD = 10;
 		}
@@ -128,9 +133,18 @@ void Game::playerAttack()
 		{
 			b_num = 5;
 			angle = 30;
+			p_pos[4].x = player.getPos().x - (E_Wideh / 2 - B_Width / 2);
+			p_pos[4].y = player.getPos().y + B_Width * 2;
+			p_pos[3] = player.getPos();
+			p_pos[2].x = p_pos[3].x + (E_Wideh / 2 - B_Width / 2);
+			p_pos[2].y = p_pos[3].y - B_Width;
+			p_pos[1].x = p_pos[3].x + (E_Wideh / 2 - B_Width / 2) * 2;
+			p_pos[1].y = p_pos[3].y;
+			p_pos[0].x = p_pos[4].x + (E_Wideh / 2 - B_Width / 2) * 4;
+			p_pos[0].y = p_pos[4].y;
 			for (int i = 0; i < b_num; i++)
 			{
-				bullets.addBullet(p_pos[i], angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
+				bullets.addBullet(p_pos[i], -angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
 			attackCD = 10;
 		}
@@ -165,7 +179,7 @@ void Game::enemyAttack()
 				e_pos[j] = enemys.getEnemy(i).getPos();
 				e_pos[j].x = e_pos[j].x + E_Wideh / 2 - B_Width / 2;
 				e_pos[j].y = e_pos[j].y + E_Height;
-				bullets.addBullet(e_pos[j], 80, p_speed + 10, Bullet::BASKERBALL, Bullet::ENEMY);
+				bullets.addBullet(e_pos[j], 90, p_speed + 10, Bullet::BULLET1, Bullet::ENEMY);
 			}
 			enemyAttackCD = 30;
 			break;
@@ -179,7 +193,7 @@ void Game::enemyAttack()
 				e_pos[j].y = e_pos[j].y - B_Width;
 				bullets.addBullet(e_pos[j], angle / (i + 1), p_speed - 5, Bullet::BASKERBALL, Bullet::ENEMY);
 			} 
-			enemyAttackCD = 60;
+			enemyAttackCD = 30;
 			break;
 		}
 	}
@@ -469,7 +483,6 @@ Game::Page Game::showGame()
 		if (enemyAttackCD <= 0) {
 			enemyAttack();
 		}
-
 		bullets.move();
 		mciSendString("play ../飞机资料/battlemusic/shoot_1.mp3", NULL, 0, NULL);
 
@@ -482,6 +495,7 @@ Game::Page Game::showGame()
 			return WIN;
 		case 2:
 			mciSendString("close ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
+			EndBatchDraw();
 			return LOSE;
 		}
 
@@ -596,7 +610,7 @@ Game::Page Game::showWin()
 					return MENU;
 					m.message = NULL;
 				}
-				if (m.x < 270 && m.x>160 && m.y < 577 && m.y>523)//退出游戏
+				if (m.x < 270 && m.x>160 && m.y < 650 && m.y>575)//退出游戏
 				{
 					exit(0);
 					m.message = NULL;

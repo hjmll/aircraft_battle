@@ -14,6 +14,7 @@
 #define B_Width  20
 #define B_Height 20
 #define p_speed 8
+#define Pi 3.1415926
 
 // 坐标结构体
 struct Point {
@@ -44,6 +45,7 @@ protected:
 	Point pos;		// 坐标，取整得到实际坐标
 	double angle;	// 角度
 	double speed;	// 速度，单位：像素点/fps
+	double xita;     //角度转为弧度后的数据
 };
 
 #endif

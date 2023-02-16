@@ -15,10 +15,12 @@ Bullet::Bullet(Point pos, double angle, double speed, Type type, Belone belone):
 		loadimage(&b_img[1], "../飞机资料/playerbullet/basketball2.jpg", B_Width, B_Height);
 		break;
 	case Bullet::BULLET1:
-		// 加载子弹1图片
+		loadimage(&b_img[0], "../飞机资料/enemybullet/bullet1.jpg", B_Width, B_Height);
+		loadimage(&b_img[1], "../飞机资料/enemybullet/bullet2.jpg", B_Width, B_Height);
 		break;
 	case Bullet::BOOS:
-		// 加载子弹2图片
+		loadimage(&b_img[0], "../飞机资料/playerbullet/boss_bullet1.jpg", B_Width, B_Height);
+		loadimage(&b_img[1], "../飞机资料/playerbullet/boss_bullet2.jpg", B_Width, B_Height);
 		break;
 	case Bullet::NONE:
 		break;
@@ -74,11 +76,7 @@ void Bullets::move()
 			if (p.x > -50 && p.x < 810 && p.y > -50 && p.y < 1074) break;
 			delBullet(i);
 		}
-	}
-
-	for (int i = 0; i < num; ++i)
-	{
-		s[i].playermove();
+		s[i].move();
 		s[i].showbullet();
 	}
 }
