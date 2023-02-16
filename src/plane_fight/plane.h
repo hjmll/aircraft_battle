@@ -91,6 +91,8 @@ public:
 
 	//展示图像
 	void showenemy();
+	//会发射子弹飞机的特殊移动
+	void specialmove();
 
 	Enemy(Type type = Enemy::NORMAL_A, int hp = 5, Point pos = {0, 0}, double angle = 0, double speed = 1.0, Bullet::Type bulletType = Bullet::BULLET1, int defualtCD = 1, double attackSpeed = 1.0);
 

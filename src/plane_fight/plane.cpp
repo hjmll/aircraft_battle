@@ -231,8 +231,8 @@ Enemy::Enemy (Type enemyType, int hp, Point pos, double angle, double speed, Bul
 		loadimage(&e_img[1], "../飞机资料/enemy/img_plane_enemy2.jpg", E_Wideh, E_Height);
 		break;
 	case Enemy::BOSS:
-		loadimage(&e_img[0], "../飞机资料/BOSS/boss1.jpg", E_Wideh, E_Height);
-		loadimage(&e_img[1], "../飞机资料/BOSS/boss2.jpg", E_Wideh, E_Height);
+		loadimage(&e_img[0], "../飞机资料/BOSS/boss1.jpg", E_Wideh*2, E_Height*2);
+		loadimage(&e_img[1], "../飞机资料/BOSS/boss2.jpg", E_Wideh*2, E_Height*2);
 		break;
 	}
 }
@@ -320,12 +320,16 @@ void Enemys::move()
 			if (p.y < 1074) break; // 删除超过屏幕范围的飞机
 			delEnemy(i);
 		}
-	}
-
-	for (int i = 0; i < num; ++i)
-	{
-		s[i].move();
-		s[i].showenemy();
+		if (s[i].getType() == BOSS || s[i].getType() == NORMAL_B)
+		{
+			s[i].specialmove();
+			s[i].showenemy();
+		}
+		else
+		{
+			s[i].move();
+			s[i].showenemy();
+		}
 	}
 }
 
@@ -351,4 +355,40 @@ void Enemy::showenemy()
 {
 	putimage(pos.x, pos.y, &e_img[0], SRCAND);
 	putimage(pos.x, pos.y, &e_img[1], SRCPAINT);
+}
+
+
+/*
+* 实现boss和enemy的特殊移动
+*/
+void Enemy::specialmove()
+{
+	int type = 0;
+	int length = 0;
+	length = rand() % 300;
+	if (pos.y > length)
+	{
+		type = rand() % 2;
+		if (type == 1)
+		{
+			angle = 0;
+		}
+		else
+		{
+			angle = 180;
+		}
+		move();
+	}
+	else
+	{
+		move();
+	}
+	if (pos.x < 50)
+	{
+		angle = 0;
+	}
+	if (pos.x > Width - E_Wideh)
+	{
+		angle = 100;
+	}
 }
