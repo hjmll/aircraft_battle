@@ -105,7 +105,7 @@ void Game::playerAttack()
 				p_pos[i].y = p_pos[i].y;
 				bullets.addBullet(p_pos[i], -90, p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
-   			attackCD = 10;
+   			attackCD = 15;
 		}
 		else if (player.getHp() > 40)
 		{
@@ -120,7 +120,7 @@ void Game::playerAttack()
 			{
 				bullets.addBullet(p_pos[i], -angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
-			attackCD = 20;
+			attackCD = 25;
 		}
 		else
 		{
@@ -139,7 +139,7 @@ void Game::playerAttack()
 			{
 				bullets.addBullet(p_pos[i], -angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
-			attackCD = 25;
+			attackCD = 30;
 		}
 	}
 }
@@ -316,7 +316,7 @@ int Game::checkCrash()
 				if (max(fabs(b.getPos().x - e.getPos().x), fabs(b.getPos().y - e.getPos().y)) < d && b.getBelone() == Bullet::Belone::PLAYER) {
 					bullets.delBullet(i); // 删除子弹
 					e.hurt(20 + extraDMG); // 掉血量为20，待调整
-
+					mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3 from 0", NULL, 0, NULL);
 					//两种特殊敌机
 					switch (e.getType()) {
 					case Enemys::E_GREEN://恢复血量
@@ -326,7 +326,6 @@ int Game::checkCrash()
 							player.setHp(100);
 						break;
 					case Enemys::E_RED://扣除血量
-						mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3 from 0", NULL, 0, NULL);
 						player.hurt(5);
 						if (player.getHp() <= 0) {
 							return 2; // 失败
@@ -461,7 +460,6 @@ Game::Page Game::showMenu()
 	//打印背景图
 	loadimage(&image, "../原型图/菜单/menu.png", Width, Length);
 	putimage(0, 0, &image);
-	//solidrectangle(790, 310, 920, 450);
 	ExMessage m;
 	while (1) {
 		m = getmessage(EX_MOUSE);
@@ -692,9 +690,6 @@ Game::Page Game::showWin()
 			outtextxy(175, 205, s);
 
 			m = getmessage(EX_MOUSE);
-			//fillrectangle(30,400,140,470);
-			//fillrectangle(30,520,140,590);
-			//fillrectangle(30,640, 140,720);
 			if (m.message == WM_LBUTTONDOWN)
 			{
 				if (m.x < 140 && m.x>30 && m.y < 470 && m.y>400)//重新游戏
@@ -762,7 +757,6 @@ Game::Page Game::showLose()
 	IMAGE image6;
 	loadimage(&image6, "../原型图/game/游戏失败.png", 1024, 768);
 	putimage(0, 0, &image6);
-	//solidrectangle(160, 343, 270, 397);
 	ExMessage m;
 	while (1) {
 		//展示分数
