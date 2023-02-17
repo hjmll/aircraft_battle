@@ -307,7 +307,6 @@ int Game::checkCrash()
 				bullets.delBullet(i); // 删除子弹
 				mciSendString("play ../飞机资料/battlemusic/kill1_1.mp3 from 0", NULL, 0, NULL);
 				player.hurt(20); // 掉血量为20，待调整
-				cout << player.getHp() << endl;
 				if (player.getHp() <= 0) {
 					return 2; // 失败
 				}
@@ -519,7 +518,7 @@ Game::Page Game::showGame()
 	closegraph();
 	int bk_speed;//背景图的移到速度
 	bk_speed = 2;
-	initgraph(Width, Length);
+	initgraph(Width, Length, 1);
 	int bk_y = -2*Length;
 	IMAGE bk;
 	IMAGE p_img[2];
@@ -541,7 +540,6 @@ Game::Page Game::showGame()
 		putimage(0, bk_y, &bk);
 		attackCD--;
 		enemyAttackCD--;
-		bossCD--;
 		if (checkKeyDown() == 1) {
 			mciSendString("close all", NULL, 0, NULL);
 			//mciSendString("stop ../飞机资料/battlemusic/zhandou_1.mp3", NULL, 0, NULL);
@@ -615,7 +613,6 @@ Game::Page Game::showGame()
 
 		outtextxy(0, 720, _T("当前生命："));
 		char t[5];
-		cout << player.getHp() << endl;
 		sprintf_s(t, "%d", player.getHp());
 		outtextxy(160, 720, t);
 		outtextxy(200, 720, _T(" /100"));
@@ -623,6 +620,12 @@ Game::Page Game::showGame()
 		// 动态休眠
 		Sleep(max(0, CLOCKS_PER_SEC/fps - (clock() - preTime)));
 		preTime = clock();
+
+		static int cnt = 0;
+		cnt++;
+		if (cnt % 60 == 0) {
+			cout << "clock: " << cnt / 60 << endl;
+		}
 
 		EndBatchDraw();
 
