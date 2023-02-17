@@ -60,8 +60,8 @@ public:
 
 	// Çå¿ÕËùÓĞbuff
 	void clearBuff();
-
-	int getBuffTime(Buff buff);
+	
+	int getBuffTime(int BUFF);
 
 	void reset();
 

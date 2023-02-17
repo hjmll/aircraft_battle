@@ -2,11 +2,13 @@
 #define __BASE_H
 
 
-#include<graphics.h>
-#include<iostream>
+#include <graphics.h>
+#include <iostream>
 #include <fstream>
 #include <algorithm>
-#include<ctime>
+#include <ctime>
+#include <queue>
+
 #define Width 1024
 #define Length 768
 #define E_Wideh 100

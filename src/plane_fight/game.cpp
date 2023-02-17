@@ -6,7 +6,9 @@
 #include <mmsystem.h>
 #include <ctime>
 
+
 #pragma comment(lib,"winmm.lib")
+
 
 
 // 负责人：技术官
@@ -495,6 +497,65 @@ Game::Page Game::showMenu()
 	return MENU;
 }
 
+
+/*
+* 负责人：傅全有
+* 功能：打印当前BUFF
+* 参数：void
+* 返回值：void
+*/
+
+void Game::printCurrentBUFF()
+{
+	//初始化vector
+	vector<pair<Player::Buff, int>> ::iterator it = v.begin();
+	for (int i = 0; i < player.buffCount; ++i) {
+		int flag = 1;
+		for (; it != v.end(); ++it) {
+			if ((*it).first == Player::Buff(i)) {
+				flag = 0;
+				(*it).second = player.getBuffTime(i);
+			}
+			if ((*it).second != 0) 
+				(*it).second--;
+		}
+		if (player.getBuffTime(i) != 0 && flag == 1)
+			v.push_back(pair<Player::Buff, int>(Player::Buff(i), player.getBuffTime(i)));
+		it = v.begin();
+	}
+
+	//按剩余时间排序
+	sort(v.begin(), v.end(), [=](pair<Player::Buff, int> p1, pair<Player::Buff, int> p2)->int {
+			return p1.second > p2.second;
+		}
+	);
+
+
+	for (int i = 0; it != v.end(); ++it,++i) {
+		if ((*it).second != 0) {
+			switch ((*it).first) {
+			case Player::moveSpeedUp:
+				outtextxy(0, 680 - i * 30, _T("当前BUFF："));
+				outtextxy(160, 680 - i * 30, _T("移速加快"));
+				break;
+			case Player::attackSpeedUp:
+				outtextxy(0, 680 - i * 30, _T("当前BUFF："));
+				outtextxy(160, 680 - i * 30, _T("攻速加快"));
+				break;
+			case Player::specialBullet:
+				outtextxy(0, 680 - i * 30, _T("当前BUFF："));
+				outtextxy(160, 680 - i * 30, _T("子弹威力增加"));
+				break;
+			case Player::unbreakable:
+				outtextxy(0, 680 - i * 30, _T("当前BUFF："));
+				outtextxy(160, 680 - i * 30, _T("无敌时间"));
+				break;
+			}
+		}
+	}
+}
+
+
 /*
 * 负责人：易骏清
 * 功能：展示游戏页面，游戏核心流程
@@ -513,6 +574,7 @@ Game::Page Game::showGame()
 	mciSendString("open ../飞机资料/battlemusic/kill3_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/kill4_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/win_1.mp3", NULL, 0, NULL);
+	mciSendString("open ../飞机资料/battlemusic/failed_1.mp3", NULL, 0, NULL);
 
 	// 重复播放背景音乐
 	mciSendString("play ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
@@ -615,11 +677,13 @@ Game::Page Game::showGame()
 
 		outtextxy(0, 720, _T("当前生命："));
 		char t[5];
-		cout << player.getHp() << endl;
 		sprintf_s(t, "%d", player.getHp());
 		outtextxy(160, 720, t);
 		outtextxy(200, 720, _T(" /100"));
 
+		//当前BUFF
+		printCurrentBUFF();
+		
 		// 动态休眠
 		Sleep(max(0, CLOCKS_PER_SEC/fps - (clock() - preTime)));
 		preTime = clock();
@@ -783,6 +847,7 @@ Game::Page Game::showLose()
 	putimage(0, 0, &image6);
 	//solidrectangle(160, 343, 270, 397);
 	ExMessage m;
+	mciSendString("play ../飞机资料/battlemusic/failed_1.mp3", NULL, 0, NULL);
 	while (1) {
 		//展示分数
 		setbkmode(TRANSPARENT);

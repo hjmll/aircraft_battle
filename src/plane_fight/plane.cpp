@@ -184,9 +184,9 @@ void Player::clearBuff()
 	speed = 3; //移动速度恢复到默认值3
 }
 
-int Player::getBuffTime(Buff buff)
+int Player::getBuffTime(int BUFF)
 {
-	return buffTime[buff];
+	return buffTime[BUFF];
 }
 
 // 负责人：pnata

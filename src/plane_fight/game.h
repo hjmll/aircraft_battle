@@ -26,6 +26,10 @@ public:
 	//按键检测
 	int checkKeyDown();
 
+	//打印当前BUFF
+	void printCurrentBUFF();
+
+
 	Game(int fps = 60);
 
 private:
@@ -50,6 +54,7 @@ private:
 	int attackCD;       //玩家发射子弹的cd
 	int enemyAttackCD;	//敌人发送子弹的cd
 	int defualtCD;		// 生成新敌机的默认CD
+	vector<pair<Player::Buff,int>> v; //BUFF时间队列
 	Player player;		// 玩家飞机
 	Enemys enemys;		// 敌机集合
 	Bullets bullets;	// 子弹集合
