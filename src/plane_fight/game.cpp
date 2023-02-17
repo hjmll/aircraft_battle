@@ -1,5 +1,5 @@
 #include "game.h"
-#include "iostream"
+#include <iostream>
 #include <fstream>
 #include <time.h>
 #include <graphics.h>
@@ -9,7 +9,7 @@
 #pragma comment(lib,"winmm.lib")
 
 
-// 负责人：技术官
+// 负责人：panta
 Game::Game(int fps)
 {
 	bestScore = 0;
@@ -75,21 +75,17 @@ void Game::run()
 */
 void Game::init()
 {
-	enemyCD = 30;//第一个敌人30fps后生成
+	enemyCD = 30;		//第一个敌人30fps后生成
 	bossCD = 150*fps;
 	attackCD = 20;
 	enemyAttackCD = 30;
 	score = 0;
-	player.reset(); // 重置飞机状态
-	bullets.clear(); // 清空子弹
-	enemys.clear(); // 清空敌机
+	player.reset();		// 重置飞机状态
+	bullets.clear();	// 清空子弹
+	enemys.clear();		// 清空敌机
 }
 
-/*
-* 发射子弹
-* 
-* 
-*/
+// 玩家发射子弹
 void Game::playerAttack()
 {
 	int b_num = 0;
@@ -543,7 +539,6 @@ Game::Page Game::showGame()
 		enemyAttackCD--;
 		if (checkKeyDown() == 1) {
 			mciSendString("close all", NULL, 0, NULL);
-			//mciSendString("stop ../飞机资料/battlemusic/zhandou_1.mp3", NULL, 0, NULL);
 			return PAUSE;
 		}
 
@@ -560,7 +555,7 @@ Game::Page Game::showGame()
 			putimage(player.getPos().x - E_Wideh / 2, player.getPos().y - E_Height / 2, &p_img[1], SRCPAINT);
 		}
 
-
+		// 添加敌人
 		if (bossCD > 0)
 		{
 			addEnemy();
@@ -592,18 +587,6 @@ Game::Page Game::showGame()
 
 		player.checkBuff(); // 玩家buff更新
 
-		
-
-
-		//// 玩家、敌人攻击
-		//player.attack();
-		//enemys.attack();
-
-		//// 生成新敌机
-		//addEnemy();
-		//
-		//// 碰撞检测
-		//checkCrash();
 
 		// 渲染页面：获取玩家、敌机、子弹坐标等信息，绘制页面
 		settextstyle(32, 0, _T("黑体"));
@@ -622,7 +605,7 @@ Game::Page Game::showGame()
 		Sleep(max(0, CLOCKS_PER_SEC/fps - (clock() - preTime)));
 		preTime = clock();
 
-		if (bossCD % fps == 0) {
+		if (bossCD > 0 && bossCD % fps == 0) {
 			cout << "BOSS comming: " << bossCD / 60 << "s" << endl;
 		}
 

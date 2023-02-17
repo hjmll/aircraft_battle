@@ -92,16 +92,17 @@ class Enemy : public Plane
 public:
 	enum Type { NORMAL_A, NORMAL_B, E_GREEN, E_RED, BOSS}; // 枚举子类，敌人类型：普通、回血、加攻速、BOSS...
 
-	//展示图像
+	// 展示图像
 	void showenemy();
-	//会发射子弹飞机的特殊移动
+
+	// 会发射子弹飞机的特殊移动
 	void specialmove();
 
 	Enemy(Type type = Enemy::NORMAL_A, int hp = 5, Point pos = {0, 0}, double angle = 0, double speed = 1.0, Bullet::Type bulletType = Bullet::BULLET1, int defualtCD = 1, double attackSpeed = 1.0);
 
 	Type getType();
 protected:
-	int moveCD;	// BOSS 移动CD
+
 	Type type;	// 敌人类型
 	IMAGE e_img[2];
 };

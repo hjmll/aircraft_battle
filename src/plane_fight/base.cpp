@@ -1,10 +1,11 @@
 #include "base.h"
 #include<cmath>
+
+
 /*
 * 负责人：易骏清
 * 功能：物体移动
 *	根据物体当前坐标、速度、角度移动到下一坐标
-*	具体怎么算，还请发挥数学功底
 * 参数：void
 * 返回值：void
 */
@@ -18,7 +19,7 @@ void FlyingObject::move()
 	else if (angle == 0 || angle == 180)
 	{
 		xita = angle * Pi / 180;
-		pos.x += cos(xita) * 2;
+		pos.x += (int) (cos(xita) * 2);
 	}
 	else
 	{
@@ -28,22 +29,6 @@ void FlyingObject::move()
 
 	}
 }
-
-//void FlyingObject::playermove()
-//{
-//	if (angle == 90)
-//	{
-//		xita = angle * Pi / 180;
-//		pos.y -= sin(xita) * speed;
-//	}
-//	else
-//	{
-//		xita = angle * Pi / 180;
-//		pos.y -= sin(xita) * speed;
-//		pos.x -= cos(xita) * speed;
-//
-//	}
-//}
 
 /*
 * 负责人：易骏清
@@ -64,5 +49,5 @@ void FlyingObject::setPos(Point point)
 // 有参构造函数
 FlyingObject::FlyingObject(Point pos, double angle, double speed) :pos(pos), angle(angle), speed(speed)
 {
-
+	xita = 0;
 }
