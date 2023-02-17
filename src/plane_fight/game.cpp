@@ -511,6 +511,7 @@ Game::Page Game::showGame()
 	mciSendString("open ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/kill3_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/kill4_1.mp3", NULL, 0, NULL);
+	mciSendString("open ../飞机资料/battlemusic/lose_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/win_1.mp3", NULL, 0, NULL);
 
 	// 重复播放背景音乐
@@ -621,10 +622,8 @@ Game::Page Game::showGame()
 		Sleep(max(0, CLOCKS_PER_SEC/fps - (clock() - preTime)));
 		preTime = clock();
 
-		static int cnt = 0;
-		cnt++;
-		if (cnt % 60 == 0) {
-			cout << "clock: " << cnt / 60 << endl;
+		if (bossCD % fps == 0) {
+			cout << "BOSS comming: " << bossCD / 60 << "s" << endl;
 		}
 
 		EndBatchDraw();
@@ -780,8 +779,10 @@ Game::Page Game::showWin()
 Game::Page Game::showLose()
 {
 	cleardevice();
-	IMAGE image6;
+	// 播放失败音乐
+	mciSendString("play ../飞机资料/battlemusic/lose_1.mp3", NULL, 0, NULL);
 	//打印失败页面
+	IMAGE image6;
 	loadimage(&image6, "../原型图/game/游戏失败.png", 1024, 768);
 	putimage(0, 0, &image6);
 	//solidrectangle(160, 343, 270, 397);
