@@ -1,7 +1,5 @@
 #include "plane.h"
 
-// extern Bullets bullets; //应当在game.cpp  init()函数中声明 Bullets bullets 此处直接引用
-
 /*
 * 负责人：
 * 功能：返回飞机血量
@@ -45,56 +43,6 @@ void Player::reset()
 	hp = 100;
 	setPos({ Width / 2 - E_Wideh / 2, Length - E_Height });
 	memset(buffTime, 0, sizeof(buffTime));
-}
-
-
-/*
-* 负责人：
-* 功能：玩家飞机攻击
-*	根据玩家飞机血量，在飞机坐标（getPos()函数）附近生成子弹
-*	散射也在此处实现，例如5发散射，则同时生成5个不同位置不同方向的子弹
-* 参数：void
-* 返回值：void
-*/
-void Player::attack()
-{
-	//attackCD--;
-	//int b_num = 0;
-	//Point m_pos = { Player::getPos().x+E_Wideh/2-B_Width,Player::getPos().y - B_Height };
-	//if (attackCD==0) { // attackCD为0时才可以发射子弹
-		//if (hp > 5) {
-		//	//当生命值大于5时，在飞机坐标位置生成一枚子弹，角度为90度(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射默认子弹
-		//	//b_num = 1;
-		//	//for (int i = 0; i < b_num; i++)
-		//	//{
-		//	//	p = new Bullet;
-		//	//	p->addbullet(m_pos, 90, Player::speed + 10, Bullet::BASKERBALL);
-		//	//}
-		//	//attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
-		//}
-		//else if (hp > 2) {
-		//	//当生命值大于2时，在飞机坐标位置生成三枚子弹，角度为分别为45°(左)，90°(中)，135°(右)(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射AAA型子弹
-		//	//b_num = 3;
-		//	//for (int i = 0; i < b_num; i++)
-		//	//{
-		//	//	p = new Bullet;
-		//	//	p->addbullet(m_pos, 90, Player::speed + 10, Bullet::BASKERBALL);
-		//	//}
-		//	//addBullet(Player::getPos(), 45.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-		//	//addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-		//	//addBullet(Player::getPos(), 135.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-		//	attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
-		//}
-		//else if (hp < 2) {
-		//	//当生命值小于2时，在飞机坐标位置生成五枚子弹，角度为分别为30,60,90,120,150(后期慢慢调)，速度为玩家飞机速度+10，子弹归属为玩家，发射BBB型子弹
-		//	//addBullet(Player::getPos(), 30.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-		//	//addBullet(Player::getPos(), 60.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-		//	//addBullet(Player::getPos(), 90.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-		//	//addBullet(Player::getPos(), 120.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-		//	//addBullet(Player::getPos(), 150.0, Player::speed + 10, Bullet::PLAYER, Bullet::BASKERBALL);
-		//	attackCD = 10;//发射子弹后attackCD默认设置为50，不合适再改
-		//}
-	//}
 }
 
 /*
@@ -365,38 +313,33 @@ void Enemy::showenemy()
 }
 
 
-/*
-* 实现boss和enemy的特殊移动
-*/
+
+// 实现BOSS和特殊Enemy的特殊移动
 void Enemy::specialmove()
 {
-	int type = 0;
-	int length = 0;
-	length = rand() % 300;
-	if (pos.y > length)
-	{
-		type = rand() % 2;
-		if (type == 1)
-		{
-			angle = 0;
-		}
-		else
-		{
-			angle = 180;
-		}
-		move();
-	}
-	else
-	{
-		move();
-	}
-	if (pos.x < 50)
-	{
-		angle = 0;
-	}
-	if (pos.x > Width - E_Wideh)
-	{
-		angle = 180;
-	}
 
+	int L_Limit = E_Wideh + rand()%E_Wideh;
+	int R_Limit = Width - E_Wideh - rand()%E_Wideh;
+	int U_Limit = E_Height + rand()%(2*E_Height);
+	int p = 10; // 每一帧以千分之 p 概率切换左右移动方向
+	
+	if (pos.y > U_Limit) {
+		if (angle == 90) {
+			angle = (rand() & 1) ? 0 : 180;
+		}
+		else {
+			if (pos.x > R_Limit) {
+				angle = 180;
+			}
+			else if (pos.x < L_Limit) {
+				angle = 0;
+			}
+			else {
+				if (rand() % 1000 < p) {
+					angle = (angle == 0) ? 180 : 0;
+				}
+			}
+		}
+	}
+	move();
 }

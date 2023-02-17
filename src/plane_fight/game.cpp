@@ -1,5 +1,5 @@
 #include "game.h"
-#include "iostream"
+#include <iostream>
 #include <fstream>
 #include <time.h>
 #include <graphics.h>
@@ -10,8 +10,7 @@
 #pragma comment(lib,"winmm.lib")
 
 
-
-// 负责人：技术官
+// 负责人：panta
 Game::Game(int fps)
 {
 	bestScore = 0;
@@ -77,21 +76,17 @@ void Game::run()
 */
 void Game::init()
 {
-	enemyCD = 30;//第一个敌人30fps后生成
+	enemyCD = 30;		//第一个敌人30fps后生成
 	bossCD = 150*fps;
 	attackCD = 20;
 	enemyAttackCD = 30;
 	score = 0;
-	player.reset(); // 重置飞机状态
-	bullets.clear(); // 清空子弹
-	enemys.clear(); // 清空敌机
+	player.reset();		// 重置飞机状态
+	bullets.clear();	// 清空子弹
+	enemys.clear();		// 清空敌机
 }
 
-/*
-* 发射子弹
-* 
-* 
-*/
+// 玩家发射子弹
 void Game::playerAttack()
 {
 	int b_num = 0;
@@ -111,7 +106,7 @@ void Game::playerAttack()
 				p_pos[i].y = p_pos[i].y;
 				bullets.addBullet(p_pos[i], -90, p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
-   			attackCD = 10;
+   			attackCD = 15;
 		}
 		else if (player.getHp() > 40)
 		{
@@ -126,7 +121,7 @@ void Game::playerAttack()
 			{
 				bullets.addBullet(p_pos[i], -angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
-			attackCD = 20;
+			attackCD = 25;
 		}
 		else
 		{
@@ -145,7 +140,7 @@ void Game::playerAttack()
 			{
 				bullets.addBullet(p_pos[i], -angle * (i + 1), p_speed + 10, Bullet::BASKERBALL, Bullet::PLAYER);
 			}
-			attackCD = 25;
+			attackCD = 30;
 		}
 	}
 }
@@ -309,7 +304,6 @@ int Game::checkCrash()
 				bullets.delBullet(i); // 删除子弹
 				mciSendString("play ../飞机资料/battlemusic/kill1_1.mp3 from 0", NULL, 0, NULL);
 				player.hurt(20); // 掉血量为20，待调整
-				cout << player.getHp() << endl;
 				if (player.getHp() <= 0) {
 					return 2; // 失败
 				}
@@ -323,7 +317,7 @@ int Game::checkCrash()
 				if (max(fabs(b.getPos().x - e.getPos().x), fabs(b.getPos().y - e.getPos().y)) < d && b.getBelone() == Bullet::Belone::PLAYER) {
 					bullets.delBullet(i); // 删除子弹
 					e.hurt(20 + extraDMG); // 掉血量为20，待调整
-
+					mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3 from 0", NULL, 0, NULL);
 					//两种特殊敌机
 					switch (e.getType()) {
 					case Enemys::E_GREEN://恢复血量
@@ -333,7 +327,6 @@ int Game::checkCrash()
 							player.setHp(100);
 						break;
 					case Enemys::E_RED://扣除血量
-						mciSendString("play ../飞机资料/battlemusic/kill2_1.mp3 from 0", NULL, 0, NULL);
 						player.hurt(5);
 						if (player.getHp() <= 0) {
 							return 2; // 失败
@@ -463,13 +456,11 @@ int Game::checkKeyDown()
 */
 Game::Page Game::showMenu()
 {
-	cleardevice();
 	init();
 	IMAGE image;
 	//打印背景图
 	loadimage(&image, "../原型图/菜单/menu.png", Width, Length);
 	putimage(0, 0, &image);
-	//solidrectangle(790, 310, 920, 450);
 	ExMessage m;
 	while (1) {
 		m = getmessage(EX_MOUSE);
@@ -573,15 +564,14 @@ Game::Page Game::showGame()
 	mciSendString("open ../飞机资料/battlemusic/kill2_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/kill3_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/kill4_1.mp3", NULL, 0, NULL);
+	mciSendString("open ../飞机资料/battlemusic/lose_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/win_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/failed_1.mp3", NULL, 0, NULL);
 
 	// 重复播放背景音乐
 	mciSendString("play ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
-	closegraph();
 	int bk_speed;//背景图的移到速度
 	bk_speed = 2;
-	initgraph(Width, Length);
 	int bk_y = -2*Length;
 	IMAGE bk;
 	IMAGE p_img[2];
@@ -603,10 +593,8 @@ Game::Page Game::showGame()
 		putimage(0, bk_y, &bk);
 		attackCD--;
 		enemyAttackCD--;
-		bossCD--;
 		if (checkKeyDown() == 1) {
 			mciSendString("close all", NULL, 0, NULL);
-			//mciSendString("stop ../飞机资料/battlemusic/zhandou_1.mp3", NULL, 0, NULL);
 			return PAUSE;
 		}
 
@@ -623,7 +611,7 @@ Game::Page Game::showGame()
 			putimage(player.getPos().x - E_Wideh / 2, player.getPos().y - E_Height / 2, &p_img[1], SRCPAINT);
 		}
 
-
+		// 添加敌人
 		if (bossCD > 0)
 		{
 			addEnemy();
@@ -655,18 +643,6 @@ Game::Page Game::showGame()
 
 		player.checkBuff(); // 玩家buff更新
 
-		
-
-
-		//// 玩家、敌人攻击
-		//player.attack();
-		//enemys.attack();
-
-		//// 生成新敌机
-		//addEnemy();
-		//
-		//// 碰撞检测
-		//checkCrash();
 
 		// 渲染页面：获取玩家、敌机、子弹坐标等信息，绘制页面
 		settextstyle(32, 0, _T("黑体"));
@@ -688,6 +664,10 @@ Game::Page Game::showGame()
 		Sleep(max(0, CLOCKS_PER_SEC/fps - (clock() - preTime)));
 		preTime = clock();
 
+		if (bossCD > 0 && bossCD % fps == 0) {
+			cout << "BOSS comming: " << bossCD / 60 << "s" << endl;
+		}
+
 		EndBatchDraw();
 
 	}
@@ -706,7 +686,6 @@ Game::Page Game::showGame()
 Game::Page Game::showPause()
 {
 	EndBatchDraw();//先停止批量绘图
-	cleardevice();
 	IMAGE image1;
 	//打印暂停页面
 	loadimage(&image1, "../原型图/game/暂停.png", Width, Length);
@@ -747,7 +726,6 @@ Game::Page Game::showWin()
 	score += 400;
 	mciSendString("play ../飞机资料/battlemusic/win_1.mp3", NULL, 0, NULL);
 	EndBatchDraw();
-	cleardevice();
 	ofstream outfile;// 以写模式打开文件
 	outfile.open("scorlist.txt");//打开成绩记录文件
 	outfile << score << endl;//将当前成绩写入文件并保存
@@ -776,9 +754,6 @@ Game::Page Game::showWin()
 			outtextxy(175, 205, s);
 
 			m = getmessage(EX_MOUSE);
-			//fillrectangle(30,400,140,470);
-			//fillrectangle(30,520,140,590);
-			//fillrectangle(30,640, 140,720);
 			if (m.message == WM_LBUTTONDOWN)
 			{
 				if (m.x < 140 && m.x>30 && m.y < 470 && m.y>400)//重新游戏
@@ -840,12 +815,12 @@ Game::Page Game::showWin()
 */
 Game::Page Game::showLose()
 {
-	cleardevice();
-	IMAGE image6;
+	// 播放失败音乐
+	mciSendString("play ../飞机资料/battlemusic/lose_1.mp3", NULL, 0, NULL);
 	//打印失败页面
+	IMAGE image6;
 	loadimage(&image6, "../原型图/game/游戏失败.png", 1024, 768);
 	putimage(0, 0, &image6);
-	//solidrectangle(160, 343, 270, 397);
 	ExMessage m;
 	mciSendString("play ../飞机资料/battlemusic/failed_1.mp3", NULL, 0, NULL);
 	while (1) {
@@ -884,7 +859,6 @@ Game::Page Game::showLose()
 */
 Game::Page Game::showRule1()
 {
-	cleardevice();
 	IMAGE image3;
 	//打印规则介绍页面
 	loadimage(&image3, "../原型图/菜单/rule1.png", 1024, 768);
@@ -913,7 +887,6 @@ Game::Page Game::showRule1()
 */
 Game::Page Game::showRule2()
 {
-	cleardevice();
 	IMAGE image4;
 	loadimage(&image4, "../原型图/菜单/rule2.png", 1024, 768);
 	putimage(0, 0, &image4);
@@ -939,7 +912,6 @@ Game::Page Game::showRule2()
 */
 Game::Page Game::showDeveloper()
 {
-	cleardevice();
 	char s[] = "返回主菜单";
 	IMAGE image5;
 	loadimage(&image5, "../原型图/菜单/developers.png", 1024, 768);
