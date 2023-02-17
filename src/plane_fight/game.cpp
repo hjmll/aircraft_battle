@@ -456,7 +456,6 @@ int Game::checkKeyDown()
 */
 Game::Page Game::showMenu()
 {
-	cleardevice();
 	init();
 	IMAGE image;
 	//打印背景图
@@ -512,10 +511,8 @@ Game::Page Game::showGame()
 
 	// 重复播放背景音乐
 	mciSendString("play ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
-	closegraph();
 	int bk_speed;//背景图的移到速度
 	bk_speed = 2;
-	initgraph(Width, Length, 1);
 	int bk_y = -2*Length;
 	IMAGE bk;
 	IMAGE p_img[2];
@@ -627,7 +624,6 @@ Game::Page Game::showGame()
 Game::Page Game::showPause()
 {
 	EndBatchDraw();//先停止批量绘图
-	cleardevice();
 	IMAGE image1;
 	//打印暂停页面
 	loadimage(&image1, "../原型图/game/暂停.png", Width, Length);
@@ -668,7 +664,6 @@ Game::Page Game::showWin()
 	score += 400;
 	mciSendString("play ../飞机资料/battlemusic/win_1.mp3", NULL, 0, NULL);
 	EndBatchDraw();
-	cleardevice();
 	ofstream outfile;// 以写模式打开文件
 	outfile.open("scorlist.txt");//打开成绩记录文件
 	outfile << score << endl;//将当前成绩写入文件并保存
@@ -761,7 +756,6 @@ Game::Page Game::showWin()
 */
 Game::Page Game::showLose()
 {
-	cleardevice();
 	// 播放失败音乐
 	mciSendString("play ../飞机资料/battlemusic/lose_1.mp3", NULL, 0, NULL);
 	//打印失败页面
@@ -806,7 +800,6 @@ Game::Page Game::showLose()
 */
 Game::Page Game::showRule1()
 {
-	cleardevice();
 	IMAGE image3;
 	//打印规则介绍页面
 	loadimage(&image3, "../原型图/菜单/rule1.png", 1024, 768);
@@ -835,7 +828,6 @@ Game::Page Game::showRule1()
 */
 Game::Page Game::showRule2()
 {
-	cleardevice();
 	IMAGE image4;
 	loadimage(&image4, "../原型图/菜单/rule2.png", 1024, 768);
 	putimage(0, 0, &image4);
@@ -861,7 +853,6 @@ Game::Page Game::showRule2()
 */
 Game::Page Game::showDeveloper()
 {
-	cleardevice();
 	char s[] = "返回主菜单";
 	IMAGE image5;
 	loadimage(&image5, "../原型图/菜单/developers.png", 1024, 768);
