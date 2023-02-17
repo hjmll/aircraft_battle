@@ -13,7 +13,6 @@
 // 负责人：panta
 Game::Game(int fps)
 {
-	bestScore = 0;
 	this->fps = fps;
 	score = 0;
 	preTime = clock();
@@ -77,7 +76,7 @@ void Game::run()
 void Game::init()
 {
 	enemyCD = 30;		//第一个敌人30fps后生成
-	bossCD = 150*fps;
+	bossCD = 50*fps;
 	attackCD = 20;
 	enemyAttackCD = 30;
 	score = 0;
@@ -444,6 +443,33 @@ int Game::checkKeyDown()
 	return 0;
 }
 
+void Game::loadScore()
+{
+	ifstream fs("scorelist.db", ios::in | ios::binary);
+	if (!fs.is_open()) {
+		// 文件打开失败
+		return;
+	}
+	while (!scoreList.empty()) {
+		scoreList.pop();
+	}
+	ScoreData tmp = {};
+	while (fs.read((char *) & tmp, sizeof(tmp))) {
+		scoreList.push(tmp);
+	}
+	fs.close();
+}
+
+void Game::saveScore()
+{
+	ofstream fs("scorelist.db", ios::out | ios::binary);
+	while (!scoreList.empty()) {
+		fs.write((const char *)&scoreList.top(), sizeof(ScoreData));
+		scoreList.pop();
+	}
+	fs.close();
+}
+
 /*
 * 负责人：贺金梅
 * 功能：展示菜单页
@@ -566,10 +592,11 @@ Game::Page Game::showGame()
 	mciSendString("open ../飞机资料/battlemusic/kill4_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/lose_1.mp3", NULL, 0, NULL);
 	mciSendString("open ../飞机资料/battlemusic/win_1.mp3", NULL, 0, NULL);
-	mciSendString("open ../飞机资料/battlemusic/failed_1.mp3", NULL, 0, NULL);
 
 	// 重复播放背景音乐
 	mciSendString("play ../飞机资料/battlemusic/zhandou_1.mp3 repeat", NULL, 0, NULL);
+
+	// initgraph(Width, Length, EX_SHOWCONSOLE); // Debug，打开控制台窗口
 	int bk_speed;//背景图的移到速度
 	bk_speed = 2;
 	int bk_y = -2*Length;
@@ -598,7 +625,7 @@ Game::Page Game::showGame()
 			return PAUSE;
 		}
 
-		// circle(player.getPos().x, player.getPos().y, 50); // Debug 用
+		// circle(player.getPos().x, player.getPos().y, 50); // Debug
 
 		if (player.getBuffTime(Player::unbreakable) > 0) {
 			if (player.getBuffTime(Player::unbreakable) % 8 < 4) {
@@ -664,9 +691,9 @@ Game::Page Game::showGame()
 		Sleep(max(0, CLOCKS_PER_SEC/fps - (clock() - preTime)));
 		preTime = clock();
 
-		if (bossCD > 0 && bossCD % fps == 0) {
-			cout << "BOSS comming: " << bossCD / 60 << "s" << endl;
-		}
+		//if (bossCD > 0 && bossCD % fps == 0) {
+		//	cout << "BOSS comming: " << bossCD / 60 << "s" << endl;
+		//}
 
 		EndBatchDraw();
 
@@ -726,19 +753,12 @@ Game::Page Game::showWin()
 	score += 400;
 	mciSendString("play ../飞机资料/battlemusic/win_1.mp3", NULL, 0, NULL);
 	EndBatchDraw();
-	ofstream outfile;// 以写模式打开文件
-	outfile.open("scorlist.txt");//打开成绩记录文件
-	outfile << score << endl;//将当前成绩写入文件并保存
-	outfile.close();//关闭文件
-	ifstream infile("scorlist.txt", ios::in);//从成绩记录文件读取信息
-	int a;
-	while (infile >> a)//在文件中遍历查找最高分，当达到文件尾，则循环处理结束。
+	loadScore();
+	if (scoreList.empty() || score > scoreList.top().score) // 如果当前成绩是最高分，打印最高分界面
 	{
-		if (a > bestScore)
-			bestScore = a;
-	}
-	if (score == bestScore)//如果当前成绩是最高分，打印最高分界面
-	{
+		// 保存分数
+		scoreList.push({score, "iKun", time(NULL)});
+		saveScore();
 		IMAGE bestwin;
 		loadimage(&bestwin, "../原型图/game/win1.png", 1024, 768);
 		putimage(0, 0, &bestwin);
@@ -775,26 +795,41 @@ Game::Page Game::showWin()
 	}
 	else//如果当前成绩不是最高分，打印普通界面
 	{
+		// 保存分数
+		int bestScore = scoreList.top().score;
+		scoreList.push({score, "iKun", time(NULL)});
+		saveScore();
 		IMAGE bestwin;
 		loadimage(&bestwin, "../原型图/game/win2.png", 1024, 768);
 		putimage(0, 0, &bestwin);
 		ExMessage m;
 		while (1)
 		{
+			setbkmode(TRANSPARENT);
+			settextcolor(BLACK);
+			settextstyle(45, 0, _T("黑体"));
+			char s[5];
+			sprintf_s(s, "%d", score);
+			outtextxy(250, 215, s);
+
+			sprintf_s(s, "%d", bestScore);
+			outtextxy(330, 142, s);
+
 			m = getmessage(EX_MOUSE);
+
 			if (m.message == WM_LBUTTONDOWN)
 			{
-				if (m.x < 140 && m.x>30 && m.y < 470 && m.y>400)//重新游戏
+				if (m.x < 145 && m.x>35 && m.y < 420 && m.y>350)//重新游戏
 				{
 					init();
 					return GAME;
 				}
-				if (m.x < 140 && m.x>30 && m.y < 590 && m.y>520)//返回菜单
+				if (m.x < 145 && m.x>35 && m.y < 550 && m.y>480)//返回菜单
 				{
 					init();
 					return MENU;
 				}
-				if (m.x < 140 && m.x>30 && m.y < 720 && m.y>640)//退出游戏
+				if (m.x < 145 && m.x>35 && m.y < 680 && m.y>610)//退出游戏
 				{
 					exit(0);
 				}
@@ -822,7 +857,6 @@ Game::Page Game::showLose()
 	loadimage(&image6, "../原型图/game/游戏失败.png", 1024, 768);
 	putimage(0, 0, &image6);
 	ExMessage m;
-	mciSendString("play ../飞机资料/battlemusic/failed_1.mp3", NULL, 0, NULL);
 	while (1) {
 		//展示分数
 		setbkmode(TRANSPARENT);
