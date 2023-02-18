@@ -955,13 +955,18 @@ Game::Page Game::showDeveloper()
 	IMAGE image5;
 	loadimage(&image5, "../原型图/菜单/developers.png", 1024, 768);
 	putimage(0, 0, &image5);
-	outtextxy(10, 35, s);
+	setbkmode(TRANSPARENT);
+	setfillcolor(WHITE);
+	solidrectangle(800, 550, 900, 600);
+	settextcolor(BLACK);
+	outtextxy(810, 570, s);
+
 	ExMessage m;
 	while (1) {
 		m = getmessage(EX_MOUSE);
 		if (m.message == WM_LBUTTONDOWN) {
 
-			if (m.x < 90 && m.x>10 && m.y < 50 && m.y>35) {//返回菜单
+			if (m.x < 900 && m.x>800 && m.y < 600 && m.y>550) {//返回菜单
 				return MENU;
 				m.message = NULL;
 			}
