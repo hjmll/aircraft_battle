@@ -45,7 +45,6 @@ private:
 		DEVELOPER, // 7. 开发者介绍界面，扩展，请自行补充函数
 	};
 
-	int bestScore;		// 最好成绩
 	int fps;			// 游戏帧数
 	int score;			// 当前成绩
 	int preTime;		// 上一帧时间
@@ -54,11 +53,15 @@ private:
 	int attackCD;       //玩家发射子弹的cd
 	int enemyAttackCD;	//敌人发送子弹的cd
 	int defualtCD;		// 生成新敌机的默认CD
-	vector<pair<Player::Buff,int>> v; //BUFF时间队列
+	vector<pair<Player::Buff,int>> v;	// BUFF时间队列
+	priority_queue<ScoreData> scoreList;		// 历史分数
 	Player player;		// 玩家飞机
 	Enemys enemys;		// 敌机集合
 	Bullets bullets;	// 子弹集合
 
+	void loadScore();	// 读取历史分数
+
+	void saveScore();	// 保存分数
 
 	// 各界面展示函数，返回值为下次需要展示的界面
 

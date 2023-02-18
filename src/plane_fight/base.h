@@ -23,6 +23,15 @@ struct Point {
 	int x, y;
 };
 
+struct ScoreData {
+	int score;			// 分数
+	char playerName[25];	// 玩家昵称
+	time_t createTime;	// 创建时间
+	bool operator < (const ScoreData& b) const
+	{
+		return score < b.score;
+	}
+};
 
 // 飞行物
 class FlyingObject {
