@@ -1,2 +1,7 @@
-﻿  plane.cpp
+﻿  base.cpp
+  bullet.cpp
+  game.cpp
+  main.cpp
+  plane.cpp
+  Generating Code...
   plane_fight.vcxproj -> D:\WORK\plane_fight\src\x64\Debug\plane_fight.exe

@@ -30,8 +30,6 @@ public:
 	// 根据当前坐标、速度、角度移动到下一坐标
 	void move();
 
-	void playermove();
-
 	// 返回坐标
 	Point getPos();
 
