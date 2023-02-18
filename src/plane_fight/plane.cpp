@@ -117,7 +117,7 @@ void Player::addBuff(Buff buff, int time)
 		buffTime[buff] = time;
 		switch (buff) {
 		case moveSpeedUp:
-			speed = 5; //初始设置加速后的速度为5，如果不合适再调整
+			speed = 50; //初始设置加速后的速度为5，如果不合适再调整
 			break;
 		case attackSpeedUp: 
 			attackSpeedBouns = 1.2; //初始设置加速后的攻速加成为原来的120%，不合适再改

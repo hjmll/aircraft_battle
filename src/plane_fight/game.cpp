@@ -309,7 +309,6 @@ int Game::checkCrash()
 				bullets.delBullet(i); // 删除子弹
 				mciSendString("play ../飞机资料/battlemusic/kill1_1.mp3 from 0", NULL, 0, NULL);
 				player.hurt(20); // 掉血量为20，待调整
-				cout << player.getHp() << endl;
 				if (player.getHp() <= 0) {
 					return 2; // 失败
 				}
@@ -322,8 +321,9 @@ int Game::checkCrash()
 				int d = (e.getType() == Enemy::BOSS) ? (E_Wideh+B_Width) : (E_Wideh + B_Width)/2;
 				if (max(fabs(b.getPos().x - e.getPos().x), fabs(b.getPos().y - e.getPos().y)) < d && b.getBelone() == Bullet::Belone::PLAYER) {
 					bullets.delBullet(i); // 删除子弹
-					e.hurt(20 + extraDMG); // 掉血量为20，待调整
-
+					if (player.getBuffTime(Player::specialBullet) != 0)
+						extraDMG = 20;
+					e.hurt(20 + extraDMG);
 					//两种特殊敌机
 					switch (e.getType()) {
 					case Enemys::E_GREEN://恢复血量
@@ -349,7 +349,6 @@ int Game::checkCrash()
 						switch (e.getType()) {
 						case Enemys::BOSS:
 							return 1;
-							break;
 						case Enemys::NORMAL_A:
 							player.addBuff(Player::moveSpeedUp, 180);
 							break;
@@ -361,7 +360,7 @@ int Game::checkCrash()
 							player.addBuff(Player::attackSpeedUp, 150);
 							break;
 						case Enemys::E_RED:
-							player.addBuff(Player::unbreakable, 80);
+							player.addBuff(Player::unbreakable, 150);
 							break;
 						}
 					}
@@ -536,22 +535,27 @@ void Game::printCurrentBUFF()
 			switch ((*it).first) {
 			case Player::moveSpeedUp:
 				outtextxy(0, 680 - i * 30, _T("当前BUFF："));
+				settextcolor(YELLOW);
 				outtextxy(160, 680 - i * 30, _T("移速加快"));
 				break;
 			case Player::attackSpeedUp:
 				outtextxy(0, 680 - i * 30, _T("当前BUFF："));
+				settextcolor(BLUE);
 				outtextxy(160, 680 - i * 30, _T("攻速加快"));
 				break;
 			case Player::specialBullet:
 				outtextxy(0, 680 - i * 30, _T("当前BUFF："));
+				settextcolor(RED);
 				outtextxy(160, 680 - i * 30, _T("子弹威力增加"));
 				break;
 			case Player::unbreakable:
 				outtextxy(0, 680 - i * 30, _T("当前BUFF："));
+				settextcolor(BLACK);
 				outtextxy(160, 680 - i * 30, _T("无敌时间"));
 				break;
 			}
 		}
+		settextcolor(WHITE);
 	}
 }
 
